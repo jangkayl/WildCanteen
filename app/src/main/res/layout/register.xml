@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:fontFamily="sans-serif-black"
+        android:text="WildsCant"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="70px"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="155dp"
+        android:layout_height="165dp"
+        android:layout_gravity="center"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Create account"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="70px"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="20dp"
+            android:padding="15dp"
+            android:textSize="15dp"
+            android:textColorHint="#808080"
+            android:hint="Student Id Number"
+            android:background="@color/white" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="30dp"
+            android:padding="15dp"
+            android:textSize="15dp"
+            android:textColorHint="#808080"
+            android:hint="Password"
+            android:background="@color/white" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="30dp"
+            android:textSize="15dp"
+            android:padding="15dp"
+            android:textColorHint="#808080"
+            android:hint="Confirm Password"
+            android:background="@color/white" />
+
+        <TextView
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Already have an account?"
+            android:paddingRight="35dp"
+            android:paddingTop="10dp"
+            android:textAlignment="viewEnd"
+            android:textColor="@color/white"
+            android:textSize="30px" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create account"
+        android:textSize="20dp"
+        android:layout_marginHorizontal="30dp"
+        android:backgroundTint="#F79901"
+        android:textColor="@color/white"
+        android:layout_marginVertical="20dp"
+        android:paddingVertical="10dp"
+        android:letterSpacing="0"
+        android:textAllCaps="false" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="80dp"
+        android:text="By creating an account or signing you agree to our Terms and Conditions"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="30px" />
+
+</LinearLayout>
