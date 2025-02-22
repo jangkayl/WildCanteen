@@ -6,22 +6,24 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:fontFamily="sans-serif-black"
-        android:text="WildsCant"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="70px"
-        android:textStyle="bold" />
+        android:layout_height="270dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center">
 
-    <ImageView
-        android:layout_width="155dp"
-        android:layout_height="165dp"
-        android:layout_gravity="center"
-        android:src="@drawable/logo" />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/star" />
+
+        <ImageView
+            android:layout_width="229dp"
+            android:layout_height="228dp"
+            android:src="@drawable/wildlogo" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -29,8 +31,9 @@
         android:fontFamily="sans-serif-black"
         android:text="Create account"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:layout_marginTop="-10dp"
         android:textSize="70px"
+        android:textColor="#F79901"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -43,34 +46,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:padding="15dp"
             android:textSize="15dp"
             android:textColorHint="#808080"
             android:hint="Student Id Number"
-            android:background="@color/white" />
+            android:background="@drawable/rounded_drawable"
+            android:backgroundTint="@color/white" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginHorizontal="30dp"
             android:padding="15dp"
             android:textSize="15dp"
             android:textColorHint="#808080"
+            android:background="@drawable/rounded_drawable"
             android:hint="Password"
-            android:background="@color/white" />
+            android:backgroundTint="@color/white" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginHorizontal="30dp"
             android:textSize="15dp"
             android:padding="15dp"
+            android:background="@drawable/rounded_drawable"
             android:textColorHint="#808080"
             android:hint="Confirm Password"
-            android:background="@color/white" />
+            android:backgroundTint="@color/white" />
 
         <TextView
             android:id="@+id/login_button"
@@ -81,19 +87,20 @@
             android:paddingTop="10dp"
             android:textAlignment="viewEnd"
             android:textColor="@color/white"
-            android:textSize="30px" />
+            android:textSize="13dp"/>
 
     </LinearLayout>
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Create account"
         android:textSize="20dp"
+        android:background="@drawable/rounded_drawable"
         android:layout_marginHorizontal="30dp"
         android:backgroundTint="#F79901"
         android:textColor="@color/white"
-        android:layout_marginVertical="20dp"
+        android:layout_marginVertical="15dp"
         android:paddingVertical="10dp"
         android:letterSpacing="0"
         android:textAllCaps="false" />
@@ -101,10 +108,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="80dp"
-        android:text="By creating an account or signing you agree to our Terms and Conditions"
+        android:layout_marginHorizontal="70dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/terms_conditions"
         android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="30px" />
+        android:textColor="#808080"
+        android:textSize="13dp" />
 
 </LinearLayout>

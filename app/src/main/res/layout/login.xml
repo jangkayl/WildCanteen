@@ -5,20 +5,30 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="right"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="30dp"
-        android:src="@drawable/star" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/star" />
+        <ImageView
+            android:layout_width="229dp"
+            android:layout_height="228dp"
+            android:src="@drawable/wildlogo" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hi, Welcome! 👋"
         android:textSize="60px"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
         android:textStyle="bold"
         android:fontFamily="sans-serif-black"
@@ -38,8 +48,9 @@
                 android:padding="15dp"
                 android:textSize="15dp"
                 android:textColorHint="#808080"
+                android:background="@drawable/rounded_drawable"
                 android:hint="Student Id Number"
-                android:background="@color/white"
+                android:backgroundTint="@color/white"
                 android:id="@+id/idNumber"/>
             <EditText
                 android:layout_width="match_parent"
@@ -49,8 +60,9 @@
                 android:padding="15dp"
                 android:textSize="15dp"
                 android:textColorHint="#808080"
+                android:background="@drawable/rounded_drawable"
                 android:hint="Password"
-                android:background="@color/white"
+                android:backgroundTint="@color/white"
                 android:id="@+id/password"/>
     </LinearLayout>
 
@@ -68,7 +80,7 @@
             android:textAlignment="viewEnd"
             android:layout_marginHorizontal="30dp"
             android:text="Don't have an account?"
-            android:textSize="15dp"
+            android:textSize="13dp"
             android:textColor="@color/white"
             android:focusable="true" />
 
@@ -77,10 +89,11 @@
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Log in"
         android:textSize="20dp"
         android:layout_marginHorizontal="30dp"
+        android:background="@drawable/rounded_drawable"
         android:backgroundTint="#F79901"
         android:textColor="@color/white"
         android:layout_marginVertical="20dp"

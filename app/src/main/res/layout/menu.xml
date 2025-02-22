@@ -6,12 +6,10 @@
     android:padding="17dp"
     android:gravity="bottom">
 
-    <!-- Home Button -->
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:layout_gravity="center">
@@ -24,12 +22,10 @@
             android:src="@drawable/home"/>
     </FrameLayout>
 
-    <!-- Chats Button -->
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:layout_gravity="center">
@@ -42,12 +38,10 @@
             android:src="@drawable/chats"/>
     </FrameLayout>
 
-    <!-- Orders Button -->
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:layout_gravity="center">
@@ -60,11 +54,9 @@
             android:src="@drawable/orders"/>
     </FrameLayout>
 
-    <!-- Profile Button -->
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:layout_gravity="center">

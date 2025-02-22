@@ -1,3 +1,8 @@
 <resources>
+    <string name="terms_conditions">
+        By creating an account or signing in you agree to our
+        <font color="#FFFFFF"><u>Terms and Conditions</u></font>
+    </string>
+
     <string name="app_name">WildCanteen</string>
 </resources>

@@ -20,14 +20,12 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".HomePageActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.WildCanteen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,8 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".HomePageOrderActivity" />
+        <activity android:name=".SettingsActivity" />
         <activity android:name=".LogoutActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity android:name=".DevelopersActivity" />
     </application>
 
 </manifest>

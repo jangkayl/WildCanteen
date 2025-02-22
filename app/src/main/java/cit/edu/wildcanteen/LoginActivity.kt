@@ -33,7 +33,7 @@ class LoginActivity : Activity() {
                 return@setOnClickListener
             }
 
-            if (id == "12345" && pass == "password") {
+            if (id == "123" && pass == "123") {
                 startActivity(Intent(this, HomePageActivity::class.java))
             } else {
                 Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
