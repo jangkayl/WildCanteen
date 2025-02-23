@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#111">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/homeScrollView"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/hd_user"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="14dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="John Doe"
+                        android:textColor="#FFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12-3456-78"
+                        android:textColor="#AAA"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="#2e0605"
+                    android:src="@drawable/notification"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:text="ANNOUNCEMENTS I THINK???"
+                    android:textColor="#FFF"
+                    android:backgroundTint="#888"
+                    android:textStyle="bold"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_drawable"/>
+                <Button
+                    android:id="@+id/homepageOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Make order"
+                    android:backgroundTint="#888"
+                    android:textColor="#FFF"
+                    android:background="@drawable/rounded_drawable"
+                    android:layout_margin="8dp"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Assist in Delivery"
+                    android:backgroundTint="#888"
+                    android:textColor="#FFF"
+                    android:background="@drawable/rounded_drawable"
+                    android:layout_margin="8dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="Most Popular"
+                    android:textColor="#FFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/rounded_drawable">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:background="@drawable/rounded_drawable"
+                        android:clipToOutline="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/chicken" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="₱99.00"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/price_bg"
+                        android:padding="10dp"
+                        android:layout_gravity="top|end" />
+
+                    <TextView
+                        android:layout_width="170dp"
+                        android:layout_height="wrap_content"
+                        android:text="Sweet Chicken"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#640c0b"
+                        android:background="@drawable/food_name_bg"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|start"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_drawable"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:paddingVertical="2dp"
+                        android:paddingHorizontal="6dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4.8"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:paddingRight="5dp"
+                            android:layout_gravity="top|start"/>
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/star"/>
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/rounded_drawable">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:clipToOutline="true"
+                        android:src="@drawable/palabok"
+                        android:background="@drawable/rounded_drawable"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="₱80.00"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/price_bg"
+                        android:padding="10dp"
+                        android:layout_gravity="top|end" />
+
+                    <TextView
+                        android:layout_width="170dp"
+                        android:layout_height="wrap_content"
+                        android:text="Palabok"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#640c0b"
+                        android:background="@drawable/food_name_bg"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|start"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_drawable"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:paddingVertical="2dp"
+                        android:paddingHorizontal="6dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4.9"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:paddingRight="5dp"
+                            android:layout_gravity="top|start"/>
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/star"/>
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/rounded_drawable">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:clipToOutline="true"
+                        android:src="@drawable/lumpia"
+                        android:background="@drawable/rounded_drawable"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="₱50.00"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/price_bg"
+                        android:padding="10dp"
+                        android:layout_gravity="top|end" />
+
+                    <TextView
+                        android:layout_width="170dp"
+                        android:layout_height="wrap_content"
+                        android:text="Lumpia"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#640c0b"
+                        android:background="@drawable/food_name_bg"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|start"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_drawable"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:paddingVertical="2dp"
+                        android:paddingHorizontal="6dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4.6"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:paddingRight="5dp"
+                            android:layout_gravity="top|start"/>
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/star"/>
+                    </LinearLayout>
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/menu" />
+
+</LinearLayout>
