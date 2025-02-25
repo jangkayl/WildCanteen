@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.ScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class HomePageActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,5 +32,16 @@ class HomePageActivity : Activity() {
             val intent = Intent(this, HomePageOrderActivity::class.java)
             startActivity(intent)
         }
+
+        // Dynamic Most Popular
+        val foodList = listOf(
+            FoodItem("Palabok", "₱80.00", "4.9", R.drawable.palabok),
+            FoodItem("Lumpia", "₱50.00", "4.6", R.drawable.lumpia)
+        )
+
+        val recyclerView: RecyclerView = findViewById(R.id.popularRecyclerView)
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = FoodAdapter(foodList)
     }
 }

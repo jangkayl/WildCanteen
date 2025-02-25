@@ -34,7 +34,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="@drawable/card_background"
+        android:backgroundTint="#1E1E1E"
+        android:background="@drawable/rounded_drawable"
         android:layout_marginTop="20dp"
         android:elevation="8dp"
         android:layout_marginHorizontal="10dp">
@@ -97,7 +98,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="@drawable/card_background"
+        android:backgroundTint="#1E1E1E"
+        android:background="@drawable/rounded_drawable"
         android:elevation="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginHorizontal="10dp">

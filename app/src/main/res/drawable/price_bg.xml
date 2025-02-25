@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#e85221"/> <!-- Light Background -->
+
+    <!-- Rounded corners only on the left -->
+    <corners android:topLeftRadius="10dp" android:bottomLeftRadius="10dp" />
+
+    <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
+</shape>
