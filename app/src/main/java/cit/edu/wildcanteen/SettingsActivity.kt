@@ -6,6 +6,7 @@ import android.media.Image
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 
 class SettingsActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,6 +16,12 @@ class SettingsActivity : Activity() {
         val logoutButton = findViewById<Button>(R.id.logout_button)
         logoutButton.setOnClickListener {
             val intent = Intent(this, LogoutActivity::class.java)
+            startActivity(intent)
+        }
+
+        val editProfileButton = findViewById<Button>(R.id.editProfile_button)
+        editProfileButton.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
             startActivity(intent)
         }
 
