@@ -51,18 +51,36 @@
                 android:hint="Student Id Number"
                 android:backgroundTint="@color/white"
                 android:id="@+id/idNumber"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="20dp">
+
             <EditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginHorizontal="30dp"
+                android:paddingEnd="50dp"
                 android:padding="15dp"
                 android:textSize="15dp"
                 android:textColorHint="#808080"
                 android:background="@drawable/rounded_drawable"
                 android:hint="Password"
-                android:backgroundTint="@color/white"
-                android:id="@+id/password"/>
+                android:inputType="textPassword"/>
+
+            <ImageView
+                android:id="@+id/togglePassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="5dp"
+                android:src="@drawable/hide"/>
+        </FrameLayout>
+
     </LinearLayout>
 
     <LinearLayout

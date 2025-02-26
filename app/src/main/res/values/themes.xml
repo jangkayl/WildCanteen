@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.WildCanteen" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.MyApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
 </resources>
