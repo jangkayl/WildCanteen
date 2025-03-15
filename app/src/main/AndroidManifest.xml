@@ -39,6 +39,7 @@ xmlns:tools="http://schemas.android.com/tools">
         android:name=".LogoutActivity"
         android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     <activity android:name=".DevelopersActivity" />
+    <activity android:name=".FoodDetailsActivity" />
     <activity
         android:name="cit.edu.wildcanteen.EditProfileActivity"
         android:exported="false"

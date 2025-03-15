@@ -16,6 +16,5 @@ class EditProfileActivity : Activity() {
         backImage.setOnClickListener {
             finish()
         }
-
     }
 }

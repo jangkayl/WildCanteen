@@ -200,7 +200,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Show all"
                     android:textColor="#FFFFFF"
-                    android:textSize="12dp"
+                    android:textSize="12sp"
                     android:textStyle="italic"
                     android:paddingRight="10dp"
                     android:alpha="0.6" />
@@ -394,7 +394,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Sort by"
                     android:textColor="#FFFFFF"
-                    android:textSize="12dp"
+                    android:textSize="12sp"
                     android:textStyle="italic"
                     android:paddingRight="10dp"
                     android:alpha="0.6" />

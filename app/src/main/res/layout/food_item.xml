@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_marginBottom="20dp"
@@ -59,10 +59,5 @@
             android:gravity="center"
             android:paddingRight="5dp"
             android:layout_gravity="top|start"/>
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_gravity="center"
-            android:src="@drawable/star"/>
     </LinearLayout>
-</FrameLayout>
+</android.widget.FrameLayout>

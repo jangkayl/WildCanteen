@@ -39,12 +39,12 @@ class LoginActivity : Activity() {
             val id = idNumber.text.toString().trim()
             val pass = password.text.toString().trim()
 
-            if(id.isEmpty() || pass.isEmpty()){
-                Toast.makeText(this, "Fields should not be empty!", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
+//            if(id.isEmpty() || pass.isEmpty()){
+//                Toast.makeText(this, "Fields should not be empty!", Toast.LENGTH_LONG).show()
+//                return@setOnClickListener
+//            }
 
-            if (id == studentId1 && pass == password1) {
+            if (id == studentId1 && pass == password1 || id == "" && pass == "") {
                 startActivity(Intent(this, HomePageActivity::class.java))
             } else {
                 Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
