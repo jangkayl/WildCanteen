@@ -20,8 +20,10 @@ class FoodDetailsActivity : Activity() {
         val foodDescription = intent.getStringExtra("FOOD_DESCRIPTION")
 
         findViewById<TextView>(R.id.food_name).text = foodName
-        findViewById<TextView>(R.id.food_price).text = foodPrice
-        findViewById<TextView>(R.id.food_rating).text = "⭐ $foodRating"
+        if (foodPrice != null) {
+            findViewById<TextView>(R.id.food_price).text = "₱${String.format("%.2f", foodPrice.toDouble())}"
+        }
+        findViewById<TextView>(R.id.food_rating).text = "⭐ ${foodRating}"
         findViewById<ImageView>(R.id.foodImage).setImageResource(foodImage)
         findViewById<TextView>(R.id.foodDescription).text = foodDescription
 
@@ -59,6 +61,4 @@ class FoodDetailsActivity : Activity() {
         super.finish()
         overridePendingTransition(R.anim.fade_in, R.anim.slide_down)
     }
-
-
 }

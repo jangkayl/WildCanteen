@@ -52,131 +52,19 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fillViewport="true"
-                    android:scrollbars="none">
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
 
-                        <!-- Main Meal -->
-                        <FrameLayout
-                            android:layout_width="140dp"
-                            android:layout_height="180dp"
-                            android:backgroundTint="#ffddc2"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/rounded_drawable">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/main_meal"
-                                android:clipToOutline="true"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Main Meal"
-                                android:textColor="@android:color/black"
-                                android:textSize="13sp"
-                                android:textStyle="bold"
-                                android:paddingLeft="10dp"
-                                android:paddingTop="10dp"
-                                android:gravity="top"
-                                android:layout_gravity="start"/>
-                        </FrameLayout>
-
-                        <!-- Snacks & Sides -->
-                        <FrameLayout
-                            android:layout_width="140dp"
-                            android:layout_height="180dp"
-                            android:layout_margin="5dp"
-                            android:backgroundTint="#e4efdf"
-                            android:background="@drawable/rounded_drawable">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/snacks"
-                                android:clipToOutline="true"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Snacks &amp; Sides"
-                                android:textColor="@android:color/black"
-                                android:textSize="13sp"
-                                android:textStyle="bold"
-                                android:paddingLeft="10dp"
-                                android:paddingTop="10dp"
-                                android:gravity="top"
-                                android:layout_gravity="start"/>
-                        </FrameLayout>
-
-                        <!-- Beverages -->
-                        <FrameLayout
-                            android:layout_width="140dp"
-                            android:layout_height="180dp"
-                            android:backgroundTint="#fdc7c4"
-                             android:layout_margin="5dp"
-                            android:background="@drawable/rounded_drawable">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/beverages"
-                                android:clipToOutline="true"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Beverages"
-                                android:textColor="@android:color/black"
-                                android:textSize="13sp"
-                                android:textStyle="bold"
-                                android:paddingLeft="10dp"
-                                android:paddingTop="10dp"
-                                android:gravity="top"
-                                android:layout_gravity="start"/>
-                        </FrameLayout>
-
-                        <!-- Dessert -->
-                        <FrameLayout
-                            android:layout_width="140dp"
-                            android:layout_height="180dp"
-                            android:layout_margin="5dp"
-                            android:backgroundTint="#c4c8fd"
-                            android:background="@drawable/rounded_drawable">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/dessert"
-                                android:clipToOutline="true"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Dessert"
-                                android:textColor="@android:color/black"
-                                android:textSize="13sp"
-                                android:textStyle="bold"
-                                android:paddingLeft="10dp"
-                                android:paddingTop="10dp"
-                                android:gravity="top"
-                                android:layout_gravity="start"/>
-                        </FrameLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/categoryRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never"
+                            android:clipToPadding="false"/>
 
                     </LinearLayout>
-                </HorizontalScrollView>
 
             </LinearLayout>
 
@@ -202,177 +90,22 @@
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="italic"
-                    android:paddingRight="10dp"
+                    android:layout_marginRight="10dp"
                     android:alpha="0.6" />
             </LinearLayout>
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fillViewport="true"
-                android:scrollbars="none">
+            <LinearLayout
+                android:id="@+id/popularNowContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/popularNowRecycleView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
-                    <FrameLayout
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginEnd="15dp"
-                        android:background="@drawable/rounded_drawable">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:background="@drawable/rounded_drawable"
-                            android:clipToOutline="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/chicken" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="₱99.00"
-                            android:textSize="15sp"
-                            android:textColor="@color/white"
-                            android:background="@drawable/price_bg"
-                            android:padding="10dp"
-                            android:layout_gravity="bottom|end" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_drawable"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="10dp"
-                            android:paddingVertical="2dp"
-                            android:paddingHorizontal="6dp"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="4.8"
-                                android:textSize="12sp"
-                                android:textColor="@color/black"
-                                android:gravity="center"
-                                android:paddingRight="3dp"
-                                android:layout_gravity="top|start"/>
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/star"/>
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginEnd="15dp"
-                        android:background="@drawable/rounded_drawable">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:background="@drawable/rounded_drawable"
-                            android:clipToOutline="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/palabok" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="₱80.00"
-                            android:textSize="15sp"
-                            android:textColor="@color/white"
-                            android:background="@drawable/price_bg"
-                            android:padding="10dp"
-                            android:layout_gravity="bottom|end" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_drawable"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="10dp"
-                            android:paddingVertical="2dp"
-                            android:paddingHorizontal="6dp"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="4.9"
-                                android:textSize="12sp"
-                                android:textColor="@color/black"
-                                android:gravity="center"
-                                android:paddingRight="3dp"
-                                android:layout_gravity="top|start"/>
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/star"/>
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginEnd="15dp"
-                        android:background="@drawable/rounded_drawable">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:background="@drawable/rounded_drawable"
-                            android:clipToOutline="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/lumpia" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="₱50.00"
-                            android:textSize="15sp"
-                            android:textColor="@color/white"
-                            android:background="@drawable/price_bg"
-                            android:padding="10dp"
-                            android:layout_gravity="bottom|end" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_drawable"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="10dp"
-                            android:paddingVertical="2dp"
-                            android:paddingHorizontal="6dp"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="4.6"
-                                android:textSize="12sp"
-                                android:textColor="@color/black"
-                                android:gravity="center"
-                                android:paddingRight="3dp"
-                                android:layout_gravity="top|start"/>
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/star"/>
-                        </LinearLayout>
-                    </FrameLayout>
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.widget.FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_margin="5dp"
     android:background="@drawable/rounded_drawable">
 
     <ImageView
         android:id="@+id/foodImage"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="@drawable/rounded_drawable"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
@@ -18,46 +18,38 @@
         android:id="@+id/foodPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:text="₱99.00"
         android:textSize="15sp"
         android:textColor="@color/white"
         android:background="@drawable/price_bg"
         android:padding="10dp"
-        android:layout_gravity="top|end" />
-
-    <TextView
-        android:id="@+id/foodName"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:text="Sweet Chicken"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#640c0b"
-        android:background="@drawable/food_name_bg"
-        android:paddingVertical="8dp"
-        android:paddingHorizontal="16dp"
-        android:gravity="center"
-        android:layout_gravity="bottom|start"/>
+        android:layout_gravity="bottom|end" />
 
     <LinearLayout
+        android:id="@+id/foodRatingContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
         android:background="@drawable/rounded_drawable"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:paddingVertical="2dp"
         android:paddingHorizontal="6dp"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/foodRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="4.8"
-            android:textSize="16sp"
-            android:textColor="@color/black"
+            android:layout_gravity="top|start"
             android:gravity="center"
-            android:paddingRight="5dp"
-            android:layout_gravity="top|start"/>
+            android:paddingRight="3dp"
+            android:text="4.8"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
     </LinearLayout>
+
 </android.widget.FrameLayout>
+
+

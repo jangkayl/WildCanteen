@@ -1,6 +1,7 @@
 package cit.edu.wildcanteen
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -15,7 +16,6 @@ class HomePageActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homepage)
-
         setupNavigation()
         setupRecyclerView()
     }
@@ -35,14 +35,11 @@ class HomePageActivity : Activity() {
     }
 
     private fun setupRecyclerView() {
-        val foodList = listOf(
-            FoodItem("Inasal Chicken", "₱99.00", "4.8", "Mang Inasal Clone medyo masarap sa una worth it naman kasi unli rice!", R.drawable.chicken),
-            FoodItem("Palabok", "₱80.00", "4.9", "Palabok na masarap din, lasang palabok sa jollibee na may pagka mang inasal!", R.drawable.palabok),
-            FoodItem("Lumpia", "₱50.00", "4.6", "Lumpia na galing pa sa birthday ng kapit bahay mo haha!", R.drawable.lumpia)
-        )
-
+        val foodList = FoodRepository.getFoodList()
         val recyclerView: RecyclerView = findViewById(R.id.popularRecyclerView)
-        val adapter = FoodAdapter(foodList, this)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val adapter = FoodAdapter(foodList, this, R.layout.food_item)
 
         recyclerView.apply {
             isNestedScrollingEnabled = false
@@ -69,6 +66,4 @@ class HomePageActivity : Activity() {
             }
         }
     }
-
-
 }
