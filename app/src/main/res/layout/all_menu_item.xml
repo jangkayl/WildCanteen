@@ -1,0 +1,54 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_drawable">
+
+    <ImageView
+        android:id="@+id/foodImage"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/chicken" />
+
+    <TextView
+        android:id="@+id/foodPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="₱99.00"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:background="@drawable/price_bg"
+        android:padding="10dp"
+        android:layout_gravity="bottom|end" />
+
+    <LinearLayout
+        android:id="@+id/foodRatingContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_drawable"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="6dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/foodRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4.8"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:paddingRight="3dp" />
+
+        <ImageView
+            android:id="@+id/starIcon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/star"/>
+    </LinearLayout>
+
+</FrameLayout>

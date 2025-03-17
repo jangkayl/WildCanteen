@@ -35,7 +35,7 @@ class HomePageActivity : Activity() {
     }
 
     private fun setupRecyclerView() {
-        val foodList = FoodRepository.getFoodList()
+        val foodList = FoodRepository.getPopularFoodList()
         val recyclerView: RecyclerView = findViewById(R.id.popularRecyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(this)

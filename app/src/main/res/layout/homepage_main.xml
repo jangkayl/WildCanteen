@@ -73,24 +73,25 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="8dp">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_weight="1"
                     android:text="Popular Now"
                     android:textColor="#FFF"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
+                    android:textStyle="bold" />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
+                    android:paddingLeft="5dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Show all"
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="italic"
-                    android:layout_marginRight="10dp"
                     android:alpha="0.6" />
             </LinearLayout>
 
@@ -113,7 +114,7 @@
                 android:orientation="horizontal"
                 android:padding="8dp">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="All Menu"
@@ -122,190 +123,33 @@
                     android:textStyle="bold"
                     android:layout_weight="1"/>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:paddingLeft="5dp"
                     android:text="Sort by"
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="italic"
-                    android:paddingRight="10dp"
                     android:alpha="0.6" />
             </LinearLayout>
 
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fillViewport="true"
-                android:scrollbars="none">
+                android:orientation="vertical"
+                android:padding="8dp">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerAllMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="8dp">
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    android:clipToPadding="false"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="15dp">
-
-                        <FrameLayout
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_marginEnd="12dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/rounded_drawable">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="150dp"
-                                android:background="@drawable/rounded_drawable"
-                                android:clipToOutline="true"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/chicken" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:text="₱99.00"
-                                android:textSize="15sp"
-                                android:textColor="@color/white"
-                                android:background="@drawable/price_bg"
-                                android:padding="10dp"
-                                android:layout_gravity="bottom|end" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/rounded_drawable"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginStart="10dp"
-                                android:paddingVertical="2dp"
-                                android:paddingHorizontal="6dp"
-                                android:orientation="horizontal">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="4.8"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/black"
-                                    android:gravity="center"
-                                    android:paddingRight="3dp"
-                                    android:layout_gravity="top|start"/>
-                                <ImageView
-                                    android:layout_width="15dp"
-                                    android:layout_height="15dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/star"/>
-                            </LinearLayout>
-                        </FrameLayout>
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="15dp">
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="12dp"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="15dp">
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="12dp"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="15dp">
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="12dp"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="15dp">
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="12dp"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="150dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/rounded_drawable"
-                            android:backgroundTint="@color/white" />
-                    </LinearLayout>
-
-                </LinearLayout>
-            </ScrollView>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

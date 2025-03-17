@@ -44,10 +44,9 @@ class FoodAdapter(
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
         val food = foodList[position]
         holder.foodImage.setImageResource(food.imageResId)
-        holder.foodPrice.text = "₱${food.price}"
+        holder.foodPrice.text = String.format("₱%.2f", food.price)
         holder.foodRating.text = "⭐ ${food.rating}"
 
-        // Only set food name if the layout is NOT food_item_popular
         if (layoutResId != R.layout.food_item_popular) {
             holder.foodName?.text = food.name
         }

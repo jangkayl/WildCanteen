@@ -1,4 +1,4 @@
-package com.example.carousel
+package cit.edu.wildcanteen
 
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
@@ -9,8 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import cit.edu.wildcanteen.CategoryItem
-import cit.edu.wildcanteen.R
 
 class CategoryAdapter(private val categories: List<CategoryItem>) :
     RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
