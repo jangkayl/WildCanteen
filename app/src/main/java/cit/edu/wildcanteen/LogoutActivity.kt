@@ -4,10 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.view.Window
 
 class LogoutActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Remove the title bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+
         setContentView(R.layout.logout)
 
         val yesButton = findViewById<Button>(R.id.yes_button)

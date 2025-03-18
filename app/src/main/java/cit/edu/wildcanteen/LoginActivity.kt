@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 class LoginActivity : Activity() {
 
@@ -28,12 +29,10 @@ class LoginActivity : Activity() {
 
         password.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
 
-        val studentId1 = intent.getStringExtra("STUDENT_ID")
-        val password1 = intent.getStringExtra("PASSWORD")
+        val studentId1 = intent.getStringExtra("STUDENT_ID") ?: ""
+        val password1 = intent.getStringExtra("PASSWORD") ?: ""
 
-        if (studentId1 != null && password1 != null) {
-            idNumber.setText(studentId1)
-        }
+        idNumber.setText(studentId1)
 
         loginButton.setOnClickListener {
             val id = idNumber.text.toString().trim()

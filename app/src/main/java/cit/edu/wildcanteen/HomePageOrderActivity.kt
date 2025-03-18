@@ -2,41 +2,21 @@ package cit.edu.wildcanteen
 
 import android.app.Activity
 import android.graphics.Color
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.view.ViewTreeObserver
-import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlin.math.ceil
 
 class HomePageOrderActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homepage_main)
-        setupNavigation()
         setupRecyclerView()
         setupCategories()
         setupAllMenu()
-    }
-
-    private fun setupNavigation() {
-        val buttonMap = mapOf(
-            R.id.settings_button to SettingsActivity::class.java,
-            R.id.orders_button to OrdersActivity::class.java,
-            R.id.chats_button to ChatsActivity::class.java
-        )
-
-        buttonMap.forEach { (buttonId, activityClass) ->
-            findViewById<ImageView>(buttonId)?.setOnClickListener {
-                startActivity(Intent(this, activityClass))
-            }
-        }
-
-        findViewById<ImageView>(R.id.home_button)?.setOnClickListener {
-            finish()
-        }
     }
 
     private fun setupRecyclerView() {
@@ -62,26 +42,25 @@ class HomePageOrderActivity : Activity() {
     }
 
     private fun setupAllMenu() {
-        val foodList = FoodRepository.getAllFoodList() // Get full list
+        val foodList = FoodRepository.getAllFoodList()
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerAllMenu)
 
-        val gridLayoutManager = GridLayoutManager(this, 2) // 2 columns
+        val gridLayoutManager = GridLayoutManager(this, 2)
 
         recyclerView.apply {
             isNestedScrollingEnabled = false
             layoutManager = gridLayoutManager
             adapter = FoodAdapter(foodList, this@HomePageOrderActivity, R.layout.food_item_popular)
 
-            // Ensure height dynamically increases
             post {
                 val itemCount = adapter?.itemCount ?: 0
                 if (itemCount > 0) {
                     val child = getChildAt(0) ?: return@post
                     val itemHeight = child.measuredHeight
                     val spanCount = gridLayoutManager.spanCount
-                    val rows = Math.ceil(itemCount / spanCount.toDouble()).toInt()
+                    val rows = ceil(itemCount / spanCount.toDouble()).toInt()
 
-                    val totalHeight = (rows * itemHeight) + (rows * 20) // Adjust for spacing
+                    val totalHeight = (rows * itemHeight) + (rows * 20)
                     layoutParams.height = totalHeight + 100
                     requestLayout()
                 }
