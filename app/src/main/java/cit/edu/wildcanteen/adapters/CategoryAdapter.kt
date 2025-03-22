@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.adapters
 
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import cit.edu.wildcanteen.data_class.CategoryItem
+import cit.edu.wildcanteen.R
 
 class CategoryAdapter(private val categories: List<CategoryItem>) :
     RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
@@ -34,7 +36,9 @@ class CategoryAdapter(private val categories: List<CategoryItem>) :
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category = categories[position]
 
-        val drawable = ContextCompat.getDrawable(holder.itemView.context, R.drawable.rounded_drawable) as GradientDrawable
+        val drawable = ContextCompat.getDrawable(holder.itemView.context,
+            R.drawable.rounded_drawable
+        ) as GradientDrawable
 
         drawable.setColor(category.backgroundColor)
 

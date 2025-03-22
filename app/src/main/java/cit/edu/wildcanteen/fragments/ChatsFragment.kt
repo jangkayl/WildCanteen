@@ -9,6 +9,6 @@ import cit.edu.wildcanteen.R
 
 class ChatsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.homepage, container, false)
+        return inflater.inflate(R.layout.chatpage_fragment, container, false)
     }
 }

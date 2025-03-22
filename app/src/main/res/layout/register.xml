@@ -94,6 +94,7 @@
                 android:id="@+id/confirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:textSize="15dp"
                 android:paddingEnd="50dp"
                 android:padding="15dp"

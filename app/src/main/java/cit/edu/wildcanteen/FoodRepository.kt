@@ -1,5 +1,7 @@
 package cit.edu.wildcanteen
 
+import cit.edu.wildcanteen.data_class.FoodItem
+
 object FoodRepository {
     fun getPopularFoodList(): List<FoodItem> {
         return listOf(

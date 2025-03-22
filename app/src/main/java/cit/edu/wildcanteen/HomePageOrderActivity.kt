@@ -3,11 +3,12 @@ package cit.edu.wildcanteen
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import cit.edu.wildcanteen.adapters.CategoryAdapter
+import cit.edu.wildcanteen.adapters.FoodAdapter
+import cit.edu.wildcanteen.data_class.CategoryItem
 import kotlin.math.ceil
 
 class HomePageOrderActivity : Activity() {

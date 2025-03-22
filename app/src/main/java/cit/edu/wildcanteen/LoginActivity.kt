@@ -1,6 +1,6 @@
 package cit.edu.wildcanteen
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -10,51 +10,61 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cit.edu.wildcanteen.application.MyApplication
 
-class LoginActivity : Activity() {
+class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // CHECK USER LOGGED IN USING MyApplication
+        if (MyApplication.isLoggedIn) {
+            startActivity(Intent(this, HomePageActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.login)
 
         val registerButton: TextView = findViewById(R.id.register_button)
         registerButton.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
 
         val loginButton: Button = findViewById(R.id.loginButton)
         val idNumber: EditText = findViewById(R.id.idNumber)
         val password: EditText = findViewById(R.id.password)
+        val togglePassword: ImageView = findViewById(R.id.togglePassword)
 
-        password.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+        val storedId = intent.getStringExtra("STUDENT_ID")
+        val storedPassword = intent.getStringExtra("PASSWORD")
 
-        val studentId1 = intent.getStringExtra("STUDENT_ID") ?: ""
-        val password1 = intent.getStringExtra("PASSWORD") ?: ""
-
-        idNumber.setText(studentId1)
+        idNumber.setText(storedId)
 
         loginButton.setOnClickListener {
             val id = idNumber.text.toString().trim()
             val pass = password.text.toString().trim()
 
-//            if(id.isEmpty() || pass.isEmpty()){
-//                Toast.makeText(this, "Fields should not be empty!", Toast.LENGTH_LONG).show()
-//                return@setOnClickListener
-//            }
+            if (id == storedId && pass == storedPassword) {
+                // SAVE LOGIN STATE
+                MyApplication.isLoggedIn = true
+                MyApplication.saveUserDetails(
+                    id,
+                    MyApplication.name ?: "",
+                    MyApplication.profilePic ?: R.drawable.hd_user,
+                    pass
+                )
 
-            if (id == studentId1 && pass == password1 || id == "" && pass == "") {
-                startActivity(Intent(this, HomePageActivity::class.java))
+                val intent = Intent(this, HomePageActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
             }
         }
 
-        val togglePassword: ImageView = findViewById(R.id.togglePassword)
-
         var isPasswordVisible = false
-
         togglePassword.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
 
@@ -68,7 +78,5 @@ class LoginActivity : Activity() {
 
             password.setSelection(password.text.length)
         }
-
     }
-
 }

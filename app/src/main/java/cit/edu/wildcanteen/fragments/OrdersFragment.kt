@@ -9,6 +9,6 @@ import cit.edu.wildcanteen.R
 
 class OrdersFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.homepage, container, false)
+        return inflater.inflate(R.layout.orderspage_fragment, container, false)
     }
 }

@@ -2,6 +2,7 @@
 xmlns:tools="http://schemas.android.com/tools">
 
 <application
+    android:name=".application.MyApplication"
     android:allowBackup="true"
     android:dataExtractionRules="@xml/data_extraction_rules"
     android:fullBackupContent="@xml/backup_rules"
@@ -9,7 +10,7 @@ xmlns:tools="http://schemas.android.com/tools">
     android:label="@string/app_name"
     android:roundIcon="@drawable/wildlogo"
     android:supportsRtl="true"
-    android:theme="@style/Theme.AppCompat"
+    android:theme="@style/Theme.AppTheme"
     tools:targetApi="31">
     <activity
         android:name=".RegisterActivity"
@@ -30,7 +31,6 @@ xmlns:tools="http://schemas.android.com/tools">
         android:exported="false">
     </activity>
     <activity android:name=".HomePageOrderActivity" />
-    <activity android:name=".SettingsActivity" />
     <activity
         android:name=".LogoutActivity"
         android:theme="@android:style/Theme.Translucent.NoTitleBar" />

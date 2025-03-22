@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.data_class
 
 data class CategoryItem(
     val name: String,

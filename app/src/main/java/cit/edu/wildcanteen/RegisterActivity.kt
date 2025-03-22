@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cit.edu.wildcanteen.application.MyApplication
 
 class RegisterActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,9 +22,6 @@ class RegisterActivity : Activity() {
         val confirmPasswordEditText: EditText = findViewById(R.id.confirmPassword)
         val createAccountButton: Button = findViewById(R.id.create_account_button)
         val loginButton: TextView = findViewById(R.id.login_button)
-
-        passwordEditText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-        confirmPasswordEditText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
 
         createAccountButton.setOnClickListener {
             val studentId = studentIdEditText.text.toString()
@@ -45,6 +43,7 @@ class RegisterActivity : Activity() {
             val intent = Intent(this, LoginActivity::class.java)
             intent.putExtra("STUDENT_ID", studentId)
             intent.putExtra("PASSWORD", password)
+
             Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_LONG).show()
             startActivity(intent)
             finish()

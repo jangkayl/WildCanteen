@@ -1,69 +1,66 @@
 package cit.edu.wildcanteen
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
+import android.view.MenuItem
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import cit.edu.wildcanteen.fragments.ChatsFragment
+import cit.edu.wildcanteen.fragments.HomeFragment
+import cit.edu.wildcanteen.fragments.OrdersFragment
+import cit.edu.wildcanteen.fragments.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 
-class HomePageActivity : Activity() {
+class HomePageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homepage)
+        supportActionBar?.hide()
+
+        if (savedInstanceState == null) {
+            replaceFragment(HomeFragment())
+        }
+
         setupNavigation()
-        setupRecyclerView()
     }
 
     private fun setupNavigation() {
-        findViewById<ImageView>(R.id.settings_button).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_UNLABELED
 
-        findViewById<ImageView>(R.id.home_button).setOnClickListener {
-            findViewById<ScrollView>(R.id.homeScrollView).smoothScrollTo(0, 0)
-        }
-
-        findViewById<View>(R.id.homepageOrder).setOnClickListener {
-            startActivity(Intent(this, HomePageOrderActivity::class.java))
+        bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    replaceFragment(HomeFragment())
+                    findViewById<ScrollView>(R.id.homeScrollView).smoothScrollTo(0, 0)
+                    true
+                }
+                R.id.nav_chats -> {
+                    replaceFragment(ChatsFragment())
+                    true
+                }
+                R.id.nav_orders -> {
+                    replaceFragment(OrdersFragment())
+                    true
+                }
+                R.id.nav_settings -> {
+                    replaceFragment(ProfileFragment())
+                    true
+                }
+                else -> false
+            }
         }
     }
 
-    private fun setupRecyclerView() {
-        val foodList = FoodRepository.getPopularFoodList()
-        val recyclerView: RecyclerView = findViewById(R.id.popularRecyclerView)
+    private fun replaceFragment(fragment: Fragment) {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.linear_container)
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        val adapter = FoodAdapter(foodList, this, R.layout.food_item)
-
-        recyclerView.apply {
-            isNestedScrollingEnabled = false
-            layoutManager = LinearLayoutManager(this@HomePageActivity)
-            setAdapter(adapter)
-
-            post {
-                var totalHeight = 0
-                for (i in 0 until adapter.itemCount) {
-                    val holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i))
-                    adapter.bindViewHolder(holder, i)
-
-                    holder.itemView.measure(
-                        View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                    )
-
-                    val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
-                    totalHeight += holder.itemView.measuredHeight + params.bottomMargin
-                }
-
-                layoutParams.height = totalHeight
-                requestLayout()
-            }
+        if (currentFragment?.javaClass != fragment.javaClass) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.linear_container, fragment)
+                .commit()
         }
     }
 }
