@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import cit.edu.wildcanteen.data_class.CategoryItem
+import cit.edu.wildcanteen.CategoryItem
 import cit.edu.wildcanteen.R
 
 class CategoryAdapter(private val categories: List<CategoryItem>) :

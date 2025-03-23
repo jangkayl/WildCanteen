@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
-import cit.edu.wildcanteen.data_class.FoodItem
 
-class CartAdapter(private val cartItems: MutableList<FoodItem>, private val onRemove: (FoodItem) -> Unit) :
+class CartAdapter(private val cartOrders: MutableList<Order>, private val onRemove: (Order) -> Unit) :
     RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
     class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,14 +25,22 @@ class CartAdapter(private val cartItems: MutableList<FoodItem>, private val onRe
     }
 
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
-        val item = cartItems[position]
-        holder.foodImage.setImageResource(item.imageResId)
-        holder.foodName.text = item.name
-        holder.foodPrice.text = "₱${item.price}"
+        val order = cartOrders[position]
+        val firstItem = order.items
+
+        if (firstItem != null) {
+            holder.foodImage.setImageResource(firstItem.imageResId)
+            holder.foodName.text = firstItem.name
+            holder.foodPrice.text = "₱${firstItem.price}"
+        } else {
+            holder.foodName.text = "Unknown Item"
+            holder.foodPrice.text = "₱0.00"
+        }
+
         holder.removeButton.setOnClickListener {
-            onRemove(item)
+            onRemove(order)
         }
     }
 
-    override fun getItemCount() = cartItems.size
+    override fun getItemCount() = cartOrders.size
 }

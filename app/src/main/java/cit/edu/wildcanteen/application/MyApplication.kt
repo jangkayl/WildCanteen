@@ -3,7 +3,12 @@ package cit.edu.wildcanteen.application
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import cit.edu.wildcanteen.FoodItem
+import cit.edu.wildcanteen.FoodRepository
+import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class MyApplication : Application() {
     companion object {
@@ -21,6 +26,9 @@ class MyApplication : Application() {
         var profilePic: Int? = null
         var isLoggedIn: Boolean = false
         var password: String? = null
+        var balance: Double? = null
+        var orders: MutableList<Order> = mutableListOf()
+
 
         // LOAD USER DATA WHEN SESSION STARTS
         fun loadUserSession() {
@@ -64,6 +72,42 @@ class MyApplication : Application() {
             printUserDetails()
         }
 
+        /////     FOR ORDERS
+
+        fun saveOrders() {
+            val json = Gson().toJson(orders)
+            prefs.edit().putString("ORDERS", json).apply()
+        }
+
+        private fun loadOrders() {
+            val json = prefs.getString("ORDERS", null)
+            if (!json.isNullOrEmpty()) {
+                try {
+                    val type = object : TypeToken<MutableList<Order>>() {}.type
+                    orders = Gson().fromJson(json, type) ?: mutableListOf()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    orders = mutableListOf()
+                }
+            }
+
+            if (orders.isEmpty()) {
+                orders = FoodRepository.getOrderLists().toMutableList()
+                saveOrders()
+            }
+        }
+
+
+        fun addOrder(order: Order) {
+            orders.add(order)
+            saveOrders()
+        }
+
+        fun clearOrders() {
+            orders.clear()
+            saveOrders()
+        }
+
         private fun printUserDetails() {
             println("ID: $id")
             println("Name: $name")
@@ -73,18 +117,11 @@ class MyApplication : Application() {
         }
     }
 
-    private fun printUserDetails() {
-        println("ID: $id")
-        println("Name: $name")
-        println("ProfilePic: $profilePic")
-        println("Password: $password")
-        println("Is Logged In: $isLoggedIn")
-    }
-
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
         loadUserSession()
+        loadOrders()
         printUserDetails()
     }
 }

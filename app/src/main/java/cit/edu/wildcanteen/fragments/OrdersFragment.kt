@@ -8,16 +8,17 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cit.edu.wildcanteen.FoodRepository
+import cit.edu.wildcanteen.FoodItem
+import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.CartAdapter
-import cit.edu.wildcanteen.data_class.FoodItem
+import cit.edu.wildcanteen.application.MyApplication
 
 class OrdersFragment : Fragment() {
 
     private lateinit var cartRecyclerView: RecyclerView
     private lateinit var proceedButton: Button
-    private val cartItems = mutableListOf<FoodItem>()
+    private val cartOrders = mutableListOf<Order>()
     private lateinit var cartAdapter: CartAdapter
 
     override fun onCreateView(
@@ -29,11 +30,11 @@ class OrdersFragment : Fragment() {
         cartRecyclerView = view.findViewById(R.id.cartRecyclerView)
         proceedButton = view.findViewById(R.id.proceedButton)
 
-        cartAdapter = CartAdapter(cartItems) { item: FoodItem -> removeItemFromCart(item) }
+        cartAdapter = CartAdapter(cartOrders) { order: Order -> removeOrderFromCart(order) }
         cartRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         cartRecyclerView.adapter = cartAdapter
 
-        loadCartItems()
+        loadCartOrders()
 
         proceedButton.setOnClickListener {
             // Handle checkout logic
@@ -42,13 +43,17 @@ class OrdersFragment : Fragment() {
         return view
     }
 
-    private fun loadCartItems() {
-        cartItems.addAll(FoodRepository.getPopularFoodList())
+    private fun loadCartOrders() {
+        cartOrders.clear()
+        cartOrders.addAll(MyApplication.orders)
         cartAdapter.notifyDataSetChanged()
     }
 
-    private fun removeItemFromCart(item: FoodItem) {
-        cartItems.remove(item)
+    private fun removeOrderFromCart(order: Order) {
+        cartOrders.remove(order)
+        MyApplication.orders.remove(order)
+        MyApplication.saveOrders()
         cartAdapter.notifyDataSetChanged()
     }
 }
+

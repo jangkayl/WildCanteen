@@ -1,7 +1,5 @@
 package cit.edu.wildcanteen
 
-import cit.edu.wildcanteen.data_class.FoodItem
-
 object FoodRepository {
     fun getPopularFoodList(): List<FoodItem> {
         return listOf(
@@ -27,4 +25,15 @@ object FoodRepository {
             FoodItem("Lumpia", 50.00, 4.6, "Lumpia na galing pa sa birthday ng kapit bahay mo haha!", R.drawable.lumpia)
         )
     }
+
+    fun getOrderLists(): List<Order> {
+        val foodItems = getAllFoodList()
+
+        return listOf(
+            Order("ORD-001", foodItems[0], totalAmount = foodItems[0].price, timestamp = System.currentTimeMillis()),
+            Order("ORD-002", foodItems[1], totalAmount = foodItems[1].price, timestamp = System.currentTimeMillis()),
+            Order("ORD-003", foodItems[2], totalAmount = foodItems[2].price, timestamp = System.currentTimeMillis())
+        )
+    }
+
 }

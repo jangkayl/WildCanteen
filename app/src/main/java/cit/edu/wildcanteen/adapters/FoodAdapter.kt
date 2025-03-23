@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.FoodDetailsActivity
-import cit.edu.wildcanteen.data_class.FoodItem
+import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.R
 
 class FoodAdapter(

@@ -50,6 +50,10 @@ android {
 }
 
 dependencies {
+    // GSON Dependencies
+    implementation(libs.gson)
+
+
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
