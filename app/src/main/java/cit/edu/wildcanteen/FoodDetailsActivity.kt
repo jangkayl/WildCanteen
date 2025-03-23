@@ -14,6 +14,7 @@ class FoodDetailsActivity : Activity() {
         overridePendingTransition(R.anim.slide_up, R.anim.fade_out)
         setContentView(R.layout.activity_food_details)
 
+        val foodCategory = intent.getStringExtra("FOOD_CATEGORY")
         val foodName = intent.getStringExtra("FOOD_NAME")
         val foodPrice = intent.getStringExtra("FOOD_PRICE")
         val foodRating = intent.getStringExtra("FOOD_RATING")
@@ -58,6 +59,7 @@ class FoodDetailsActivity : Activity() {
             val order = Order(
                 orderId = System.currentTimeMillis().toString(),
                 items = FoodItem(
+                    category =  foodCategory ?: "Unknown",
                     name = foodName ?: "Unknown",
                     price = foodPrice?.toDoubleOrNull() ?: 0.0,
                     rating = foodRating?.toDoubleOrNull() ?: 0.0,

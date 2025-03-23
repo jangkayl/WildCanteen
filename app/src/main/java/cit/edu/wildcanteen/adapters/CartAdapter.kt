@@ -63,6 +63,7 @@ class CartAdapter(
         holder.itemView.setOnClickListener { view ->
             if (firstItem != null && view.id != R.id.cart_buttons) {
                 val intent = Intent(context, FoodDetailsActivity::class.java).apply {
+                    putExtra("FOOD_CATEGORY", firstItem.category)
                     putExtra("FOOD_NAME", firstItem.name)
                     putExtra("FOOD_PRICE", firstItem.price.toString())
                     putExtra("FOOD_RATING", firstItem.rating.toString())

@@ -19,15 +19,16 @@ class FoodAdapter(
 ) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
     inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val foodImage: ImageView = itemView.findViewById(R.id.foodImage)
-        val foodPrice: TextView = itemView.findViewById(R.id.foodPrice)
-        val foodRating: TextView = itemView.findViewById(R.id.foodRating)
         val foodName: TextView? = itemView.findViewById(R.id.foodName)
+        val foodRating: TextView = itemView.findViewById(R.id.foodRating)
+        val foodPrice: TextView = itemView.findViewById(R.id.foodPrice)
+        val foodImage: ImageView = itemView.findViewById(R.id.foodImage)
 
         init {
             itemView.setOnClickListener {
                 val food = foodList[adapterPosition]
                 val intent = Intent(context, FoodDetailsActivity::class.java).apply {
+                    putExtra("FOOD_CATEGORY", food.category)
                     putExtra("FOOD_NAME", food.name)
                     putExtra("FOOD_PRICE", food.price.toString())
                     putExtra("FOOD_RATING", food.rating.toString())

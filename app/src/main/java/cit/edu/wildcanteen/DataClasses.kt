@@ -1,6 +1,7 @@
 package cit.edu.wildcanteen
 
 data class FoodItem(
+    val category: String,
     val name: String,
     val price: Double,
     val rating: Double,

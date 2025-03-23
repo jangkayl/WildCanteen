@@ -101,6 +101,7 @@
                 android:textSize="15dp"
                 android:textColorHint="#808080"
                 android:background="@drawable/rounded_drawable"
+                android:backgroundTint="@color/white"
                 android:hint="Password"
                 android:inputType="textPassword"/>
 
@@ -131,6 +132,7 @@
                 android:textSize="15dp"
                 android:textColorHint="#808080"
                 android:background="@drawable/rounded_drawable"
+                android:backgroundTint="@color/white"
                 android:hint="Confirm Password"
                 android:inputType="textPassword"/>
 
