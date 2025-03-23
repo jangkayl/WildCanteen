@@ -18,7 +18,8 @@ import cit.edu.wildcanteen.application.MyApplication
 class CartAdapter(
     private val context: Context,
     private val cartOrders: MutableList<Order>,
-    private val onRemove: (Order) -> Unit
+    private val onRemove: (Order) -> Unit,
+    private val onUpdateTotalAmount: () -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
     class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -58,6 +59,7 @@ class CartAdapter(
             onRemove(order)
             MyApplication.orders.remove(order)
             MyApplication.saveOrders()
+            onUpdateTotalAmount()
         }
 
         holder.itemView.setOnClickListener { view ->
@@ -80,6 +82,8 @@ class CartAdapter(
             holder.quantity.text = order.quantity.toString()
 
             MyApplication.saveOrders()
+            onUpdateTotalAmount()
+            notifyItemChanged(position)
             Log.d("CartAdapter", "Increased: ${order.items.name} - New Quantity: ${order.quantity}")
         }
 
@@ -90,6 +94,8 @@ class CartAdapter(
                 holder.quantity.text = order.quantity.toString()
 
                 MyApplication.saveOrders()
+                onUpdateTotalAmount()
+                notifyItemChanged(position)
                 Log.d("CartAdapter", "Decreased: ${order.items.name} - New Quantity: ${order.quantity}")
             }
         }

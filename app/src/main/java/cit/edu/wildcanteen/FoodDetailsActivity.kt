@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import cit.edu.wildcanteen.application.MyApplication
 
 class FoodDetailsActivity : Activity() {
@@ -71,6 +72,7 @@ class FoodDetailsActivity : Activity() {
                 timestamp = System.currentTimeMillis()
             )
 
+            Toast.makeText(this, "$foodName added to cart", Toast.LENGTH_SHORT).show()
             MyApplication.addOrder(order)
             finish()
         }
