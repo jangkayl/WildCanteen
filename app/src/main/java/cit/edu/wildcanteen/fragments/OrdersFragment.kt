@@ -30,7 +30,7 @@ class OrdersFragment : Fragment() {
         cartRecyclerView = view.findViewById(R.id.cartRecyclerView)
         proceedButton = view.findViewById(R.id.proceedButton)
 
-        cartAdapter = CartAdapter(cartOrders) { order: Order -> removeOrderFromCart(order) }
+        cartAdapter = CartAdapter(requireContext(), cartOrders) { order: Order -> removeOrderFromCart(order) }
         cartRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         cartRecyclerView.adapter = cartAdapter
 

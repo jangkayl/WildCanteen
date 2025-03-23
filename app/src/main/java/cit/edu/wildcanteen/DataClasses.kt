@@ -17,6 +17,7 @@ data class CategoryItem(
 data class Order(
     val orderId: String,
     val items: FoodItem,
-    val totalAmount: Double,
+    var quantity: Int,
+    var totalAmount: Double,
     val timestamp: Long
 )

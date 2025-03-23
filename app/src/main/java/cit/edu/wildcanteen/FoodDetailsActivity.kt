@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import cit.edu.wildcanteen.application.MyApplication
 
 class FoodDetailsActivity : Activity() {
 
@@ -33,7 +34,8 @@ class FoodDetailsActivity : Activity() {
         val btnOrder = findViewById<Button>(R.id.btn_order)
         val btnBack = findViewById<ImageView>(R.id.btn_back)
 
-        var quantity = 1
+        val existingOrder = MyApplication.orders.find { it.items.name == foodName }
+        var quantity = existingOrder?.quantity ?: 1
         quantityText.text = quantity.toString()
 
         btnBack.setOnClickListener {
@@ -53,7 +55,22 @@ class FoodDetailsActivity : Activity() {
         }
 
         btnOrder.setOnClickListener {
+            val order = Order(
+                orderId = System.currentTimeMillis().toString(),
+                items = FoodItem(
+                    name = foodName ?: "Unknown",
+                    price = foodPrice?.toDoubleOrNull() ?: 0.0,
+                    rating = foodRating?.toDoubleOrNull() ?: 0.0,
+                    description = foodDescription ?: "",
+                    imageResId = foodImage
+                ),
+                quantity = quantity,
+                totalAmount = (foodPrice?.toDoubleOrNull() ?: 0.0) * quantity,
+                timestamp = System.currentTimeMillis()
+            )
 
+            MyApplication.addOrder(order)
+            finish()
         }
     }
 

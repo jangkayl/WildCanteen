@@ -30,9 +30,9 @@ object FoodRepository {
         val foodItems = getAllFoodList()
 
         return listOf(
-            Order("ORD-001", foodItems[0], totalAmount = foodItems[0].price, timestamp = System.currentTimeMillis()),
-            Order("ORD-002", foodItems[1], totalAmount = foodItems[1].price, timestamp = System.currentTimeMillis()),
-            Order("ORD-003", foodItems[2], totalAmount = foodItems[2].price, timestamp = System.currentTimeMillis())
+            Order("ORD-001", foodItems[0], 1, totalAmount = foodItems[0].price, timestamp = System.currentTimeMillis()),
+            Order("ORD-002", foodItems[1], 1, totalAmount = foodItems[1].price, timestamp = System.currentTimeMillis()),
+            Order("ORD-003", foodItems[2], 1, totalAmount = foodItems[2].price, timestamp = System.currentTimeMillis())
         )
     }
 

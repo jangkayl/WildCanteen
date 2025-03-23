@@ -3,7 +3,6 @@ package cit.edu.wildcanteen.application
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.FoodRepository
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
@@ -97,14 +96,16 @@ class MyApplication : Application() {
             }
         }
 
-
         fun addOrder(order: Order) {
-            orders.add(order)
-            saveOrders()
-        }
+            val existingOrder = orders.find { it.items.name == order.items.name }
 
-        fun clearOrders() {
-            orders.clear()
+            if (existingOrder != null) {
+                existingOrder.quantity = order.quantity
+                existingOrder.totalAmount = existingOrder.quantity * existingOrder.items.price
+            } else {
+                orders.add(order)
+            }
+
             saveOrders()
         }
 
