@@ -49,7 +49,7 @@ class CartAdapter(
         if (firstItem != null) {
             holder.foodImage.setImageResource(firstItem.imageResId)
             holder.foodName.text = firstItem.name
-            holder.foodPrice.text = "₱${firstItem.price}"
+            holder.foodPrice.text = "₱%.2f".format(firstItem.price)
         } else {
             holder.foodName.text = "Unknown Item"
             holder.foodPrice.text = "₱0.00"

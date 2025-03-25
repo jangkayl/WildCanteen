@@ -1,6 +1,7 @@
 package cit.edu.wildcanteen
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -74,12 +75,9 @@ class FoodDetailsActivity : Activity() {
 
             Toast.makeText(this, "$foodName added to cart", Toast.LENGTH_SHORT).show()
             MyApplication.addOrder(order)
+
+            startActivity(Intent(this, OrderPlaced::class.java))
             finish()
         }
-    }
-
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.fade_in, R.anim.slide_down)
     }
 }

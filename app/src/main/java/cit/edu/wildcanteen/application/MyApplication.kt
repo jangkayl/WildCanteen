@@ -32,8 +32,8 @@ class MyApplication : Application() {
         // LOAD USER DATA WHEN SESSION STARTS
         fun loadUserSession() {
             val defaultPic = R.drawable.hd_user
-            id = prefs.getString("USERNAME", "17-2068-369")
-            name = prefs.getString("NAME", "John Doe")
+            id = prefs.getString("ID", null)
+            name = prefs.getString("NAME", null)
             profilePic = prefs.getInt("PROFILE_PIC", defaultPic)
             password = prefs.getString("PASSWORD", null)
             isLoggedIn = prefs.getBoolean("IS_LOGGED_IN", false)
@@ -72,7 +72,6 @@ class MyApplication : Application() {
         }
 
         /////     FOR ORDERS
-
         fun saveOrders() {
             val json = Gson().toJson(orders)
             prefs.edit().putString("ORDERS", json).apply()
@@ -107,6 +106,7 @@ class MyApplication : Application() {
             }
 
             saveOrders()
+            loadOrders()
         }
 
         private fun printUserDetails() {

@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         val password: EditText = findViewById(R.id.password)
         val togglePassword: ImageView = findViewById(R.id.togglePassword)
 
-        val storedId = intent.getStringExtra("STUDENT_ID")
+        val storedId = intent.getStringExtra("ID")
         val storedPassword = intent.getStringExtra("PASSWORD")
 
         idNumber.setText(storedId)
@@ -44,6 +44,10 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val id = idNumber.text.toString().trim()
             val pass = password.text.toString().trim()
+
+            if (!validateInput(id, pass)) {
+                return@setOnClickListener
+            }
 
             if (id == storedId && pass == storedPassword) {
                 // SAVE LOGIN STATE
@@ -78,5 +82,23 @@ class LoginActivity : AppCompatActivity() {
 
             password.setSelection(password.text.length)
         }
+    }
+
+    private fun validateInput(id: String, pass: String): Boolean {
+        if (id.isEmpty()) {
+            showToast("Student ID number cannot be empty")
+            return false
+        }
+
+        if (pass.isEmpty()) {
+            showToast("Password cannot be empty")
+            return false
+        }
+
+        return true
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

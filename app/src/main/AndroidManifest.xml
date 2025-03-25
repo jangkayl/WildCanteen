@@ -28,8 +28,7 @@ xmlns:tools="http://schemas.android.com/tools">
     </activity>
     <activity
         android:name=".HomePageActivity"
-        android:exported="false">
-    </activity>
+        android:exported="false"/>
     <activity android:name=".HomePageOrderActivity" />
     <activity
         android:name=".LogoutActivity"
@@ -37,10 +36,12 @@ xmlns:tools="http://schemas.android.com/tools">
     <activity android:name=".DevelopersActivity" />
     <activity android:name=".FoodDetailsActivity" />
     <activity
-        android:name="cit.edu.wildcanteen.EditProfileActivity"
+        android:name=".EditProfileActivity"
         android:exported="false"
         />
-
+    <activity
+        android:name=".OrderPlaced"
+        android:exported="false"/>
 </application>
 
 </manifest>

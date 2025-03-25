@@ -6,7 +6,8 @@
     android:padding="10dp"
     android:elevation="20dp"
     android:layout_marginBottom="10dp"
-    android:background="#191111">
+    android:background="@drawable/rounded_drawable"
+    android:backgroundTint="#191111">
 
     <ImageView
         android:id="@+id/foodImage"

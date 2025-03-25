@@ -88,7 +88,7 @@ class OrdersFragment : Fragment() {
 
     private fun loadCartOrders() {
         cartOrders.clear()
-        cartOrders.addAll(MyApplication.orders)
+        cartOrders.addAll(MyApplication.orders.reversed())
         cartAdapter.notifyDataSetChanged()
     }
 

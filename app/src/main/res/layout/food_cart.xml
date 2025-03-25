@@ -160,7 +160,6 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Proceed Button (Placed on top inside FrameLayout) -->
     <Button
         android:id="@+id/proceedButton"
         android:layout_width="match_parent"
@@ -173,6 +172,6 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"
-        android:elevation="20dp"/> <!-- Ensures it's always on top -->
+        android:elevation="20dp"/>
 
 </FrameLayout>
