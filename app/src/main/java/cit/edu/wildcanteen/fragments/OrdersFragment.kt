@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.CartAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class OrdersFragment : Fragment() {
 
@@ -25,6 +27,10 @@ class OrdersFragment : Fragment() {
     private lateinit var chargeAmount: TextView
     private lateinit var discountAmount: TextView
     private lateinit var totalAmount: TextView
+    private lateinit var noOrderLayout: LinearLayout
+    private lateinit var noOrderText: TextView
+    private lateinit var exploreButton: Button
+
     private val cartOrders = mutableListOf<Order>()
     private lateinit var cartAdapter: CartAdapter
     private var isProceedButtonClicked = false
@@ -32,7 +38,7 @@ class OrdersFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.food_cart, container, false)
 
         cartRecyclerView = view.findViewById(R.id.cartRecyclerView)
@@ -42,61 +48,81 @@ class OrdersFragment : Fragment() {
         chargeAmount = view.findViewById(R.id.charge_amount)
         discountAmount = view.findViewById(R.id.discount_amount)
         totalAmount = view.findViewById(R.id.total_amount)
+        noOrderLayout = view.findViewById(R.id.no_order_layout)
+        noOrderText = view.findViewById(R.id.no_order_text)
+        exploreButton = view.findViewById(R.id.explore_button)
 
         cartAdapter = CartAdapter(requireContext(), cartOrders, ::removeOrderFromCart, ::updateTotalAmount)
         cartRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         cartRecyclerView.adapter = cartAdapter
 
         loadCartOrders()
-        updateTotalAmount()
 
-        proceedButton.setOnClickListener {
-            if (proceedContainer.visibility == View.GONE) {
-                isProceedButtonClicked = true
-                proceedContainer.visibility = View.VISIBLE
-                proceedContainer.alpha = 0f
-                proceedContainer.translationY = 100f
+        proceedButton.setOnClickListener { toggleProceedContainer() }
+        proceedContainer.setOnClickListener { hideProceedContainer() }
 
-                proceedContainer.animate()
-                    .alpha(1f)
-                    .translationY(0f)
-                    .setDuration(400)
-                    .withEndAction { isProceedButtonClicked = false }
-                    .start()
+        exploreButton.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.linear_container, HomeFragment())
+                .commit()
 
-                proceedButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(android.R.color.white))
-                proceedButton.setTextColor(resources.getColor(R.color.selectedColor))
-            } else {
-                isProceedButtonClicked = false
-            }
-        }
-
-        proceedContainer.setOnClickListener {
-            proceedContainer.animate()
-                .alpha(0f)
-                .translationY(100f)
-                .setDuration(400)
-                .withEndAction { proceedContainer.visibility = View.GONE }
-                .start()
-
-            proceedButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.selectedColor))
-            proceedButton.setTextColor(resources.getColor(android.R.color.white))
+            val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+            bottomNav.selectedItemId = R.id.nav_home
         }
 
         return view
     }
 
+    private fun toggleProceedContainer() {
+        if (proceedContainer.visibility == View.GONE) {
+            isProceedButtonClicked = true
+            proceedContainer.visibility = View.VISIBLE
+            proceedContainer.alpha = 0f
+            proceedContainer.translationY = 100f
+
+            proceedContainer.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(400)
+                .withEndAction { isProceedButtonClicked = false }
+                .start()
+
+            proceedButton.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), android.R.color.white))
+            proceedButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.selectedColor))
+        }
+    }
+
+    private fun hideProceedContainer() {
+        proceedContainer.animate()
+            .alpha(0f)
+            .translationY(100f)
+            .setDuration(400)
+            .withEndAction { proceedContainer.visibility = View.GONE }
+            .start()
+
+        proceedButton.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.selectedColor))
+        proceedButton.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+    }
+
     private fun loadCartOrders() {
         cartOrders.clear()
         cartOrders.addAll(MyApplication.orders.reversed())
+
+        val isCartEmpty = cartOrders.isEmpty()
+
+        cartRecyclerView.visibility = if (isCartEmpty) View.GONE else View.VISIBLE
+        noOrderLayout.visibility = if (isCartEmpty) View.VISIBLE else View.GONE
+        noOrderText.visibility = if (isCartEmpty) View.VISIBLE else View.GONE
+        exploreButton.visibility = if (isCartEmpty) View.VISIBLE else View.GONE
+        proceedButton.visibility = if (isCartEmpty) View.GONE else View.VISIBLE
+
         cartAdapter.notifyDataSetChanged()
     }
 
     private fun removeOrderFromCart(order: Order) {
-        cartOrders.remove(order)
         MyApplication.orders.remove(order)
         MyApplication.saveOrders()
-        cartAdapter.notifyDataSetChanged()
+        loadCartOrders()
         updateTotalAmount()
     }
 
@@ -109,5 +135,7 @@ class OrdersFragment : Fragment() {
         chargeAmount.text = String.format("₱%.2f", charge)
         discountAmount.text = String.format("-₱%.2f", discount)
         totalAmount.text = String.format("₱%.2f", subtotal + charge - discount)
+
+        if (MyApplication.orders.isEmpty()) loadCartOrders()
     }
 }

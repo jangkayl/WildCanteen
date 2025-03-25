@@ -106,7 +106,6 @@ class MyApplication : Application() {
             }
 
             saveOrders()
-            loadOrders()
         }
 
         private fun printUserDetails() {
