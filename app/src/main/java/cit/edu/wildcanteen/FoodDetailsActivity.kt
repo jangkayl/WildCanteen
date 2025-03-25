@@ -73,7 +73,7 @@ class FoodDetailsActivity : Activity() {
                 timestamp = System.currentTimeMillis()
             )
 
-            Toast.makeText(this, "$foodName added to cart", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "$foodName added to cart", Toast.LENGTH_SHORT).show()
             MyApplication.addOrder(order)
 
             startActivity(Intent(this, OrderPlaced::class.java))

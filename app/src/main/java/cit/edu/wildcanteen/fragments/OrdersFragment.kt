@@ -28,7 +28,6 @@ class OrdersFragment : Fragment() {
     private lateinit var discountAmount: TextView
     private lateinit var totalAmount: TextView
     private lateinit var noOrderLayout: LinearLayout
-    private lateinit var noOrderText: TextView
     private lateinit var exploreButton: Button
 
     private val cartOrders = mutableListOf<Order>()
@@ -49,7 +48,6 @@ class OrdersFragment : Fragment() {
         discountAmount = view.findViewById(R.id.discount_amount)
         totalAmount = view.findViewById(R.id.total_amount)
         noOrderLayout = view.findViewById(R.id.no_order_layout)
-        noOrderText = view.findViewById(R.id.no_order_text)
         exploreButton = view.findViewById(R.id.explore_button)
 
         cartAdapter = CartAdapter(requireContext(), cartOrders, ::removeOrderFromCart, ::updateTotalAmount)
@@ -57,6 +55,7 @@ class OrdersFragment : Fragment() {
         cartRecyclerView.adapter = cartAdapter
 
         loadCartOrders()
+        updateTotalAmount()
 
         proceedButton.setOnClickListener { toggleProceedContainer() }
         proceedContainer.setOnClickListener { hideProceedContainer() }
@@ -112,16 +111,17 @@ class OrdersFragment : Fragment() {
 
         cartRecyclerView.visibility = if (isCartEmpty) View.GONE else View.VISIBLE
         noOrderLayout.visibility = if (isCartEmpty) View.VISIBLE else View.GONE
-        noOrderText.visibility = if (isCartEmpty) View.VISIBLE else View.GONE
-        exploreButton.visibility = if (isCartEmpty) View.VISIBLE else View.GONE
         proceedButton.visibility = if (isCartEmpty) View.GONE else View.VISIBLE
+        proceedContainer.visibility = if (isCartEmpty) View.GONE else proceedContainer.visibility
 
         cartAdapter.notifyDataSetChanged()
     }
 
+
     private fun removeOrderFromCart(order: Order) {
         MyApplication.orders.remove(order)
         MyApplication.saveOrders()
+        cartAdapter.notifyDataSetChanged()
         loadCartOrders()
         updateTotalAmount()
     }
@@ -137,5 +137,13 @@ class OrdersFragment : Fragment() {
         totalAmount.text = String.format("₱%.2f", subtotal + charge - discount)
 
         if (MyApplication.orders.isEmpty()) loadCartOrders()
+        cartAdapter.notifyDataSetChanged()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadCartOrders()
+        updateTotalAmount()
+        cartAdapter.notifyDataSetChanged()
     }
 }

@@ -13,6 +13,7 @@ import kotlin.math.ceil
 class HomePageOrderActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overridePendingTransition(R.anim.slide_left, R.anim.fade_out)
         setContentView(R.layout.homepage_main)
         setupRecyclerView()
         setupCategories()
@@ -66,5 +67,10 @@ class HomePageOrderActivity : Activity() {
                 }
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.fade_in, R.anim.slide_right)
     }
 }
