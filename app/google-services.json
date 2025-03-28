@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "946388081165",
-    "project_id": "wildcanteen-f37cb",
-    "storage_bucket": "wildcanteen-f37cb.firebasestorage.app"
+    "project_number": "840455441629",
+    "project_id": "wildcanteen-4e1c7",
+    "storage_bucket": "wildcanteen-4e1c7.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:946388081165:android:d1d18f34d7815bbbb09344",
+        "mobilesdk_app_id": "1:840455441629:android:307a3bca62e594bf7f9f34",
         "android_client_info": {
           "package_name": "cit.edu.wildcanteen"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA7PD7MP9TnruYbR-Yy5CPogL9qmQYTbp4"
+          "current_key": "AIzaSyAEYWkWxspAKHYLcpHa5AqNjAZmuyX1RWw"
         }
       ],
       "services": {

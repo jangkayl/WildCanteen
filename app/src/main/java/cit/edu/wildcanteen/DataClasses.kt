@@ -22,3 +22,11 @@ data class Order(
     var totalAmount: Double,
     val timestamp: Long
 )
+
+data class User(
+    val studentId: String,
+    val name: String,
+    val password: String,
+    val userType: String,
+    val balance: Double
+)

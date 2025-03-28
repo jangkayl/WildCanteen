@@ -1,28 +1,22 @@
 package cit.edu.wildcanteen
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import cit.edu.wildcanteen.application.MyApplication
+import java.security.MessageDigest
+import android.util.Base64
 
 class LoginActivity : AppCompatActivity() {
+
+    private val firebaseRepository = FirebaseRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // CHECK USER LOGGED IN USING MyApplication
-        if (MyApplication.isLoggedIn) {
-            startActivity(Intent(this, HomePageActivity::class.java))
-            finish()
-            return
-        }
+        MyApplication.loadUserSession(this)
 
         setContentView(R.layout.login)
 
@@ -35,38 +29,6 @@ class LoginActivity : AppCompatActivity() {
         val idNumber: EditText = findViewById(R.id.idNumber)
         val password: EditText = findViewById(R.id.password)
         val togglePassword: ImageView = findViewById(R.id.togglePassword)
-
-        val storedId = intent.getStringExtra("ID")
-        val storedPassword = intent.getStringExtra("PASSWORD")
-
-        idNumber.setText(storedId)
-
-        loginButton.setOnClickListener {
-            val id = idNumber.text.toString().trim()
-            val pass = password.text.toString().trim()
-
-            if (!validateInput(id, pass)) {
-                return@setOnClickListener
-            }
-
-            if (id == storedId && pass == storedPassword) {
-                // SAVE LOGIN STATE
-                MyApplication.isLoggedIn = true
-                MyApplication.saveUserDetails(
-                    id,
-                    MyApplication.name ?: "",
-                    MyApplication.profilePic ?: R.drawable.hd_user,
-                    pass
-                )
-
-                val intent = Intent(this, HomePageActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
-            }
-        }
 
         var isPasswordVisible = false
         togglePassword.setOnClickListener {
@@ -82,6 +44,43 @@ class LoginActivity : AppCompatActivity() {
 
             password.setSelection(password.text.length)
         }
+
+        loginButton.setOnClickListener {
+            val id = idNumber.text.toString().trim()
+            val pass = password.text.toString().trim()
+
+            if (!validateInput(id, pass)) {
+                return@setOnClickListener
+            }
+
+            authenticateUser(id, pass)
+        }
+    }
+
+    private fun authenticateUser(userId: String, password: String) {
+        firebaseRepository.getUser(userId, { user ->
+            if (user != null) {
+                val hashedInputPassword = hashPassword(password)
+
+                if (hashedInputPassword == user.password) {
+                    MyApplication.loadUserDetails(user)
+                    startActivity(Intent(this, HomePageActivity::class.java))
+                    finish()
+                } else {
+                    showToast("Invalid credentials")
+                }
+            } else {
+                showToast("User not found")
+            }
+        }, { exception ->
+            showToast("Error: ${exception.message}")
+        })
+    }
+
+    private fun hashPassword(password: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hash = digest.digest(password.toByteArray())
+        return Base64.encodeToString(hash, Base64.NO_WRAP)
     }
 
     private fun validateInput(id: String, pass: String): Boolean {

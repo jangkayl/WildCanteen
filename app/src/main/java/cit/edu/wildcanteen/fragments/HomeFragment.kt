@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cit.edu.wildcanteen.FirebaseRepository
 import cit.edu.wildcanteen.FoodRepository
 import cit.edu.wildcanteen.HomePageOrderActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FoodAdapter
+import cit.edu.wildcanteen.application.MyApplication
 
 class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -23,6 +26,12 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val makeOrderButton = view.findViewById<Button>(R.id.homepageOrder)
+        val usernameTextView = view.findViewById<TextView>(R.id.username)
+        val userIdTextView = view.findViewById<TextView>(R.id.user_id)
+
+        usernameTextView.text = MyApplication.name
+        userIdTextView.text = MyApplication.stringStudentId
+
         makeOrderButton.setOnClickListener {
             startActivity(Intent(requireContext(), HomePageOrderActivity::class.java))
         }

@@ -2,15 +2,22 @@ package cit.edu.wildcanteen.application
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
+import cit.edu.wildcanteen.FirebaseRepository
 import cit.edu.wildcanteen.FoodRepository
+import cit.edu.wildcanteen.HomePageActivity
 import cit.edu.wildcanteen.Order
-import cit.edu.wildcanteen.R
+import cit.edu.wildcanteen.User
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class MyApplication : Application() {
     companion object {
+        var isLoggedIn: Boolean = false
+        private var currentUser: User? = null
+
         lateinit var appContext: Context
             private set
 
@@ -19,41 +26,56 @@ class MyApplication : Application() {
             appContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         }
 
-        // GLOBAL USER DETAILS
-        var id: String? = null
+        // Global user details
+        var studentId: String? = null
+        var stringStudentId: String? = null
         var name: String? = null
         var profilePic: Int? = null
-        var isLoggedIn: Boolean = false
         var password: String? = null
+        var userType: String? = null
         var balance: Double? = null
         var orders: MutableList<Order> = mutableListOf()
 
+        // Load user session when app starts
+        fun loadUserSession(context: Context) {
+            val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            val storedUserId = sharedPreferences.getString("ID", null)
 
-        // LOAD USER DATA WHEN SESSION STARTS
-        fun loadUserSession() {
-            val defaultPic = R.drawable.hd_user
-            id = prefs.getString("ID", null)
-            name = prefs.getString("NAME", null)
-            profilePic = prefs.getInt("PROFILE_PIC", defaultPic)
-            password = prefs.getString("PASSWORD", null)
-            isLoggedIn = prefs.getBoolean("IS_LOGGED_IN", false)
+            if (storedUserId != null) {
+                FirebaseRepository().getUser(storedUserId, { user ->
+                    if (user != null) {
+                        loadUserDetails(user)
+
+                        // Redirect to HomePage immediately
+                        val intent = Intent(context, HomePageActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
+                        context.startActivity(intent)
+                    }
+                }, {
+                    clearUserSession()
+                })
+            }
 
             printUserDetails()
         }
 
-        // SAVE USER DATA
-        fun saveUserDetails(id: String, name: String, profilePic: Int, password: String) {
-            this.id = id
-            this.name = name;
-            this.profilePic = profilePic
-            this.password = password
+
+        // Load user details
+        fun loadUserDetails(user: User) {
+            studentId = user.studentId
+            stringStudentId = getFormattedStudentId()
+            name = user.name
+            password = user.password
+            userType = user.userType
+            balance = user.balance
             isLoggedIn = true
+            currentUser = user
 
             prefs.edit().apply {
-                putString("ID", id)
-                putString("NAME", name)
-                putInt("PROFILE_PIC", profilePic)
-                putString("PASSWORD", password)
+                putString("ID", user.studentId)
+                putString("NAME", user.name)
+                putString("PASSWORD", user.password)
                 putBoolean("IS_LOGGED_IN", true)
                 apply()
             }
@@ -61,15 +83,30 @@ class MyApplication : Application() {
             printUserDetails()
         }
 
-        // CLEAR SESSION WHEN LOGOUT
+        // Clear user session
         fun clearUserSession() {
+            currentUser = null
             isLoggedIn = false
-            prefs.edit().apply {
-                putBoolean("IS_LOGGED_IN", false)
-                apply()
-            }
+            studentId = null
+            name = null
+            profilePic = null
+            password = null
+
+            prefs.edit().clear().apply()
             printUserDetails()
         }
+
+        fun getFormattedStudentId(): String? {
+            val cleanedId = studentId?.filter { it.isDigit() }
+
+            return if (cleanedId?.length == 9) {
+                listOf(cleanedId.substring(0, 2), cleanedId.substring(2, 6), cleanedId.substring(6, 9))
+                    .joinToString("-")
+            } else {
+                null
+            }
+        }
+
 
         /////     FOR ORDERS
         fun saveOrders() {
@@ -110,18 +147,14 @@ class MyApplication : Application() {
         }
 
         private fun printUserDetails() {
-            println("ID: $id")
-            println("Name: $name")
-            println("ProfilePic: $profilePic")
-            println("Password: $password")
-            println("Is Logged In: $isLoggedIn")
+            Log.e("User details", currentUser.toString());
         }
     }
 
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
-        loadUserSession()
+        loadUserSession(this)
         loadOrders()
         printUserDetails()
     }

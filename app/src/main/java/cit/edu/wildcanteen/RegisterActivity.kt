@@ -9,9 +9,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import cit.edu.wildcanteen.application.MyApplication
 
 class RegisterActivity : Activity() {
+    private val firebaseRepository = FirebaseRepository()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.slide_left, R.anim.fade_out)
@@ -22,29 +23,6 @@ class RegisterActivity : Activity() {
         val confirmPasswordEditText: EditText = findViewById(R.id.confirmPassword)
         val createAccountButton: Button = findViewById(R.id.create_account_button)
         val loginButton: TextView = findViewById(R.id.login_button)
-
-        createAccountButton.setOnClickListener {
-            val studentId = studentIdEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
-            val confirmPassword = confirmPasswordEditText.text.toString().trim()
-
-            if (!validateInput(studentId, password, confirmPassword)) {
-                return@setOnClickListener
-            }
-
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.putExtra("ID", studentId)
-            intent.putExtra("PASSWORD", password)
-
-            Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_LONG).show()
-            startActivity(intent)
-            finish()
-        }
-
-        loginButton.setOnClickListener {
-            finish()
-        }
-
         val togglePassword: ImageView = findViewById(R.id.togglePassword)
         val toggleConfirmPassword: ImageView = findViewById(R.id.toggleConfirmPassword)
 
@@ -60,6 +38,42 @@ class RegisterActivity : Activity() {
             isConfirmPasswordVisible = !isConfirmPasswordVisible
             togglePasswordVisibility(confirmPasswordEditText, toggleConfirmPassword, isConfirmPasswordVisible)
         }
+
+        loginButton.setOnClickListener {
+            finish()
+        }
+
+        createAccountButton.setOnClickListener {
+            val studentId = studentIdEditText.text.toString().trim()
+            val password = passwordEditText.text.toString().trim()
+            val confirmPassword = confirmPasswordEditText.text.toString().trim()
+
+            if (!validateInput(studentId, password, confirmPassword)) {
+                return@setOnClickListener
+            }
+
+            firebaseRepository.getUser(studentId, { existingUser ->
+                if (existingUser != null) {
+                    showToast("Student ID is already registered")
+                } else {
+                    registerUser(studentId, password)
+                }
+            }, { error ->
+                showToast("Error: ${error.message}")
+            })
+        }
+    }
+
+    private fun registerUser(studentId: String, password: String) {
+        val user = User(studentId, "John Doe", password, "student", 100.0)
+
+        firebaseRepository.addUser(user, {
+            showToast("Registered Successfully!")
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }, { error ->
+            showToast("Error: ${error.message}")
+        })
     }
 
     private fun validateInput(studentId: String, password: String, confirmPassword: String): Boolean {
@@ -68,23 +82,13 @@ class RegisterActivity : Activity() {
             return false
         }
 
-        if (!studentId.matches(Regex("\\d{9,}"))) { // Ensures the ID is at least 6 digits long
+        if (!studentId.matches(Regex("\\d{9,}"))) {
             showToast("Invalid Student ID. Must be at least 9 digits")
             return false
         }
 
-        if (password.isEmpty()) {
-            showToast("Password cannot be empty")
-            return false
-        }
-
         if (password.length < 6) {
-            showToast("Password must be at least 6 characters long")
-            return false
-        }
-
-        if (confirmPassword.isEmpty()) {
-            showToast("Confirm Password cannot be empty")
+            showToast("Password must be at least 6 characters")
             return false
         }
 
@@ -96,9 +100,8 @@ class RegisterActivity : Activity() {
         return true
     }
 
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.fade_in, R.anim.slide_right)
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun togglePasswordVisibility(editText: EditText, toggleIcon: ImageView, isVisible: Boolean) {
@@ -112,7 +115,8 @@ class RegisterActivity : Activity() {
         editText.setSelection(editText.text.length)
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.fade_in, R.anim.slide_right)
     }
 }
