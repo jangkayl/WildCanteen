@@ -69,7 +69,7 @@ class ProfileFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         username.text = MyApplication.name
-        userId.text = MyApplication.studentId
+        userId.text = MyApplication.stringStudentId
         if (!MyApplication.profileImageUrl.isNullOrEmpty()) {
             Log.e("ProfileImage", MyApplication.profileImageUrl!!)
             Glide.with(this)

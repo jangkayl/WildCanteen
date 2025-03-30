@@ -63,7 +63,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View) {
-        // Initialize adapter with foodList
         adapter = FoodAdapter(MyApplication.popularFoodItems.toMutableList(), requireContext(), R.layout.food_item)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.popularRecyclerView)
@@ -94,11 +93,14 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val updatedFoodList = MyApplication.popularFoodItems
+        MyApplication.loadFoodItems {
+            val updatedFoodList = MyApplication.popularFoodItems.toMutableList()
 
-        if (updatedFoodList != foodList) {
-            foodList = updatedFoodList
-            adapter.updateFoodList(foodList)
+            if (updatedFoodList != foodList) {
+                foodList = updatedFoodList
+                adapter.updateFoodList(foodList)
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 }

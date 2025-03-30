@@ -161,43 +161,65 @@ class MyApplication : Application() {
         }
 
 
-        ////  FOR FOOD ITEMS
         fun saveFoodItems(items: List<FoodItem>) {
+            prefs.edit().remove("FOOD_ITEMS").apply()
+
             foodItems = items.toMutableList()
+
             val json = Gson().toJson(foodItems)
             prefs.edit().putString("FOOD_ITEMS", json).apply()
 
             popularFoodItems = foodItems.filter { it.isPopular }.toMutableList()
-            loadFoodItems()
 
-            Log.d("PopularFoodItems", "Popular Food Items: ${popularFoodItems}")
+            Log.d("PopularFoodItems", "Updated Popular Food Items: ${popularFoodItems.size}")
         }
 
-        fun loadFoodItems() {
+
+        fun loadFoodItems(onComplete: (() -> Unit)? = null) {
+            FirebaseRepository().getFoodItems({ foodList ->
+                if (foodList.isNotEmpty()) {
+                    foodItems.apply {
+                        clear()
+                        addAll(foodList)
+                    }
+
+                    popularFoodItems.apply {
+                        clear()
+                        addAll(foodList.filter { it.isPopular })
+                    }
+
+                    saveFoodItems(foodList)
+
+                    Log.d("FirebaseFood", "Food items loaded: ${foodItems.size}")
+                    Log.d("PopularFoodItems", "Popular food items updated: ${popularFoodItems.size}")
+                } else {
+                    Log.d("FirebaseFood", "No food items found in Firebase. Loading cached food items.")
+                    loadFromCache()
+                }
+
+                onComplete?.invoke()
+            }, { e ->
+                Log.e("FirebaseFood", "Failed to load food items from Firebase", e)
+                loadFromCache()
+                onComplete?.invoke()
+            })
+        }
+
+
+        private fun loadFromCache() {
             val json = prefs.getString("FOOD_ITEMS", null)
             if (!json.isNullOrEmpty()) {
                 try {
                     val type = object : TypeToken<MutableList<FoodItem>>() {}.type
                     foodItems = Gson().fromJson(json, type) ?: mutableListOf()
-
                     popularFoodItems = foodItems.filter { it.isPopular }.toMutableList()
-
-                    Log.d("PopularFoodItems", "Popular Food Items after loading: ${popularFoodItems}")
+                    Log.d("PopularFoodItems", "Loaded food items from cache: ${foodItems.size}")
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("PopularFoodItems", "Error loading cached food items", e)
                     foodItems = mutableListOf()
                     popularFoodItems = mutableListOf()
                 }
             }
-
-            FirebaseRepository().getFoodItems({ foodList ->
-                saveFoodItems(foodList)
-                Log.d("FirebaseFood", "Food items loaded successfully")
-
-                Log.d("PopularFoodItems", "Popular Food Items after Firebase load: ${popularFoodItems}")
-            }, { e ->
-                Log.e("FirebaseFood", "Failed to load food items", e)
-            })
         }
 
         private fun printUserDetails() {

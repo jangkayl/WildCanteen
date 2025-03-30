@@ -5,13 +5,13 @@ import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.CloudinaryRepository
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import java.io.File
@@ -58,18 +58,6 @@ class AddFoodItemActivity : AppCompatActivity() {
             selectImageFromGallery()
         }
 
-//        FoodRepository.uploadAllFoodItems(
-//            FoodRepository.getPopularFoodList(),
-//            onSuccess = { Log.d("Upload", "Food items uploaded successfully!") },
-//            onError = { e -> Log.e("Upload", "Failed to upload food items", e) }
-//        )
-//
-//        FoodRepository.uploadAllFoodItems(
-//            FoodRepository.getAllFoodList(),
-//            onSuccess = { Log.d("Upload", "Food items uploaded successfully!") },
-//            onError = { e -> Log.e("Upload", "Failed to upload food items", e) }
-//        )
-//
         btnAddFood.setOnClickListener {
             if (selectedImageUri != null) {
                 uploadImageToCloudinary()

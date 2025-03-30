@@ -53,14 +53,4 @@ class CloudinaryRepository(private val context: Context) {
             }
         }
     }
-
-    // Convert drawable resource to a temporary file
-    fun getTempFileFromDrawable(drawableId: Int): File {
-        val bitmap = BitmapFactory.decodeResource(context.resources, drawableId)
-        val tempFile = File(context.cacheDir, "temp_image.png")
-        val outputStream = FileOutputStream(tempFile)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        outputStream.close()
-        return tempFile
-    }
 }

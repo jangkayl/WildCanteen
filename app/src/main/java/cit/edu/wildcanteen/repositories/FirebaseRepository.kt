@@ -128,11 +128,11 @@ class FirebaseRepository {
 
         batch.commit()
             .addOnSuccessListener {
-                Log.d("saveOrders", "Orders updated and removed successfully.")
+                Log.d("FirebaseSaveOrders", "Orders updated and removed successfully.")
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                Log.e("saveOrders", "Failed to save and remove orders", e)
+                Log.e("FirebaseSaveOrders", "Failed to save and remove orders", e)
                 onFailure(e)
             }
     }
