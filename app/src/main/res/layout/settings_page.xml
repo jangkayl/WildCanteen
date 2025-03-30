@@ -26,11 +26,13 @@
         android:paddingVertical="20dp">
 
         <ImageView
+            android:id="@+id/profile_image"
             android:layout_width="156dp"
             android:layout_height="156dp"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="#55FF00"
             android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
             android:background="@drawable/profile_border"
             android:padding="5dp"
             android:src="@drawable/hd_user"/>

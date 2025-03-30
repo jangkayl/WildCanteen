@@ -1,10 +1,13 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.repositories
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import java.security.MessageDigest
 import android.util.Base64
 import android.util.Log
+import cit.edu.wildcanteen.FoodItem
+import cit.edu.wildcanteen.Order
+import cit.edu.wildcanteen.User
 
 class FirebaseRepository {
     private val db = FirebaseFirestore.getInstance()
@@ -95,6 +98,7 @@ class FirebaseRepository {
 
         val userWithHashedPassword = User(
             studentId = user.studentId,
+            profileImageUrl = user.profileImageUrl,
             name = user.name,
             password = hashedPassword,
             userType = user.userType,
@@ -115,6 +119,7 @@ class FirebaseRepository {
                         User(
                             studentId = userId,
                             name = data["name"] as? String ?: "Unknown",
+                            profileImageUrl = data["profileImageUrl"] as? String ?: "Unkown",
                             password = data["password"] as? String ?: "",
                             userType = data["userType"] as? String ?: "",
                             balance = (data["balance"] as? Number)?.toDouble() ?: 0.0

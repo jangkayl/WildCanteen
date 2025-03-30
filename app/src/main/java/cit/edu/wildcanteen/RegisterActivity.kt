@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 
 class RegisterActivity : Activity() {
     private val firebaseRepository = FirebaseRepository()
@@ -65,7 +66,7 @@ class RegisterActivity : Activity() {
     }
 
     private fun registerUser(studentId: String, password: String) {
-        val user = User(studentId, "John Doe", password, "student", 100.0)
+        val user = User(studentId, "", "John Doe", password, "student", 100.0)
 
         firebaseRepository.addUser(user, {
             showToast("Registered Successfully!")

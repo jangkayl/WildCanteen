@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import cit.edu.wildcanteen.application.MyApplication
 import java.security.MessageDigest
 import android.util.Base64
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 
 class LoginActivity : AppCompatActivity() {
 
@@ -16,7 +17,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MyApplication.loadUserSession(this)
+        if(MyApplication.isLoggedIn){
+            finish()
+        }
 
         setContentView(R.layout.login)
 

@@ -26,6 +26,7 @@ data class Order(
 
 data class User(
     val studentId: String,
+    val profileImageUrl: String,
     val name: String,
     val password: String,
     val userType: String,

@@ -4,13 +4,19 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
-import cit.edu.wildcanteen.FirebaseRepository
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 import cit.edu.wildcanteen.HomePageActivity
 import cit.edu.wildcanteen.Order
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.User
+import cit.edu.wildcanteen.repositories.CloudinaryRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.File
+import java.io.FileOutputStream
 
 class MyApplication : Application() {
     companion object {
@@ -29,7 +35,7 @@ class MyApplication : Application() {
         var studentId: String? = null
         var stringStudentId: String? = null
         var name: String? = null
-        var profilePic: Int? = null
+        var profileImageUrl: String? = null
         var password: String? = null
         var userType: String? = null
         var balance: Double? = null
@@ -61,6 +67,7 @@ class MyApplication : Application() {
             studentId = user.studentId
             stringStudentId = getFormattedStudentId()
             name = user.name
+            profileImageUrl = user.profileImageUrl
             password = user.password
             userType = user.userType
             balance = user.balance
@@ -84,7 +91,7 @@ class MyApplication : Application() {
             isLoggedIn = false
             studentId = null
             name = null
-            profilePic = null
+            profileImageUrl = null
             password = null
             orders.clear()
 
@@ -162,10 +169,26 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         appContext = applicationContext
+
         loadUserSession(this)
         loadOrders()
         printUserDetails()
+    }
+
+    private fun saveDrawableToFile(drawableResId: Int, fileName: String): File? {
+        return try {
+            val bitmap = BitmapFactory.decodeResource(resources, drawableResId)
+            val file = File(cacheDir, fileName)
+
+            FileOutputStream(file).use { fos ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            }
+
+            file
+        } catch (e: Exception) {
+            Log.e("FileSave", "Failed to save drawable to file", e)
+            null
+        }
     }
 }

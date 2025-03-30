@@ -2,20 +2,23 @@ package cit.edu.wildcanteen.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cit.edu.wildcanteen.FirebaseRepository
-import cit.edu.wildcanteen.FoodRepository
+import cit.edu.wildcanteen.repositories.FoodRepository
 import cit.edu.wildcanteen.HomePageOrderActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FoodAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -28,9 +31,20 @@ class HomeFragment : Fragment() {
         val makeOrderButton = view.findViewById<Button>(R.id.homepageOrder)
         val usernameTextView = view.findViewById<TextView>(R.id.username)
         val userIdTextView = view.findViewById<TextView>(R.id.user_id)
+        val profileImage = view.findViewById<ImageView>(R.id.user_profile)
 
         usernameTextView.text = MyApplication.name
         userIdTextView.text = MyApplication.stringStudentId
+
+        if (!MyApplication.profileImageUrl.isNullOrEmpty()) {
+            Log.e("ProfileImage", MyApplication.profileImageUrl!!)
+            Glide.with(this)
+                .load(MyApplication.profileImageUrl)
+                .apply(RequestOptions.circleCropTransform())
+                .placeholder(R.drawable.hd_user)
+                .error(R.drawable.hd_user)
+                .into(profileImage)
+        }
 
         makeOrderButton.setOnClickListener {
             startActivity(Intent(requireContext(), HomePageOrderActivity::class.java))

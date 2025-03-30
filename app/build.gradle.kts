@@ -1,9 +1,17 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.gms.google-services")
     kotlin("plugin.serialization") version "1.9.0"
 }
+
+// Load API Keys from local.properties
+val localProperties = gradleLocalProperties(rootDir, providers)
+val cloudinaryApiKey = localProperties.getProperty("CLOUDINARY_API_KEY", "")
+val cloudinarySecretKey = localProperties.getProperty("CLOUDINARY_SECRET_KEY", "")
+val cloudinaryName = localProperties.getProperty("CLOUDINARY_NAME", "")
 
 android {
     namespace = "cit.edu.wildcanteen"
@@ -17,9 +25,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+
+        // Store API keys in BuildConfig for secure access
+        buildConfigField("String", "CLOUDINARY_API_KEY", "\"$cloudinaryApiKey\"")
+        buildConfigField("String", "CLOUDINARY_SECRET_KEY", "\"$cloudinarySecretKey\"")
+        buildConfigField("String", "CLOUDINARY_NAME", "\"$cloudinaryName\"")
     }
 
     buildTypes {
@@ -40,6 +50,8 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -58,6 +70,13 @@ dependencies {
     // Glide Dependencies
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Cloudinary Dependencies
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.navigation:navigation-fragment:2.7.7")
+    implementation("androidx.navigation:navigation-ui:2.7.7")
 
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
