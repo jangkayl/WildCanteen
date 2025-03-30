@@ -120,7 +120,7 @@ class OrdersFragment : Fragment() {
 
     private fun removeOrderFromCart(order: Order) {
         MyApplication.orders.remove(order)
-        MyApplication.saveOrders()
+        MyApplication.saveOrders(emptyList())
         cartAdapter.notifyDataSetChanged()
         loadCartOrders()
         updateTotalAmount()

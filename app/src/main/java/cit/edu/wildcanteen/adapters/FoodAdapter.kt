@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.FoodDetailsActivity
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.R
+import com.bumptech.glide.Glide
 
 class FoodAdapter(
     private val foodList: List<FoodItem>,
@@ -33,7 +34,7 @@ class FoodAdapter(
                     putExtra("FOOD_PRICE", food.price.toString())
                     putExtra("FOOD_RATING", food.rating.toString())
                     putExtra("FOOD_DESCRIPTION", food.description)
-                    putExtra("FOOD_IMAGE", food.imageResId)
+                    putExtra("FOOD_IMAGE", food.imageUrl)
                 }
                 context.startActivity(intent)
             }
@@ -47,7 +48,11 @@ class FoodAdapter(
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
         val food = foodList[position]
-        holder.foodImage.setImageResource(food.imageResId)
+
+        Glide.with(holder.itemView.context)
+            .load(food.imageUrl)
+            .into(holder.foodImage)
+
         holder.foodPrice.text = String.format("₱%.2f", food.price)
         holder.foodRating.text = "⭐ ${food.rating}"
 

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import cit.edu.wildcanteen.FirebaseRepository
-import cit.edu.wildcanteen.FoodRepository
 import cit.edu.wildcanteen.HomePageActivity
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.User
@@ -36,7 +35,6 @@ class MyApplication : Application() {
         var balance: Double? = null
         var orders: MutableList<Order> = mutableListOf()
 
-        // Load user session when app starts
         fun loadUserSession(context: Context) {
             val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
             val storedUserId = sharedPreferences.getString("ID", null)
@@ -45,8 +43,6 @@ class MyApplication : Application() {
                 FirebaseRepository().getUser(storedUserId, { user ->
                     if (user != null) {
                         loadUserDetails(user)
-
-                        // Redirect to HomePage immediately
                         val intent = Intent(context, HomePageActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
@@ -56,7 +52,6 @@ class MyApplication : Application() {
                     clearUserSession()
                 })
             }
-
             printUserDetails()
         }
 
@@ -79,7 +74,7 @@ class MyApplication : Application() {
                 putBoolean("IS_LOGGED_IN", true)
                 apply()
             }
-
+            loadOrders()
             printUserDetails()
         }
 
@@ -91,6 +86,7 @@ class MyApplication : Application() {
             name = null
             profilePic = null
             password = null
+            orders.clear()
 
             prefs.edit().clear().apply()
             printUserDetails()
@@ -107,14 +103,33 @@ class MyApplication : Application() {
             }
         }
 
-
         /////     FOR ORDERS
-        fun saveOrders() {
+        fun saveOrders(ordersToRemove: List<Order>) {
             val json = Gson().toJson(orders)
             prefs.edit().putString("ORDERS", json).apply()
+
+            FirebaseRepository().saveOrders(orders, ordersToRemove, {
+                Log.d("FirebaseOrders", "Orders saved successfully.")
+            }, { e ->
+                Log.e("FirebaseOrders", "Error saving orders: ${e.message}")
+            })
         }
 
         private fun loadOrders() {
+            if (studentId.isNullOrEmpty()) {
+                Log.e("FirebaseOrders", "Cannot load orders: $studentId is null or empty")
+                return
+            }
+            if (studentId != null) {
+                FirebaseRepository().getOrders(studentId!!, { ordersFromFirebase ->
+                    orders = ordersFromFirebase.toMutableList()
+                    Log.d("FirebaseOrders", "All orders from $studentId are now loaded successfully")
+                }, { exception ->
+                    Log.e("FirebaseOrders", "Failed to load orders for $studentId", exception)
+                    orders = mutableListOf()
+                })
+            }
+
             val json = prefs.getString("ORDERS", null)
             if (!json.isNullOrEmpty()) {
                 try {
@@ -124,11 +139,6 @@ class MyApplication : Application() {
                     e.printStackTrace()
                     orders = mutableListOf()
                 }
-            }
-
-            if (orders.isEmpty()) {
-                orders = FoodRepository.getOrderLists().toMutableList()
-                saveOrders()
             }
         }
 
@@ -142,8 +152,7 @@ class MyApplication : Application() {
                 orders.add(order)
             }
 
-            saveOrders()
-            loadOrders()
+            saveOrders(emptyList())
         }
 
         private fun printUserDetails() {
@@ -153,6 +162,7 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         appContext = applicationContext
         loadUserSession(this)
         loadOrders()

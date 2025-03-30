@@ -4,11 +4,91 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import java.security.MessageDigest
 import android.util.Base64
-
+import android.util.Log
 
 class FirebaseRepository {
     private val db = FirebaseFirestore.getInstance()
     private val usersCollection = db.collection("users")
+    private val ordersCollection = db.collection("orders")
+
+    fun getOrders(userId: String, onSuccess: (List<Order>) -> Unit, onFailure: (Exception) -> Unit) {
+        Log.d("FirebaseOrders", "Fetching orders for user: $userId")
+
+        ordersCollection.whereEqualTo("userId", userId).get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Log.d("FirebaseOrders", "No orders found for user: $userId")
+                } else {
+                    Log.d("FirebaseOrders", "Orders retrieved: ${documents.size()}")
+                }
+
+                val orders = documents.mapNotNull { doc ->
+                    try {
+                        val data = doc.data
+                        val itemsMap = data["items"] as? Map<*, *> ?: return@mapNotNull null
+
+                        val foodItem = FoodItem(
+                            category = itemsMap["category"] as? String ?: "",
+                            name = itemsMap["name"] as? String ?: "",
+                            price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                            rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            description = itemsMap["description"] as? String ?: "",
+                            imageUrl = itemsMap["imageUrl"] as? String ?: ""
+                        )
+
+                        Order(
+                            orderId = data["orderId"] as? String ?: "",
+                            userId = data["userId"] as? String ?: "",
+                            items = foodItem,
+                            quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
+                            totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                        )
+                    } catch (e: Exception) {
+                        Log.e("FirebaseOrders", "Error parsing order: ${doc.id}", e)
+                        null
+                    }
+                }
+
+                onSuccess(orders)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseOrders", "Failed to fetch orders", exception)
+                onFailure(exception)
+            }
+    }
+
+    fun saveOrders(orders: List<Order>, ordersToRemove: List<Order> = emptyList(), onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val batch = db.batch()
+
+        for (order in ordersToRemove) {
+            val orderRef = ordersCollection.document(order.orderId)
+            batch.delete(orderRef)
+        }
+
+        for (order in orders) {
+            val orderRef = ordersCollection.document(order.orderId)
+            batch.set(orderRef, order, SetOptions.merge())
+        }
+
+        batch.commit()
+            .addOnSuccessListener {
+                Log.d("saveOrders", "Orders updated and removed successfully.")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e("saveOrders", "Failed to save and remove orders", e)
+                onFailure(e)
+            }
+    }
+
+
+    fun deleteOrder(orderId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        ordersCollection.document(orderId)
+            .delete()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onFailure(it) }
+    }
 
     fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val hashedPassword = hashPassword(user.password)

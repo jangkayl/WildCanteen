@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import cit.edu.wildcanteen.application.MyApplication
+import com.bumptech.glide.Glide
 
 class FoodDetailsActivity : Activity() {
 
@@ -20,7 +20,7 @@ class FoodDetailsActivity : Activity() {
         val foodName = intent.getStringExtra("FOOD_NAME")
         val foodPrice = intent.getStringExtra("FOOD_PRICE")
         val foodRating = intent.getStringExtra("FOOD_RATING")
-        val foodImage = intent.getIntExtra("FOOD_IMAGE", 0)
+        val foodImage = intent.getStringExtra("FOOD_IMAGE")
         val foodDescription = intent.getStringExtra("FOOD_DESCRIPTION")
 
         findViewById<TextView>(R.id.food_name).text = foodName
@@ -28,7 +28,24 @@ class FoodDetailsActivity : Activity() {
             findViewById<TextView>(R.id.food_price).text = "₱${String.format("%.2f", foodPrice.toDouble())}"
         }
         findViewById<TextView>(R.id.food_rating).text = "⭐ ${foodRating}"
-        findViewById<ImageView>(R.id.foodImage).setImageResource(foodImage)
+        // Load the image
+        val foodImageView = findViewById<ImageView>(R.id.foodImage)
+
+        if (!foodImage.isNullOrEmpty()) {
+            if (foodImage.startsWith("http")) {
+                // If it's a URL, use Glide to load it
+                Glide.with(this)
+                    .load(foodImage)
+                    .into(foodImageView)
+            } else {
+                val resourceId = resources.getIdentifier(foodImage, "drawable", packageName)
+                if (resourceId != 0) {
+                    foodImageView.setImageResource(resourceId)
+                } else {
+                    foodImageView.setImageResource(R.drawable.chicken)
+                }
+            }
+        }
         findViewById<TextView>(R.id.foodDescription).text = foodDescription
 
         val quantityText = findViewById<TextView>(R.id.food_quantity)
@@ -60,20 +77,20 @@ class FoodDetailsActivity : Activity() {
         btnOrder.setOnClickListener {
             val order = Order(
                 orderId = System.currentTimeMillis().toString(),
+                userId = MyApplication.studentId!!,
                 items = FoodItem(
                     category =  foodCategory ?: "Unknown",
                     name = foodName ?: "Unknown",
                     price = foodPrice?.toDoubleOrNull() ?: 0.0,
                     rating = foodRating?.toDoubleOrNull() ?: 0.0,
                     description = foodDescription ?: "",
-                    imageResId = foodImage
+                    imageUrl = foodImage ?: ""
                 ),
                 quantity = quantity,
                 totalAmount = (foodPrice?.toDoubleOrNull() ?: 0.0) * quantity,
                 timestamp = System.currentTimeMillis()
             )
 
-//            Toast.makeText(this, "$foodName added to cart", Toast.LENGTH_SHORT).show()
             MyApplication.addOrder(order)
 
             startActivity(Intent(this, OrderPlaced::class.java))

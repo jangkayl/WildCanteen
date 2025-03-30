@@ -14,6 +14,7 @@ import cit.edu.wildcanteen.FoodDetailsActivity
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
+import com.bumptech.glide.Glide
 
 class CartAdapter(
     private val context: Context,
@@ -47,18 +48,21 @@ class CartAdapter(
         holder.quantity.text = order.quantity.toString()
 
         if (firstItem != null) {
-            holder.foodImage.setImageResource(firstItem.imageResId)
-            holder.foodName.text = firstItem.name
-            holder.foodPrice.text = "₱%.2f".format(firstItem.price)
+            Glide.with(holder.itemView.context)
+                .load(firstItem.imageUrl)
+                .into(holder.foodImage)
         } else {
-            holder.foodName.text = "Unknown Item"
-            holder.foodPrice.text = "₱0.00"
+            holder.foodImage.setImageResource(R.drawable.chicken)
         }
+
+        holder.foodName.text = firstItem?.name
+        holder.foodPrice.text = "₱%.2f".format(firstItem?.price)
 
         holder.removeButton.setOnClickListener {
             onRemove(order)
             MyApplication.orders.remove(order)
-            MyApplication.saveOrders()
+            val ordersToRemove = listOf(order)
+            MyApplication.saveOrders(ordersToRemove)
             onUpdateTotalAmount()
         }
 
@@ -70,7 +74,7 @@ class CartAdapter(
                     putExtra("FOOD_PRICE", firstItem.price.toString())
                     putExtra("FOOD_RATING", firstItem.rating.toString())
                     putExtra("FOOD_DESCRIPTION", firstItem.description)
-                    putExtra("FOOD_IMAGE", firstItem.imageResId)
+                    putExtra("FOOD_IMAGE", firstItem.imageUrl)
                 }
                 context.startActivity(intent)
             }
@@ -81,7 +85,7 @@ class CartAdapter(
             order.totalAmount = order.quantity * order.items.price
             holder.quantity.text = order.quantity.toString()
 
-            MyApplication.saveOrders()
+            MyApplication.saveOrders(emptyList())
             onUpdateTotalAmount()
             notifyItemChanged(position)
             Log.d("CartAdapter", "Increased: ${order.items.name} - New Quantity: ${order.quantity}")
@@ -93,7 +97,7 @@ class CartAdapter(
                 order.totalAmount = order.quantity * order.items.price
                 holder.quantity.text = order.quantity.toString()
 
-                MyApplication.saveOrders()
+                MyApplication.saveOrders(emptyList())
                 onUpdateTotalAmount()
                 notifyItemChanged(position)
                 Log.d("CartAdapter", "Decreased: ${order.items.name} - New Quantity: ${order.quantity}")

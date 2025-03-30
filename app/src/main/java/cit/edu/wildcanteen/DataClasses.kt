@@ -6,7 +6,7 @@ data class FoodItem(
     val price: Double,
     val rating: Double,
     val description: String,
-    val imageResId: Int
+    val imageUrl: String
 )
 
 data class CategoryItem(
@@ -17,6 +17,7 @@ data class CategoryItem(
 
 data class Order(
     val orderId: String,
+    val userId: String,
     val items: FoodItem,
     var quantity: Int,
     var totalAmount: Double,
