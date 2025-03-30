@@ -13,6 +13,57 @@ class FirebaseRepository {
     private val db = FirebaseFirestore.getInstance()
     private val usersCollection = db.collection("users")
     private val ordersCollection = db.collection("orders")
+    private val foodCollection = db.collection("food_items")
+
+    fun addFoodItem(foodItem: FoodItem, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val itemDocRef = foodCollection.document()
+
+        itemDocRef.set(foodItem, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d("FirebaseFood", "Food item added: ${foodItem.name}")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseFood", "Failed to add food item", e)
+                onFailure(e)
+            }
+    }
+
+    fun getFoodItems(onSuccess: (List<FoodItem>) -> Unit, onFailure: (Exception) -> Unit) {
+        val foodItemsList = mutableListOf<FoodItem>()
+
+        foodCollection.get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Log.d("FirebaseFood", "No food items found in food_items.")
+                    onSuccess(emptyList())
+                    return@addOnSuccessListener
+                }
+
+                documents.mapNotNull { doc ->
+                    val foodItem = FoodItem(
+                        category = doc.getString("category") ?: "",
+                        name = doc.getString("name") ?: "",
+                        price = doc.getDouble("price") ?: 0.0,
+                        rating = doc.getDouble("rating") ?: 0.0,
+                        description = doc.getString("description") ?: "",
+                        imageUrl = doc.getString("imageUrl") ?: "",
+                        isPopular = doc.getBoolean("popular") ?: false
+                    )
+
+                    Log.d("FirebaseFood", "Fetched: $foodItem")
+                    foodItem
+                }.let {
+                    foodItemsList.addAll(it)
+                    Log.d("FirebaseFood", "Total fetched food items: ${foodItemsList.size}")
+                    onSuccess(foodItemsList)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseFood", "Error fetching food items", e)
+                onFailure(e)
+            }
+    }
 
     fun getOrders(userId: String, onSuccess: (List<Order>) -> Unit, onFailure: (Exception) -> Unit) {
         Log.d("FirebaseOrders", "Fetching orders for user: $userId")
@@ -36,7 +87,8 @@ class FirebaseRepository {
                             price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                             rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
                             description = itemsMap["description"] as? String ?: "",
-                            imageUrl = itemsMap["imageUrl"] as? String ?: ""
+                            imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                            isPopular = itemsMap["isPopular"] as? Boolean ?: false
                         )
 
                         Order(

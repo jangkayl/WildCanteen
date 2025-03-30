@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.adapters.CategoryAdapter
 import cit.edu.wildcanteen.adapters.FoodAdapter
+import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FoodRepository
 import kotlin.math.ceil
 
@@ -22,7 +23,7 @@ class HomePageOrderActivity : Activity() {
     }
 
     private fun setupRecyclerView() {
-        val foodList = FoodRepository.getPopularFoodList()
+        val foodList = MyApplication.popularFoodItems
         val recyclerView: RecyclerView = findViewById(R.id.popularNowRecycleView)
         recyclerView.layoutManager =
             LinearLayoutManager(this@HomePageOrderActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -44,7 +45,7 @@ class HomePageOrderActivity : Activity() {
     }
 
     private fun setupAllMenu() {
-        val foodList = FoodRepository.getAllFoodList()
+        val foodList = MyApplication.foodItems
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerAllMenu)
 
         val gridLayoutManager = GridLayoutManager(this, 2)

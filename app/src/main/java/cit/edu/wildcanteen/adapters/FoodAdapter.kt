@@ -14,7 +14,7 @@ import cit.edu.wildcanteen.R
 import com.bumptech.glide.Glide
 
 class FoodAdapter(
-    private val foodList: List<FoodItem>,
+    private var foodList: MutableList<FoodItem>,
     private val context: Context,
     private val layoutResId: Int
 ) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
@@ -35,10 +35,17 @@ class FoodAdapter(
                     putExtra("FOOD_RATING", food.rating.toString())
                     putExtra("FOOD_DESCRIPTION", food.description)
                     putExtra("FOOD_IMAGE", food.imageUrl)
+                    putExtra("FOOD_POPULAR", food.isPopular)
                 }
                 context.startActivity(intent)
             }
         }
+    }
+
+    fun updateFoodList(newFoodList: List<FoodItem>) {
+        foodList.clear()
+        foodList.addAll(newFoodList)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {

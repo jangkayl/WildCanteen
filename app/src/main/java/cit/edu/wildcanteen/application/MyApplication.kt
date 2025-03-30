@@ -4,19 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
+import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import cit.edu.wildcanteen.HomePageActivity
 import cit.edu.wildcanteen.Order
-import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.User
-import cit.edu.wildcanteen.repositories.CloudinaryRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.File
-import java.io.FileOutputStream
 
 class MyApplication : Application() {
     companion object {
@@ -40,6 +35,8 @@ class MyApplication : Application() {
         var userType: String? = null
         var balance: Double? = null
         var orders: MutableList<Order> = mutableListOf()
+        var foodItems: MutableList<FoodItem> = mutableListOf()
+        var popularFoodItems: MutableList<FoodItem> = mutableListOf()
 
         fun loadUserSession(context: Context) {
             val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -120,6 +117,7 @@ class MyApplication : Application() {
             }, { e ->
                 Log.e("FirebaseOrders", "Error saving orders: ${e.message}")
             })
+
         }
 
         private fun loadOrders() {
@@ -162,6 +160,46 @@ class MyApplication : Application() {
             saveOrders(emptyList())
         }
 
+
+        ////  FOR FOOD ITEMS
+        fun saveFoodItems(items: List<FoodItem>) {
+            foodItems = items.toMutableList()
+            val json = Gson().toJson(foodItems)
+            prefs.edit().putString("FOOD_ITEMS", json).apply()
+
+            popularFoodItems = foodItems.filter { it.isPopular }.toMutableList()
+            loadFoodItems()
+
+            Log.d("PopularFoodItems", "Popular Food Items: ${popularFoodItems}")
+        }
+
+        fun loadFoodItems() {
+            val json = prefs.getString("FOOD_ITEMS", null)
+            if (!json.isNullOrEmpty()) {
+                try {
+                    val type = object : TypeToken<MutableList<FoodItem>>() {}.type
+                    foodItems = Gson().fromJson(json, type) ?: mutableListOf()
+
+                    popularFoodItems = foodItems.filter { it.isPopular }.toMutableList()
+
+                    Log.d("PopularFoodItems", "Popular Food Items after loading: ${popularFoodItems}")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    foodItems = mutableListOf()
+                    popularFoodItems = mutableListOf()
+                }
+            }
+
+            FirebaseRepository().getFoodItems({ foodList ->
+                saveFoodItems(foodList)
+                Log.d("FirebaseFood", "Food items loaded successfully")
+
+                Log.d("PopularFoodItems", "Popular Food Items after Firebase load: ${popularFoodItems}")
+            }, { e ->
+                Log.e("FirebaseFood", "Failed to load food items", e)
+            })
+        }
+
         private fun printUserDetails() {
             Log.e("User details", currentUser.toString());
         }
@@ -173,22 +211,7 @@ class MyApplication : Application() {
 
         loadUserSession(this)
         loadOrders()
+        loadFoodItems()
         printUserDetails()
-    }
-
-    private fun saveDrawableToFile(drawableResId: Int, fileName: String): File? {
-        return try {
-            val bitmap = BitmapFactory.decodeResource(resources, drawableResId)
-            val file = File(cacheDir, fileName)
-
-            FileOutputStream(file).use { fos ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-            }
-
-            file
-        } catch (e: Exception) {
-            Log.e("FileSave", "Failed to save drawable to file", e)
-            null
-        }
     }
 }

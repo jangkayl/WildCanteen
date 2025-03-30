@@ -6,7 +6,8 @@ data class FoodItem(
     val price: Double,
     val rating: Double,
     val description: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val isPopular: Boolean
 )
 
 data class CategoryItem(

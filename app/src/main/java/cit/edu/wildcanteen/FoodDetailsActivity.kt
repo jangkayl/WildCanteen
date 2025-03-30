@@ -22,6 +22,7 @@ class FoodDetailsActivity : Activity() {
         val foodRating = intent.getStringExtra("FOOD_RATING")
         val foodImage = intent.getStringExtra("FOOD_IMAGE")
         val foodDescription = intent.getStringExtra("FOOD_DESCRIPTION")
+        val foodPopular = intent.getBooleanExtra("FOOD_POPULAR", false)
 
         findViewById<TextView>(R.id.food_name).text = foodName
         if (foodPrice != null) {
@@ -84,7 +85,8 @@ class FoodDetailsActivity : Activity() {
                     price = foodPrice?.toDoubleOrNull() ?: 0.0,
                     rating = foodRating?.toDoubleOrNull() ?: 0.0,
                     description = foodDescription ?: "",
-                    imageUrl = foodImage ?: ""
+                    imageUrl = foodImage ?: "",
+                    isPopular = foodPopular
                 ),
                 quantity = quantity,
                 totalAmount = (foodPrice?.toDoubleOrNull() ?: 0.0) * quantity,

@@ -75,6 +75,7 @@ class CartAdapter(
                     putExtra("FOOD_RATING", firstItem.rating.toString())
                     putExtra("FOOD_DESCRIPTION", firstItem.description)
                     putExtra("FOOD_IMAGE", firstItem.imageUrl)
+                    putExtra("FOOD_POPULAR", firstItem.isPopular)
                 }
                 context.startActivity(intent)
             }

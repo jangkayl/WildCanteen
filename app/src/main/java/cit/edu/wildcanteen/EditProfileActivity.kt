@@ -46,7 +46,6 @@ class EditProfileActivity : Activity() {
         userIdTextView.text = MyApplication.stringStudentId
 
         if (!MyApplication.profileImageUrl.isNullOrEmpty()) {
-            Log.e("ProfileImage", MyApplication.profileImageUrl!!)
             Glide.with(this)
                 .load(MyApplication.profileImageUrl)
                 .apply(RequestOptions.circleCropTransform())
