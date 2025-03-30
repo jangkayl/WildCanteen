@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import cit.edu.wildcanteen.repositories.FirebaseRepository
+import cit.edu.wildcanteen.repositories.FoodRepository
 
 class RegisterActivity : Activity() {
     private val firebaseRepository = FirebaseRepository()

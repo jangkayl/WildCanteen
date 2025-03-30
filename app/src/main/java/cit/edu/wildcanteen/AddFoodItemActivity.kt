@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.CloudinaryRepository
 import cit.edu.wildcanteen.repositories.FirebaseRepository
+import cit.edu.wildcanteen.repositories.FoodRepository
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream

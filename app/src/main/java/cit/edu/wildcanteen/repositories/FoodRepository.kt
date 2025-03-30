@@ -5,7 +5,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 object FoodRepository {
 
-    // Function to return a list of popular food items
     fun getPopularFoodList(): List<FoodItem> {
         // Manually selecting 3 food items as popular
         return listOf(
@@ -15,7 +14,6 @@ object FoodRepository {
         )
     }
 
-    // Function to return all food items
     fun getAllFoodList(): List<FoodItem> {
         return listOf(
             // Main Meals
