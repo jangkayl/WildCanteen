@@ -49,6 +49,7 @@ class MyApplication : Application() {
                 FirebaseRepository().getUser(storedUserId, { user ->
                     if (user != null) {
                         loadUserDetails(user)
+                        loadFoodItems()
                         val intent = Intent(context, HomePageActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
@@ -163,7 +164,6 @@ class MyApplication : Application() {
             saveOrders(emptyList())
         }
 
-
         fun saveFoodItems(items: List<FoodItem>) {
             prefs.edit().remove("FOOD_ITEMS").apply()
 
@@ -236,8 +236,6 @@ class MyApplication : Application() {
         appContext = applicationContext
 
         loadUserSession(this)
-        loadOrders()
-        loadFoodItems()
         printUserDetails()
     }
 }
