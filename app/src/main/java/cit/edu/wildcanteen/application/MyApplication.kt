@@ -12,6 +12,9 @@ import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.User
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MyApplication : Application() {
     companion object {
@@ -176,35 +179,36 @@ class MyApplication : Application() {
 
 
         fun loadFoodItems(onComplete: (() -> Unit)? = null) {
-            FirebaseRepository().getFoodItems({ foodList ->
-                if (foodList.isNotEmpty()) {
-                    foodItems.apply {
-                        clear()
-                        addAll(foodList)
+            CoroutineScope(Dispatchers.IO).launch {
+                FirebaseRepository().getFoodItems({ foodList ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                        if (foodList.isNotEmpty()) {
+                            foodItems.apply {
+                                clear()
+                                addAll(foodList)
+                            }
+                            popularFoodItems.apply {
+                                clear()
+                                addAll(foodList.filter { it.isPopular })
+                            }
+                            saveFoodItems(foodList)
+                            Log.d("FirebaseFood", "Food items loaded: ${foodItems.size}")
+                            Log.d("PopularFoodItems", "Popular food items updated: ${popularFoodItems.size}")
+                        } else {
+                            Log.d("FirebaseFood", "No food items found in Firebase. Loading cached food items.")
+                            loadFromCache()
+                        }
+                        onComplete?.invoke()
                     }
-
-                    popularFoodItems.apply {
-                        clear()
-                        addAll(foodList.filter { it.isPopular })
+                }, { e ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Log.e("FirebaseFood", "Failed to load food items from Firebase", e)
+                        loadFromCache()
+                        onComplete?.invoke()
                     }
-
-                    saveFoodItems(foodList)
-
-                    Log.d("FirebaseFood", "Food items loaded: ${foodItems.size}")
-                    Log.d("PopularFoodItems", "Popular food items updated: ${popularFoodItems.size}")
-                } else {
-                    Log.d("FirebaseFood", "No food items found in Firebase. Loading cached food items.")
-                    loadFromCache()
-                }
-
-                onComplete?.invoke()
-            }, { e ->
-                Log.e("FirebaseFood", "Failed to load food items from Firebase", e)
-                loadFromCache()
-                onComplete?.invoke()
-            })
+                })
+            }
         }
-
 
         private fun loadFromCache() {
             val json = prefs.getString("FOOD_ITEMS", null)
