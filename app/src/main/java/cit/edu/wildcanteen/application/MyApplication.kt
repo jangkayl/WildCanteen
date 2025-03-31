@@ -44,12 +44,12 @@ class MyApplication : Application() {
         fun loadUserSession(context: Context) {
             val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
             val storedUserId = sharedPreferences.getString("ID", null)
+            loadFoodItems()
 
             if (storedUserId != null) {
                 FirebaseRepository().getUser(storedUserId, { user ->
                     if (user != null) {
                         loadUserDetails(user)
-                        loadFoodItems()
                         val intent = Intent(context, HomePageActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
@@ -74,6 +74,7 @@ class MyApplication : Application() {
             balance = user.balance
             isLoggedIn = true
             currentUser = user
+            loadOrders()
 
             prefs.edit().apply {
                 putString("ID", user.studentId)
@@ -82,7 +83,6 @@ class MyApplication : Application() {
                 putBoolean("IS_LOGGED_IN", true)
                 apply()
             }
-            loadOrders()
             printUserDetails()
         }
 

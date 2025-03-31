@@ -17,7 +17,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MyApplication.loadUserSession(this)
+        if(MyApplication.isLoggedIn){
+            startActivity(Intent(this, HomePageActivity::class.java))
+            finish()
+        }
 
         setContentView(R.layout.login)
 
