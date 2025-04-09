@@ -8,6 +8,7 @@ import android.util.Log
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.User
+import com.google.firebase.firestore.ListenerRegistration
 
 class FirebaseRepository {
     private val db = FirebaseFirestore.getInstance()
@@ -44,11 +45,12 @@ class FirebaseRepository {
                     val foodItem = FoodItem(
                         category = doc.getString("category") ?: "",
                         name = doc.getString("name") ?: "",
+                        foodId = doc.getLong("foodId")?.toInt() ?: 0,
                         price = doc.getDouble("price") ?: 0.0,
                         rating = doc.getDouble("rating") ?: 0.0,
                         description = doc.getString("description") ?: "",
                         imageUrl = doc.getString("imageUrl") ?: "",
-                        isPopular = doc.getBoolean("popular") ?: false
+                        isPopular = doc.getBoolean("popular") ?: false,
                     )
 
                     Log.d("FirebaseFood", "Fetched: $foodItem")
@@ -84,11 +86,12 @@ class FirebaseRepository {
                         val foodItem = FoodItem(
                             category = itemsMap["category"] as? String ?: "",
                             name = itemsMap["name"] as? String ?: "",
+                            foodId = itemsMap["foodId"] as? Int ?: 0,
                             price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                             rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
                             description = itemsMap["description"] as? String ?: "",
                             imageUrl = itemsMap["imageUrl"] as? String ?: "",
-                            isPopular = itemsMap["isPopular"] as? Boolean ?: false
+                            isPopular = itemsMap["isPopular"] as? Boolean ?: false,
                         )
 
                         Order(
@@ -97,6 +100,7 @@ class FirebaseRepository {
                             items = foodItem,
                             quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                            status = data["status"] as? String ?: "",
                             timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
                         )
                     } catch (e: Exception) {
@@ -137,12 +141,88 @@ class FirebaseRepository {
             }
     }
 
-
     fun deleteOrder(orderId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         ordersCollection.document(orderId)
             .delete()
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onFailure(it) }
+    }
+
+    fun listenForFoodItemsUpdates(
+        onUpdate: (List<FoodItem>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ): ListenerRegistration {
+        return foodCollection.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.e("FirebaseFood", "Listen failed", error)
+                onFailure(error)
+                return@addSnapshotListener
+            }
+
+            val foodItems = snapshot?.documents?.mapNotNull { doc ->
+                try {
+                    FoodItem(
+                        category = doc.getString("category") ?: "",
+                        name = doc.getString("name") ?: "",
+                        foodId = doc.getLong("foodId")?.toInt() ?: 0,
+                        price = doc.getDouble("price") ?: 0.0,
+                        rating = doc.getDouble("rating") ?: 0.0,
+                        description = doc.getString("description") ?: "",
+                        imageUrl = doc.getString("imageUrl") ?: "",
+                        isPopular = doc.getBoolean("popular") ?: false,
+                    )
+                } catch (e: Exception) {
+                    Log.e("FirebaseFood", "Error parsing food item", e)
+                    null
+                }
+            } ?: emptyList()
+
+            Log.d("FirebaseFood", "Food items changed: ${foodItems.size} items")
+            onUpdate(foodItems)
+        }
+    }
+
+    fun listenForOrderUpdates(userId: String, onUpdate: (List<Order>) -> Unit): ListenerRegistration {
+        return ordersCollection.whereEqualTo("userId", userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("FirebaseOrders", "Listen failed", error)
+                    return@addSnapshotListener
+                }
+
+                val orders = snapshot?.documents?.mapNotNull { doc ->
+                    try {
+                        val data = doc.data ?: return@mapNotNull null
+                        val itemsMap = data["items"] as? Map<*, *> ?: return@mapNotNull null
+
+                        val foodItem = FoodItem(
+                            category = itemsMap["category"] as? String ?: "",
+                            name = itemsMap["name"] as? String ?: "",
+                            foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
+                            price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                            rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            description = itemsMap["description"] as? String ?: "",
+                            imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                            isPopular = itemsMap["isPopular"] as? Boolean ?: false,
+                        )
+
+                        Order(
+                            orderId = data["orderId"] as? String ?: "",
+                            userId = data["userId"] as? String ?: "",
+                            items = foodItem,
+                            quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
+                            totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                            status = data["status"] as? String ?: "",
+                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                        )
+                    } catch (e: Exception) {
+                        Log.e("FirebaseOrders", "Error parsing order", e)
+                        null
+                    }
+                } ?: emptyList()
+
+                onUpdate(orders)
+            }
     }
 
     fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {

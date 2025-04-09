@@ -99,7 +99,6 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-
     <TextView
         android:id="@+id/food_rating"
         android:layout_width="wrap_content"
@@ -126,6 +125,28 @@
         android:text="Delicious food with amazing taste!"
         android:textColor="@color/white"
         android:textSize="16sp" />
+
+    <!-- RecyclerView for feedbacks -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerFeedbacks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@id/foodDescription"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Text if no feedbacks are available -->
+    <TextView
+        android:id="@+id/noFeedbackText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No feedbacks yet. Tap to add one!"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:layout_below="@id/foodDescription"
+        android:layout_marginTop="16dp"/>
 
     <RelativeLayout
         android:layout_width="262dp"
@@ -158,6 +179,5 @@
             android:textSize="25sp"
             android:textStyle="bold" />
     </RelativeLayout>
-
 
 </RelativeLayout>

@@ -115,41 +115,63 @@ class MyApplication : Application() {
         fun saveOrders(ordersToRemove: List<Order>) {
             val json = Gson().toJson(orders)
             prefs.edit().putString("ORDERS", json).apply()
+            Log.d("OrderDebug", "Saving orders: ${orders.joinToString { "${it.orderId} (${it.status})" }}")
 
             FirebaseRepository().saveOrders(orders, ordersToRemove, {
-                Log.d("FirebaseOrders", "Orders saved successfully.")
+                Log.d("OrderDebug", "Orders saved successfully to Firebase")
             }, { e ->
-                Log.e("FirebaseOrders", "Error saving orders: ${e.message}")
+                Log.e("OrderDebug", "Error saving orders: ${e.message}")
             })
-
         }
 
         private fun loadOrders() {
             if (studentId.isNullOrEmpty()) {
-                Log.e("FirebaseOrders", "Cannot load orders: $studentId is null or empty")
+                Log.e("OrderDebug", "Cannot load orders: studentId is null or empty")
                 return
             }
-            if (studentId != null) {
-                FirebaseRepository().getOrders(studentId!!, { ordersFromFirebase ->
-                    orders = ordersFromFirebase.toMutableList()
-                    Log.d("FirebaseOrders", "All orders from $studentId are now loaded successfully")
-                }, { exception ->
-                    Log.e("FirebaseOrders", "Failed to load orders for $studentId", exception)
-                    orders = mutableListOf()
-                })
-            }
 
-            val json = prefs.getString("ORDERS", null)
-            if (!json.isNullOrEmpty()) {
-                try {
-                    val type = object : TypeToken<MutableList<Order>>() {}.type
-                    orders = Gson().fromJson(json, type) ?: mutableListOf()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    orders = mutableListOf()
+            // Load from Firebase first
+            FirebaseRepository().getOrders(studentId!!, { ordersFromFirebase ->
+                Log.d("OrderDebug", "Loaded from Firebase: ${ordersFromFirebase.size} orders")
+                orders = ordersFromFirebase.toMutableList()
+
+                // Then check local cache
+                val json = prefs.getString("ORDERS", null)
+                if (!json.isNullOrEmpty()) {
+                    try {
+                        val type = object : TypeToken<MutableList<Order>>() {}.type
+                        val cachedOrders = Gson().fromJson<MutableList<Order>>(json, type) ?: mutableListOf()
+                        Log.d("OrderDebug", "Loaded from cache: ${cachedOrders.size} orders")
+
+                        // Merge Firebase and cached orders, preferring Firebase data
+                        orders.addAll(cachedOrders.filter { cached ->
+                            orders.none { it.orderId == cached.orderId }
+                        })
+                    } catch (e: Exception) {
+                        Log.e("OrderDebug", "Error loading cached orders", e)
+                    }
                 }
-            }
+
+                Log.d("OrderDebug", "Final orders: ${orders.size} items")
+                orders.forEach { Log.d("OrderDebug", "Order ${it.orderId} status: ${it.status}") }
+            }, { exception ->
+                Log.e("OrderDebug", "Failed to load orders from Firebase", exception)
+
+                // Fallback to local cache
+                val json = prefs.getString("ORDERS", null)
+                if (!json.isNullOrEmpty()) {
+                    try {
+                        val type = object : TypeToken<MutableList<Order>>() {}.type
+                        orders = Gson().fromJson(json, type) ?: mutableListOf()
+                        Log.d("OrderDebug", "Loaded from cache (fallback): ${orders.size} orders")
+                    } catch (e: Exception) {
+                        Log.e("OrderDebug", "Error loading cached orders (fallback)", e)
+                        orders = mutableListOf()
+                    }
+                }
+            })
         }
+
 
         fun addOrder(order: Order) {
             val existingOrder = orders.find { it.items.name == order.items.name }

@@ -31,6 +31,7 @@ class CartAdapter(
         val increaseButton: Button = view.findViewById(R.id.btnPlus)
         val reduceButton: Button = view.findViewById(R.id.btnMinus)
         val quantity: TextView = view.findViewById(R.id.tvQuantity)
+        val status: TextView = view.findViewById(R.id.foodStatus)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
@@ -44,8 +45,8 @@ class CartAdapter(
 
         val storedOrder = MyApplication.orders.find { it.orderId == order.orderId }
         order.quantity = storedOrder?.quantity ?: order.quantity
-
         holder.quantity.text = order.quantity.toString()
+        holder.status.text = order.status
 
         if (firstItem != null) {
             Glide.with(holder.itemView.context)
@@ -70,6 +71,7 @@ class CartAdapter(
             if (firstItem != null && view.id != R.id.cart_buttons) {
                 val intent = Intent(context, FoodDetailsActivity::class.java).apply {
                     putExtra("FOOD_CATEGORY", firstItem.category)
+                    putExtra("FOOD_ID", firstItem.foodId.toString())
                     putExtra("FOOD_NAME", firstItem.name)
                     putExtra("FOOD_PRICE", firstItem.price.toString())
                     putExtra("FOOD_RATING", firstItem.rating.toString())

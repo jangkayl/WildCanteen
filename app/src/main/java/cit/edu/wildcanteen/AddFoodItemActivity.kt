@@ -134,13 +134,14 @@ class AddFoodItemActivity : AppCompatActivity() {
         val rating = etRating.text.toString().toDoubleOrNull() ?: 0.0
         val description = etDescription.text.toString().trim()
         val isPopular = etPopular.isChecked
+        val foodItemSize = MyApplication.foodItems.size
 
         if (category.isEmpty() || name.isEmpty() || description.isEmpty() || imageUrl.isEmpty()) {
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val foodItem = FoodItem(category, name, price, rating, description, imageUrl, isPopular)
+        val foodItem = FoodItem(category,foodItemSize+1, name, price, rating, description, imageUrl, isPopular)
 
         firebaseRepository.addFoodItem(foodItem, {
             Toast.makeText(this, "Food item added successfully", Toast.LENGTH_SHORT).show()

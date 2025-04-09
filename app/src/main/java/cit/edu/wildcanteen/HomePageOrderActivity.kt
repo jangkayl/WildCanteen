@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.adapters.CategoryAdapter
 import cit.edu.wildcanteen.adapters.FoodAdapter
 import cit.edu.wildcanteen.application.MyApplication
-import cit.edu.wildcanteen.repositories.FoodRepository
 import kotlin.math.ceil
 
 class HomePageOrderActivity : Activity() {

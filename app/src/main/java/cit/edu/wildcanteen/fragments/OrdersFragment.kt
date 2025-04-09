@@ -16,7 +16,9 @@ import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.CartAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.ListenerRegistration
 
 class OrdersFragment : Fragment() {
 
@@ -33,6 +35,7 @@ class OrdersFragment : Fragment() {
     private val cartOrders = mutableListOf<Order>()
     private lateinit var cartAdapter: CartAdapter
     private var isProceedButtonClicked = false
+    private var orderListener: ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,6 +73,24 @@ class OrdersFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        startListeningForOrderUpdates()
+    }
+
+    private fun startListeningForOrderUpdates() {
+        val userId = MyApplication.studentId ?: return
+
+        orderListener = FirebaseRepository().listenForOrderUpdates(userId) { updatedOrders ->
+            MyApplication.orders.clear()
+            MyApplication.orders.addAll(updatedOrders)
+
+            loadCartOrders()
+            updateTotalAmount()
+        }
     }
 
     private fun toggleProceedContainer() {
@@ -145,5 +166,11 @@ class OrdersFragment : Fragment() {
         loadCartOrders()
         updateTotalAmount()
         cartAdapter.notifyDataSetChanged()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        orderListener?.remove()
+        orderListener = null
     }
 }

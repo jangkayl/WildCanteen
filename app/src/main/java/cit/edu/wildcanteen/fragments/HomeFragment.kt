@@ -18,12 +18,15 @@ import cit.edu.wildcanteen.HomePageOrderActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FoodAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.firestore.ListenerRegistration
 
 class HomeFragment : Fragment() {
     private var foodList: List<FoodItem> = MyApplication.popularFoodItems
     private lateinit var adapter: FoodAdapter
+    private var foodItemsListener: ListenerRegistration? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.homepage_fragment, container, false)
@@ -60,6 +63,7 @@ class HomeFragment : Fragment() {
         }
 
         setupRecyclerView(view)
+        setupFoodItemsListener()
     }
 
     private fun setupRecyclerView(view: View) {
@@ -90,18 +94,55 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun setupFoodItemsListener() {
+        foodItemsListener = FirebaseRepository().listenForFoodItemsUpdates(
+            onUpdate = { foodItems ->
+                // Update the local list
+                MyApplication.popularFoodItems = foodItems.filter { it.isPopular }.toMutableList()
+                foodList = MyApplication.popularFoodItems
 
-        MyApplication.loadFoodItems {
-            val updatedFoodList = MyApplication.popularFoodItems.toMutableList()
-
-            if (updatedFoodList != foodList) {
-                foodList = updatedFoodList
+                // Update the UI
                 adapter.updateFoodList(foodList)
                 adapter.notifyDataSetChanged()
+
+                // Optional: Update the recyclerview height if needed
+                updateRecyclerViewHeight()
+            },
+            onFailure = { error ->
+                Log.e("HomeFragment", "Error listening for food items", error)
+                // Handle error (e.g., show a message to the user)
             }
+        )
+    }
+
+    private fun updateRecyclerViewHeight() {
+        val recyclerView: RecyclerView = view?.findViewById(R.id.popularRecyclerView) ?: return
+
+        recyclerView.post {
+            var totalHeight = 0
+            for (i in 0 until adapter.itemCount) {
+                val holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i))
+                adapter.bindViewHolder(holder, i)
+
+                holder.itemView.measure(
+                    View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+
+                val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
+                totalHeight += holder.itemView.measuredHeight + params.bottomMargin
+            }
+
+            recyclerView.layoutParams.height = totalHeight
+            recyclerView.requestLayout()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Remove the listener when the fragment is destroyed
+        foodItemsListener?.remove()
+        foodItemsListener = null
     }
 }
 
