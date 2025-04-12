@@ -1,7 +1,9 @@
 package cit.edu.wildcanteen.fragments
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,8 @@ import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.CartAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.pages.HomePageActivity
+import cit.edu.wildcanteen.pages.OrderSummaryActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ListenerRegistration
@@ -109,6 +113,11 @@ class OrdersFragment : Fragment() {
 
             proceedButton.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), android.R.color.white))
             proceedButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.selectedColor))
+        } else {
+            startActivity(Intent(requireContext(), OrderSummaryActivity::class.java).apply {
+                putExtra("TOTAL_AMOUNT", totalAmount.text)
+                putExtra("CHARGE_AMOUNT", chargeAmount.text)
+            })
         }
     }
 

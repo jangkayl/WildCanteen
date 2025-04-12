@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#111"
+    android:padding="15dp">
+
+    <!-- Main Content Inside ConstraintLayout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Cart Title -->
+        <TextView
+            android:id="@+id/cartTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#111"
+            android:elevation="4dp"
+            android:paddingTop="13dp"
+            android:paddingBottom="20dp"
+            android:text="All Orders"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="21dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Food Items List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cartRecyclerView"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true"
+            android:overScrollMode="never"
+            android:paddingBottom="140dp"
+            android:scrollbars="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cartTitle" />
+
+        <!--     No Order Found   -->
+        <LinearLayout
+            android:id="@+id/no_order_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:background="#111"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/no_order"
+                android:layout_width="wrap_content"
+                android:layout_height="350dp"
+                android:src="@drawable/noorder"
+                tools:layout_editor_absoluteX="120dp"
+                tools:layout_editor_absoluteY="176dp" />
+
+            <TextView
+                android:id="@+id/no_order_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="NO ORDER FOUND"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="25sp"/>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="200dp"
+        android:layout_height="55dp"
+        android:layout_gravity="bottom|center"
+        android:background="@drawable/rounded_drawable"
+        android:layout_margin="15dp"
+        android:backgroundTint="#F79901"
+        android:text="Back"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:elevation="20dp"/>
+
+</FrameLayout>

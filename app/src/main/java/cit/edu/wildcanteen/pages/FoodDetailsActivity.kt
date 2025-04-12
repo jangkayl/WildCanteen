@@ -1,15 +1,16 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cit.edu.wildcanteen.Feedback
+import cit.edu.wildcanteen.FoodItem
+import cit.edu.wildcanteen.Order
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FeedbackAdapter
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FirebaseRepository
@@ -91,6 +92,7 @@ class FoodDetailsActivity : Activity() {
             val order = Order(
                 orderId = System.currentTimeMillis().toString(),
                 userId = MyApplication.studentId!!,
+                userName = MyApplication.name!!,
                 items = FoodItem(
                     category = foodCategory ?: "Unknown",
                     name = foodName ?: "Unknown",

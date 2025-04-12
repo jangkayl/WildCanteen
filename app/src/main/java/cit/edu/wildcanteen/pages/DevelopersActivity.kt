@@ -1,10 +1,9 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageView
+import cit.edu.wildcanteen.R
 
 class DevelopersActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {

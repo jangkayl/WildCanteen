@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.app.Activity
 import android.content.Intent
@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.CloudinaryRepository
 import cit.edu.wildcanteen.repositories.FirebaseRepository

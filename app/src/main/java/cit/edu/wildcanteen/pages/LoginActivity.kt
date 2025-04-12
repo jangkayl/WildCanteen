@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import cit.edu.wildcanteen.application.MyApplication
 import java.security.MessageDigest
 import android.util.Base64
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 
 class LoginActivity : AppCompatActivity() {

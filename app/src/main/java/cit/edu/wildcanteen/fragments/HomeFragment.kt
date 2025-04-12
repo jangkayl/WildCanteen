@@ -12,12 +12,12 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cit.edu.wildcanteen.AddFoodItemActivity
 import cit.edu.wildcanteen.FoodItem
-import cit.edu.wildcanteen.HomePageOrderActivity
+import cit.edu.wildcanteen.pages.HomePageOrderActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FoodAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.pages.admin_page.AdminTemporaryActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
         }
 
         notification.setOnClickListener {
-            startActivity(Intent(requireContext(), AddFoodItemActivity::class.java))
+            startActivity(Intent(requireContext(), AdminTemporaryActivity::class.java))
         }
 
         setupRecyclerView(view)
@@ -97,20 +97,16 @@ class HomeFragment : Fragment() {
     private fun setupFoodItemsListener() {
         foodItemsListener = FirebaseRepository().listenForFoodItemsUpdates(
             onUpdate = { foodItems ->
-                // Update the local list
                 MyApplication.popularFoodItems = foodItems.filter { it.isPopular }.toMutableList()
                 foodList = MyApplication.popularFoodItems
 
-                // Update the UI
                 adapter.updateFoodList(foodList)
                 adapter.notifyDataSetChanged()
 
-                // Optional: Update the recyclerview height if needed
                 updateRecyclerViewHeight()
             },
             onFailure = { error ->
                 Log.e("HomeFragment", "Error listening for food items", error)
-                // Handle error (e.g., show a message to the user)
             }
         )
     }
@@ -140,7 +136,6 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Remove the listener when the fragment is destroyed
         foodItemsListener?.remove()
         foodItemsListener = null
     }

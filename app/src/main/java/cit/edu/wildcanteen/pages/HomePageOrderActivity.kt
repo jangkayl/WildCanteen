@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.app.Activity
 import android.graphics.Color
@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cit.edu.wildcanteen.CategoryItem
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.CategoryAdapter
 import cit.edu.wildcanteen.adapters.FoodAdapter
 import cit.edu.wildcanteen.application.MyApplication

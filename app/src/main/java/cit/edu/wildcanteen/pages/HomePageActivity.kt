@@ -1,10 +1,11 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.fragments.ChatsFragment
 import cit.edu.wildcanteen.fragments.HomeFragment
 import cit.edu.wildcanteen.fragments.OrdersFragment

@@ -67,6 +67,57 @@ class FirebaseRepository {
             }
     }
 
+    fun getAllOrders(onSuccess: (List<Order>) -> Unit, onFailure: (Exception) -> Unit) {
+        Log.d("FirebaseOrders", "Fetching all orders")
+
+        ordersCollection.get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Log.d("FirebaseOrders", "No orders found")
+                } else {
+                    Log.d("FirebaseOrders", "Orders retrieved: ${documents.size()}")
+                }
+
+                val orders = documents.mapNotNull { doc ->
+                    try {
+                        val data = doc.data
+                        val itemsMap = data["items"] as? Map<*, *> ?: return@mapNotNull null
+
+                        val foodItem = FoodItem(
+                            category = itemsMap["category"] as? String ?: "",
+                            name = itemsMap["name"] as? String ?: "",
+                            foodId = itemsMap["foodId"] as? Int ?: 0,
+                            price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                            rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            description = itemsMap["description"] as? String ?: "",
+                            imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                            isPopular = itemsMap["isPopular"] as? Boolean ?: false,
+                        )
+
+                        Order(
+                            orderId = data["orderId"] as? String ?: "",
+                            userId = data["userId"] as? String ?: "",
+                            userName = data["userName"] as? String ?: "",
+                            items = foodItem,
+                            quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
+                            totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                            status = data["status"] as? String ?: "",
+                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                        )
+                    } catch (e: Exception) {
+                        Log.e("FirebaseOrders", "Error parsing order: ${doc.id}", e)
+                        null
+                    }
+                }
+
+                onSuccess(orders)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseOrders", "Failed to fetch orders", exception)
+                onFailure(exception)
+            }
+    }
+
     fun getOrders(userId: String, onSuccess: (List<Order>) -> Unit, onFailure: (Exception) -> Unit) {
         Log.d("FirebaseOrders", "Fetching orders for user: $userId")
 
@@ -97,6 +148,7 @@ class FirebaseRepository {
                         Order(
                             orderId = data["orderId"] as? String ?: "",
                             userId = data["userId"] as? String ?: "",
+                            userName = data["userName"] as? String ?: "",
                             items = foodItem,
                             quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
@@ -158,7 +210,6 @@ class FirebaseRepository {
                 onFailure(error)
                 return@addSnapshotListener
             }
-
             val foodItems = snapshot?.documents?.mapNotNull { doc ->
                 try {
                     FoodItem(
@@ -209,6 +260,51 @@ class FirebaseRepository {
                         Order(
                             orderId = data["orderId"] as? String ?: "",
                             userId = data["userId"] as? String ?: "",
+                            userName = data["userName"] as? String ?: "",
+                            items = foodItem,
+                            quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
+                            totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                            status = data["status"] as? String ?: "",
+                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                        )
+                    } catch (e: Exception) {
+                        Log.e("FirebaseOrders", "Error parsing order", e)
+                        null
+                    }
+                } ?: emptyList()
+
+                onUpdate(orders)
+            }
+    }
+
+    fun listenForAllOrderUpdates(onUpdate: (List<Order>) -> Unit): ListenerRegistration {
+        return ordersCollection
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("FirebaseOrders", "Listen failed", error)
+                    return@addSnapshotListener
+                }
+
+                val orders = snapshot?.documents?.mapNotNull { doc ->
+                    try {
+                        val data = doc.data ?: return@mapNotNull null
+                        val itemsMap = data["items"] as? Map<*, *> ?: return@mapNotNull null
+
+                        val foodItem = FoodItem(
+                            category = itemsMap["category"] as? String ?: "",
+                            name = itemsMap["name"] as? String ?: "",
+                            foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
+                            price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                            rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            description = itemsMap["description"] as? String ?: "",
+                            imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                            isPopular = itemsMap["isPopular"] as? Boolean ?: false,
+                        )
+
+                        Order(
+                            orderId = data["orderId"] as? String ?: "",
+                            userId = data["userId"] as? String ?: "",
+                            userName = data["userName"] as? String ?: "",
                             items = foodItem,
                             quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,

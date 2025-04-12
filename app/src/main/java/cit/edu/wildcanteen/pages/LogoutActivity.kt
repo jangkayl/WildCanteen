@@ -1,11 +1,11 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.view.Window
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
 
 class LogoutActivity : Activity() {

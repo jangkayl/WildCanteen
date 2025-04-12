@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.app.Activity
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.os.Looper
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.TextView
+import cit.edu.wildcanteen.R
 
 class SplashActivity : Activity() {
 

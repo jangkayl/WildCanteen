@@ -1,115 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:paddingTop="32dp"
+    android:gravity="center_horizontal"
     android:background="@color/black">
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Profile Settings"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:textSize="21dp"
-        android:textAlignment="center"
-        android:padding="20dp"
-        android:layout_centerInParent="true"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingVertical="20dp">
-
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="156dp"
-            android:layout_height="156dp"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="#55FF00"
-            android:layout_marginBottom="10dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/profile_border"
-            android:padding="5dp"
-            android:src="@drawable/hd_user"/>
-
+        android:orientation="horizontal">
         <TextView
-            android:id="@+id/settings_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="John Doe"
-            android:textSize="20dp"
-            android:fontFamily="sans-serif-black"
-            android:textAlignment="center"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"/>
-        <TextView
-            android:id="@+id/settings_userId"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="17-2068-369"
-            android:textSize="15dp"
-            android:textStyle="italic"
+            android:text="Settings"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             android:textAlignment="center"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/darker_gray"/>
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-medium"
+             />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingVertical="10dp"
-        android:paddingHorizontal="30dp">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/hd_user"
+                android:backgroundTint="#55FF00"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/profile_border"
+                />
 
-        <Button
-            android:id="@+id/editProfile_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_drawable"
-            android:backgroundTint="#888"
-            android:textColor="@color/white"
-            android:layout_marginBottom="10dp"
-            android:text="Edit Profile" />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="#888"
-            android:textColor="@color/white"
-            android:background="@drawable/rounded_drawable"
-            android:text="Order History" />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="#888"
-            android:textColor="@color/white"
-            android:background="@drawable/rounded_drawable"
-            android:text="Change Password" />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="About the Developers"
-            android:backgroundTint="#888"
-            android:background="@drawable/rounded_drawable"
-            android:id="@+id/developers_button"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:backgroundTint="#640c0b"
-            android:text="Logout"
-            android:id="@+id/logout_button"
-            android:background="@drawable/rounded_drawable"
-            android:textColor="@color/white" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
 
+                <TextView
+                    android:id="@+id/settings_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:text="John Doe"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/settings_userId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="17-2068-369"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+        </LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="28dp">
+                <LinearLayout
+                    android:id="@+id/editProfile_button"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_drawable"
+                    android:backgroundTint="#555"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="16dp"
+                    android:layout_marginBottom="12dp">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/small_clipboard_icon"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:text="EDIT PROFILE"
+                        android:textColor="@color/white" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/arrow_facing_right"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_drawable"
+                    android:backgroundTint="#555"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="16dp"
+                    android:layout_marginBottom="36dp">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/small_lock_icon"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:text="CHANGE PASSWORD"
+                        android:textColor="@color/white" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/arrow_facing_right"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_drawable"
+                    android:backgroundTint="#555"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="16dp"
+                    android:layout_marginBottom="12dp"
+                    >
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/small_clipboard_icon"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:text="ORDER HISTORY"
+                        android:textColor="@color/white" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/arrow_facing_right"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/developers_button"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_drawable"
+                    android:backgroundTint="#555"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="16dp"
+                    android:layout_marginBottom="36dp"
+                    >
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/small_dev_icon"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:text="ABOUT THE DEVELOPERS"
+                        android:textColor="@color/white" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/arrow_facing_right"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/logout_button"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_drawable"
+                    android:backgroundTint="#9e0000"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="16dp">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/small_exit_icon"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:paddingHorizontal="20dp"
+                        android:text="LOGOUT"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
-
-
 </LinearLayout>

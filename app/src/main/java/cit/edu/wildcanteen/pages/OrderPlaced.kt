@@ -1,8 +1,9 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages
 
 import android.app.Activity
 import android.os.Bundle
 import android.widget.Button
+import cit.edu.wildcanteen.R
 
 class OrderPlaced : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen
+package cit.edu.wildcanteen.pages.admin_page
 
 import android.app.Activity
 import android.content.ContentResolver
@@ -11,10 +11,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cit.edu.wildcanteen.FoodItem
+import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.CloudinaryRepository
 import cit.edu.wildcanteen.repositories.FirebaseRepository
-import cit.edu.wildcanteen.repositories.FoodRepository
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream

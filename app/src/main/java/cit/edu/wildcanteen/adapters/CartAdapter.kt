@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import cit.edu.wildcanteen.FoodDetailsActivity
+import cit.edu.wildcanteen.pages.FoodDetailsActivity
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication

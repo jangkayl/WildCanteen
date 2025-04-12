@@ -7,7 +7,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.repositories.FirebaseRepository
-import cit.edu.wildcanteen.HomePageActivity
+import cit.edu.wildcanteen.pages.HomePageActivity
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.User
 import com.google.gson.Gson

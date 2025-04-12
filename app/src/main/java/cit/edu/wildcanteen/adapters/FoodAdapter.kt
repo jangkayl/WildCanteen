@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import cit.edu.wildcanteen.FoodDetailsActivity
+import cit.edu.wildcanteen.pages.FoodDetailsActivity
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.R
 import com.bumptech.glide.Glide

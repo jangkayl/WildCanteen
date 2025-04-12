@@ -20,11 +20,18 @@ data class CategoryItem(
 data class Order(
     val orderId: String,
     val userId: String,
+    val userName: String,
     val items: FoodItem,
     var quantity: Int,
     var totalAmount: Double,
     var status: String,
     val timestamp: Long
+)
+
+data class OrderItem(
+    val name: String,
+    val totalAmount: Double,
+    val quantity: Int
 )
 
 data class User(

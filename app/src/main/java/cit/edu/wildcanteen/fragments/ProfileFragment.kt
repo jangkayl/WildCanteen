@@ -6,13 +6,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import cit.edu.wildcanteen.DevelopersActivity
-import cit.edu.wildcanteen.EditProfileActivity
-import cit.edu.wildcanteen.LogoutActivity
+import cit.edu.wildcanteen.pages.DevelopersActivity
+import cit.edu.wildcanteen.pages.EditProfileActivity
+import cit.edu.wildcanteen.pages.LogoutActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
 import com.bumptech.glide.Glide
@@ -46,19 +46,19 @@ class ProfileFragment : Fragment() {
                 .into(profileImage)
         }
 
-        val logoutButton = view.findViewById<Button>(R.id.logout_button)
+        val logoutButton = view.findViewById<LinearLayout>(R.id.logout_button)
         logoutButton.setOnClickListener {
             val intent = Intent(requireContext(), LogoutActivity::class.java)
             startActivity(intent)
         }
 
-        val editProfileButton = view.findViewById<Button>(R.id.editProfile_button)
+        val editProfileButton = view.findViewById<LinearLayout>(R.id.editProfile_button)
         editProfileButton.setOnClickListener {
             val intent = Intent(requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
         }
 
-        val developersButton = view.findViewById<Button>(R.id.developers_button)
+        val developersButton = view.findViewById<LinearLayout>(R.id.developers_button)
         developersButton.setOnClickListener {
             val intent = Intent(requireContext(), DevelopersActivity::class.java)
             startActivity(intent)
