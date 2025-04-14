@@ -12,7 +12,7 @@ import cit.edu.wildcanteen.User
 import com.google.firebase.firestore.ListenerRegistration
 
 class FirebaseRepository {
-    private val db = FirebaseFirestore.getInstance()
+    val db = FirebaseFirestore.getInstance()
     private val usersCollection = db.collection("users")
     private val ordersCollection = db.collection("orders")
     private val foodCollection = db.collection("food_items")
@@ -341,6 +341,7 @@ class FirebaseRepository {
             .addOnSuccessListener { documents ->
                 val orderBatches = documents.mapNotNull { doc ->
                     try {
+                        Log.e("Firebase", "Getting Order Batches")
                         val data = doc.data
                         val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
                             try {
@@ -416,6 +417,7 @@ class FirebaseRepository {
                     val data = doc.data ?: return@mapNotNull null
                     val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
                         try {
+                            Log.e("Firebase", "Listening Order Batches")
                             val itemsMap = orderData["items"] as? Map<String, Any> ?: return@mapNotNull null
 
                             Order(

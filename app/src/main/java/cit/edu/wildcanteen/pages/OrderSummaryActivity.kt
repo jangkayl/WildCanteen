@@ -160,7 +160,6 @@ class OrderSummaryActivity : AppCompatActivity() {
     ) {
         val userId = MyApplication.studentId!!
         val userName = MyApplication.name!!
-
         val batchId = System.currentTimeMillis().toString()
 
         val orderBatch = OrderBatch(
@@ -175,24 +174,49 @@ class OrderSummaryActivity : AppCompatActivity() {
             timestamp = System.currentTimeMillis()
         )
 
-        // Save to Firebase
         FirebaseRepository().addOrderBatch(
             orderBatch = orderBatch,
             onSuccess = {
-                // Clear the cart after successful order
-                MyApplication.orders.clear()
+                deleteAllOrdersFromCart(userId, onSuccess = {
+                    MyApplication.orders.clear()
 
-                showOrderConfirmationDialog(
-                    deliveryMethod = deliveryMethod,
-                    paymentDetails = paymentDetails,
-                    totalAmount = "₱${"%.2f".format(totalAmount)}"
-                )
+                    showOrderConfirmationDialog(
+                        deliveryMethod = deliveryMethod,
+                        paymentDetails = paymentDetails,
+                        totalAmount = "₱${"%.2f".format(totalAmount)}"
+                    )
+                }, onFailure = { e ->
+                    showErrorDialog("Order placed but failed to clear cart: ${e.message}")
+                })
             },
             onFailure = { e ->
                 showErrorDialog("Failed to place order: ${e.message}")
             }
         )
     }
+
+    private fun deleteAllOrdersFromCart(
+        userId: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        FirebaseRepository().db.collection("orders")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { documents ->
+                val batch = FirebaseRepository().db.batch()
+
+                for (document in documents) {
+                    batch.delete(document.reference)
+                }
+
+                batch.commit()
+                    .addOnSuccessListener { onSuccess() }
+                    .addOnFailureListener { e -> onFailure(e) }
+            }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
 
     private fun showOrderConfirmationDialog(deliveryMethod: String, paymentDetails: String, totalAmount: String) {
         val message = """

@@ -35,4 +35,13 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
+    <Button
+        android:id="@+id/btnViewBatches"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View all Batches"
+        android:backgroundTint="#F57C00"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
 </LinearLayout>

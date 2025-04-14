@@ -59,5 +59,11 @@ xmlns:tools="http://schemas.android.com/tools">
     <activity
         android:name=".pages.OrderSummaryActivity"
         android:exported="false"/>
+    <activity
+        android:name=".pages.OrderBatchesActivity"
+        android:exported="false" />
+    <activity
+        android:name=".pages.OrderBatchDetailActivity"
+        android:exported="false" />
 </application>
 </manifest>

@@ -13,23 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Cart Title -->
-        <TextView
-            android:id="@+id/cartTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#111"
-            android:elevation="4dp"
-            android:paddingTop="13dp"
-            android:paddingBottom="20dp"
-            android:text="My Cart"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="21dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Food Items List -->
         <androidx.recyclerview.widget.RecyclerView
@@ -45,9 +28,9 @@
             app:layout_constraintBottom_toBottomOf="@+id/proceedContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cartTitle" />
+            app:layout_constraintTop_toTopOf="@+id/no_order_layout" />
 
-        <!--     No Order Found   -->
+        <!-- No Order Found -->
         <LinearLayout
             android:id="@+id/no_order_layout"
             android:layout_width="match_parent"
@@ -86,8 +69,6 @@
                 android:layout_marginTop="30dp"
                 android:textAllCaps="false"
                 android:text="Explore Menu"/>
-
-
         </LinearLayout>
 
         <!-- Floating Checkout Summary -->
@@ -218,5 +199,4 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:elevation="20dp"/>
-
 </FrameLayout>
