@@ -12,8 +12,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import cit.edu.wildcanteen.Order
+import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 
 class OrderSummaryActivity : AppCompatActivity() {
 
@@ -77,10 +79,12 @@ class OrderSummaryActivity : AppCompatActivity() {
                     cashInputContainer.visibility = View.VISIBLE
                     gcashInputContainer.visibility = View.GONE
                 }
+
                 R.id.gcashRadio -> {
                     cashInputContainer.visibility = View.GONE
                     gcashInputContainer.visibility = View.VISIBLE
                 }
+
                 else -> {
                     cashInputContainer.visibility = View.GONE
                     gcashInputContainer.visibility = View.GONE
@@ -98,10 +102,11 @@ class OrderSummaryActivity : AppCompatActivity() {
                 else -> "Delivery"
             }
 
-            val paymentDetails = when (paymentMethodGroup.checkedRadioButtonId) {
+            val total = totalPriceTextView.text.toString().replace("₱", "").toDouble()
+
+            when (paymentMethodGroup.checkedRadioButtonId) {
                 R.id.cashRadio -> {
                     val cashAmount = cashAmountInput.text.toString().toDoubleOrNull() ?: 0.0
-                    val total = totalPriceTextView.text.toString().replace("₱", "").toDouble()
 
                     if (cashAmount < total) {
                         showErrorDialog("Cash amount must be greater than total")
@@ -109,8 +114,19 @@ class OrderSummaryActivity : AppCompatActivity() {
                     }
 
                     val change = cashAmount - total
-                    "Payment Method: Cash\nAmount Given: ₱${"%.2f".format(cashAmount)}\nChange: ₱${"%.2f".format(change)}"
+                    val paymentDetails =
+                        "Payment Method: Cash\nAmount Given: ₱${"%.2f".format(cashAmount)}\nChange: ₱${
+                            "%.2f".format(change)
+                        }"
+
+                    processPayment(
+                        deliveryMethod = deliveryMethod,
+                        paymentMethod = "Cash",
+                        paymentDetails = paymentDetails,
+                        totalAmount = total
+                    )
                 }
+
                 R.id.gcashRadio -> {
                     val refNumber = gcashRefInput.text.toString()
 
@@ -119,20 +135,63 @@ class OrderSummaryActivity : AppCompatActivity() {
                         return@setOnClickListener
                     }
 
-                    "Payment Method: GCash\nReference Number: $refNumber"
+                    val paymentDetails = "Payment Method: GCash\nReference Number: $refNumber"
+
+                    processPayment(
+                        deliveryMethod = deliveryMethod,
+                        paymentMethod = "GCash",
+                        paymentDetails = paymentDetails,
+                        totalAmount = total
+                    )
                 }
+
                 else -> {
                     showErrorDialog("Please select a payment method")
-                    return@setOnClickListener
                 }
             }
-
-            showOrderConfirmationDialog(
-                deliveryMethod = deliveryMethod,
-                paymentDetails = paymentDetails,
-                totalAmount = totalPriceTextView.text.toString()
-            )
         }
+    }
+
+    private fun processPayment(
+        deliveryMethod: String,
+        paymentMethod: String,
+        paymentDetails: String,
+        totalAmount: Double
+    ) {
+        val userId = MyApplication.studentId!!
+        val userName = MyApplication.name!!
+
+        val batchId = System.currentTimeMillis().toString()
+
+        val orderBatch = OrderBatch(
+            batchId = batchId,
+            userId = userId,
+            userName = userName,
+            orders = cartOrders,
+            totalAmount = totalAmount,
+            status = "Pending",
+            paymentMethod = paymentMethod,
+            deliveryType = deliveryMethod,
+            timestamp = System.currentTimeMillis()
+        )
+
+        // Save to Firebase
+        FirebaseRepository().addOrderBatch(
+            orderBatch = orderBatch,
+            onSuccess = {
+                // Clear the cart after successful order
+                MyApplication.orders.clear()
+
+                showOrderConfirmationDialog(
+                    deliveryMethod = deliveryMethod,
+                    paymentDetails = paymentDetails,
+                    totalAmount = "₱${"%.2f".format(totalAmount)}"
+                )
+            },
+            onFailure = { e ->
+                showErrorDialog("Failed to place order: ${e.message}")
+            }
+        )
     }
 
     private fun showOrderConfirmationDialog(deliveryMethod: String, paymentDetails: String, totalAmount: String) {
@@ -155,6 +214,7 @@ class OrderSummaryActivity : AppCompatActivity() {
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
                 // You can add navigation back to home here if needed
+                finish()
             }
             .setCancelable(false)
             .show()

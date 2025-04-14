@@ -7,6 +7,7 @@ import android.util.Base64
 import android.util.Log
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.Order
+import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.User
 import com.google.firebase.firestore.ListenerRegistration
 
@@ -15,6 +16,7 @@ class FirebaseRepository {
     private val usersCollection = db.collection("users")
     private val ordersCollection = db.collection("orders")
     private val foodCollection = db.collection("food_items")
+    private val orderBatchesCollection = db.collection("order_batches")
 
     fun addFoodItem(foodItem: FoodItem, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val itemDocRef = foodCollection.document()
@@ -101,8 +103,6 @@ class FirebaseRepository {
                             items = foodItem,
                             quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
-                            status = data["status"] as? String ?: "",
-                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
                         )
                     } catch (e: Exception) {
                         Log.e("FirebaseOrders", "Error parsing order: ${doc.id}", e)
@@ -152,8 +152,6 @@ class FirebaseRepository {
                             items = foodItem,
                             quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
-                            status = data["status"] as? String ?: "",
-                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
                         )
                     } catch (e: Exception) {
                         Log.e("FirebaseOrders", "Error parsing order: ${doc.id}", e)
@@ -191,13 +189,6 @@ class FirebaseRepository {
                 Log.e("FirebaseSaveOrders", "Failed to save and remove orders", e)
                 onFailure(e)
             }
-    }
-
-    fun deleteOrder(orderId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        ordersCollection.document(orderId)
-            .delete()
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure(it) }
     }
 
     fun listenForFoodItemsUpdates(
@@ -264,8 +255,6 @@ class FirebaseRepository {
                             items = foodItem,
                             quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
-                            status = data["status"] as? String ?: "",
-                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
                         )
                     } catch (e: Exception) {
                         Log.e("FirebaseOrders", "Error parsing order", e)
@@ -308,8 +297,6 @@ class FirebaseRepository {
                             items = foodItem,
                             quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
-                            status = data["status"] as? String ?: "",
-                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
                         )
                     } catch (e: Exception) {
                         Log.e("FirebaseOrders", "Error parsing order", e)
@@ -319,6 +306,160 @@ class FirebaseRepository {
 
                 onUpdate(orders)
             }
+    }
+
+    fun addOrderBatch(
+        orderBatch: OrderBatch,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val batchDocRef = orderBatchesCollection.document(orderBatch.batchId)
+
+        batchDocRef.set(orderBatch)
+            .addOnSuccessListener {
+                Log.d("FirebaseOrderBatch", "Order batch added: ${orderBatch.batchId}")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseOrderBatch", "Failed to add order batch", e)
+                onFailure(e)
+            }
+    }
+
+    fun getOrderBatches(
+        userId: String? = null,
+        onSuccess: (List<OrderBatch>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val query = if (userId != null) {
+            orderBatchesCollection.whereEqualTo("userId", userId)
+        } else {
+            orderBatchesCollection
+        }
+
+        query.get()
+            .addOnSuccessListener { documents ->
+                val orderBatches = documents.mapNotNull { doc ->
+                    try {
+                        val data = doc.data
+                        val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
+                            try {
+                                val itemsMap = orderData["items"] as? Map<String, Any> ?: return@mapNotNull null
+
+                                Order(
+                                    orderId = orderData["orderId"] as? String ?: "",
+                                    userId = orderData["userId"] as? String ?: "",
+                                    userName = orderData["userName"] as? String ?: "",
+                                    items = FoodItem(
+                                        category = itemsMap["category"] as? String ?: "",
+                                        name = itemsMap["name"] as? String ?: "",
+                                        foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
+                                        price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                                        rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                                        description = itemsMap["description"] as? String ?: "",
+                                        imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                                        isPopular = itemsMap["isPopular"] as? Boolean ?: false,
+                                    ),
+                                    quantity = (orderData["quantity"] as? Number)?.toInt() ?: 0,
+                                    totalAmount = (orderData["totalAmount"] as? Number)?.toDouble() ?: 0.0
+                                )
+                            } catch (e: Exception) {
+                                Log.e("FirebaseOrderBatch", "Error parsing order", e)
+                                null
+                            }
+                        } ?: emptyList()
+
+                        OrderBatch(
+                            batchId = data["batchId"] as? String ?: doc.id,
+                            userId = data["userId"] as? String ?: "",
+                            userName = data["userName"] as? String ?: "",
+                            orders = ordersList,
+                            totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                            status = data["status"] as? String ?: "Pending",
+                            paymentMethod = data["paymentMethod"] as? String ?: "",
+                            deliveryType = data["deliveryType"] as? String ?: "",
+                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                        )
+                    } catch (e: Exception) {
+                        Log.e("FirebaseOrderBatch", "Error parsing order batch", e)
+                        null
+                    }
+                }.sortedByDescending { it.timestamp }
+
+                onSuccess(orderBatches)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseOrderBatch", "Failed to fetch order batches", exception)
+                onFailure(exception)
+            }
+    }
+
+    fun listenForOrderBatches(
+        userId: String? = null,
+        onUpdate: (List<OrderBatch>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ): ListenerRegistration {
+        val query = if (userId != null) {
+            orderBatchesCollection.whereEqualTo("userId", userId)
+        } else {
+            orderBatchesCollection
+        }
+
+        return query.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                onFailure(error)
+                return@addSnapshotListener
+            }
+
+            val orderBatches = snapshot?.documents?.mapNotNull { doc ->
+                try {
+                    val data = doc.data ?: return@mapNotNull null
+                    val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
+                        try {
+                            val itemsMap = orderData["items"] as? Map<String, Any> ?: return@mapNotNull null
+
+                            Order(
+                                orderId = orderData["orderId"] as? String ?: "",
+                                userId = orderData["userId"] as? String ?: "",
+                                userName = orderData["userName"] as? String ?: "",
+                                items = FoodItem(
+                                    category = itemsMap["category"] as? String ?: "",
+                                    name = itemsMap["name"] as? String ?: "",
+                                    foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
+                                    price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                                    rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                                    description = itemsMap["description"] as? String ?: "",
+                                    imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                                    isPopular = itemsMap["isPopular"] as? Boolean ?: false,
+                                ),
+                                quantity = (orderData["quantity"] as? Number)?.toInt() ?: 0,
+                                totalAmount = (orderData["totalAmount"] as? Number)?.toDouble() ?: 0.0
+                            )
+                        } catch (e: Exception) {
+                            Log.e("FirebaseOrderBatch", "Error parsing order", e)
+                            null
+                        }
+                    } ?: emptyList()
+
+                    OrderBatch(
+                        batchId = data["batchId"] as? String ?: doc.id,
+                        userId = data["userId"] as? String ?: "",
+                        userName = data["userName"] as? String ?: "",
+                        orders = ordersList,
+                        totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                        status = data["status"] as? String ?: "Pending",
+                        paymentMethod = data["paymentMethod"] as? String ?: "",
+                        deliveryType = data["deliveryType"] as? String ?: "",
+                        timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                    )
+                } catch (e: Exception) {
+                    Log.e("FirebaseOrderBatch", "Error parsing order batch", e)
+                    null
+                }
+            }?.sortedByDescending { it.timestamp } ?: emptyList()
+
+            onUpdate(orderBatches)
+        }
     }
 
     fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
@@ -376,13 +517,6 @@ class FirebaseRepository {
 
         usersCollection.document(userId)
             .set(modifiedUpdates, SetOptions.merge())
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure(it) }
-    }
-
-    fun deleteUser(userId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        usersCollection.document(userId)
-            .delete()
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onFailure(it) }
     }

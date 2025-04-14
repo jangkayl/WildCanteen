@@ -49,16 +49,6 @@
                 android:textStyle="bold"
                 android:textColor="#F79901"
                 android:paddingTop="2dp" />
-
-            <TextView
-                android:id="@+id/foodStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="In Queue"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                android:textColor="@color/gray"
-                android:paddingTop="2dp" />
         </LinearLayout>
 
         <!-- Quantity + Total -->

@@ -22,7 +22,6 @@ class AllOrderAdapter(
         val foodImage: ImageView = view.findViewById(R.id.foodImage)
         val foodName: TextView = view.findViewById(R.id.foodName)
         val foodPrice: TextView = view.findViewById(R.id.foodPrice)
-        val foodStatus: TextView = view.findViewById(R.id.foodStatus)
         val tvQuantity: TextView = view.findViewById(R.id.tvQuantity)
         val tvTotalAmount: TextView = view.findViewById(R.id.tvTotalAmount)
         val userFullName: TextView = view.findViewById(R.id.userFullName)
@@ -45,7 +44,6 @@ class AllOrderAdapter(
         holder.foodPrice.text = "₱%.2f".format(order.items.price)
         holder.tvQuantity.text = "${order.quantity}"
         holder.tvTotalAmount.text = "Total: ₱%.2f".format(order.items.price * order.quantity)
-        holder.foodStatus.text = order.status
         holder.userFullName.text = order.userName
         holder.userId.text = order.userId
 //        holder.paymentMethod.text = "Payment: ${order.paymentMethod}"

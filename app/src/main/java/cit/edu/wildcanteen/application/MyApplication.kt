@@ -115,7 +115,7 @@ class MyApplication : Application() {
         fun saveOrders(ordersToRemove: List<Order>) {
             val json = Gson().toJson(orders)
             prefs.edit().putString("ORDERS", json).apply()
-            Log.d("OrderDebug", "Saving orders: ${orders.joinToString { "${it.orderId} (${it.status})" }}")
+            Log.d("OrderDebug", "Saving orders: ${orders.joinToString { "${it.orderId}" }}")
 
             FirebaseRepository().saveOrders(orders, ordersToRemove, {
                 Log.d("OrderDebug", "Orders saved successfully to Firebase")
@@ -153,7 +153,7 @@ class MyApplication : Application() {
                 }
 
                 Log.d("OrderDebug", "Final orders: ${orders.size} items")
-                orders.forEach { Log.d("OrderDebug", "Order ${it.orderId} status: ${it.status}") }
+                orders.forEach { Log.d("OrderDebug", "Order ${it.orderId}") }
             }, { exception ->
                 Log.e("OrderDebug", "Failed to load orders from Firebase", exception)
 

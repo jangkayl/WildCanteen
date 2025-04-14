@@ -105,8 +105,6 @@ class FoodDetailsActivity : Activity() {
                 ),
                 quantity = quantity,
                 totalAmount = (foodPrice?.toDoubleOrNull() ?: 0.0) * quantity,
-                status = "In queue",
-                timestamp = System.currentTimeMillis()
             )
 
             MyApplication.addOrder(order)

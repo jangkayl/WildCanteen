@@ -1,5 +1,14 @@
 package cit.edu.wildcanteen
 
+data class User(
+    val studentId: String,
+    val profileImageUrl: String,
+    val name: String,
+    val password: String,
+    val userType: String,
+    val balance: Double
+)
+
 data class FoodItem(
     val category: String,
     val foodId: Int,
@@ -24,23 +33,18 @@ data class Order(
     val items: FoodItem,
     var quantity: Int,
     var totalAmount: Double,
-    var status: String,
-    val timestamp: Long
 )
 
-data class OrderItem(
-    val name: String,
+data class OrderBatch(
+    val batchId: String,
+    val userId: String,
+    val userName: String,
+    val orders: List<Order>,
     val totalAmount: Double,
-    val quantity: Int
-)
-
-data class User(
-    val studentId: String,
-    val profileImageUrl: String,
-    val name: String,
-    val password: String,
-    val userType: String,
-    val balance: Double
+    val status: String,
+    val paymentMethod: String,
+    val deliveryType: String,
+    val timestamp: Long
 )
 
 data class Feedback(

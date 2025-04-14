@@ -26,15 +26,6 @@
         android:paddingStart="10dp">
 
         <TextView
-            android:id="@+id/foodStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="In queue"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            android:textColor="@color/gray" />
-
-        <TextView
             android:id="@+id/foodName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
