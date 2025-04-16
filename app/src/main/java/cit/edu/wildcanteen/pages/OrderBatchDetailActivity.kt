@@ -90,6 +90,7 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.deliveryTypeText).text = ""
         findViewById<TextView>(R.id.totalAmountText).text = ""
         findViewById<TextView>(R.id.subtotalText).text = ""
+        findViewById<TextView>(R.id.deliveryFeeText).text = ""
         findViewById<TextView>(R.id.referenceNumberText).visibility = View.GONE
         findViewById<TextView>(R.id.deliveryAddressText).visibility = View.GONE
         adapter.submitList(emptyList())
@@ -104,7 +105,8 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.paymentMethodText).text = batch.paymentMethod
         findViewById<TextView>(R.id.deliveryTypeText).text = batch.deliveryType
         findViewById<TextView>(R.id.totalAmountText).text = "₱${"%.2f".format(batch.totalAmount)}"
-        findViewById<TextView>(R.id.subtotalText).text = "₱${"%.2f".format(batch.totalAmount + 5)}"
+        findViewById<TextView>(R.id.subtotalText).text = "₱${"%.2f".format(batch.totalAmount + 5 - batch.deliveryFee)}"
+        findViewById<TextView>(R.id.deliveryFeeText).text = "₱${"%.2f".format(batch.deliveryFee)}"
 
         if (batch.paymentMethod.equals("GCash", ignoreCase = true) && !batch.referenceNumber.isNullOrBlank()) {
             findViewById<TextView>(R.id.referenceNumberText).apply {

@@ -45,11 +45,11 @@ class OrderBatchAdapter(
 
         // Set status color
         when (batch.status.lowercase()) {
-            "pending" -> holder.status.setTextColor(Color.parseColor("#FFA500")) // Orange
-            "preparing" -> holder.status.setTextColor(Color.parseColor("#2196F3")) // Blue
-            "ready" -> holder.status.setTextColor(Color.parseColor("#4CAF50")) // Green
-            "completed" -> holder.status.setTextColor(Color.parseColor("#607D8B")) // Gray
-            "cancelled" -> holder.status.setTextColor(Color.parseColor("#F44336")) // Red
+            "pending" -> holder.status.setTextColor(Color.parseColor("#FFA500"))
+            "preparing" -> holder.status.setTextColor(Color.parseColor("#2196F3"))
+            "ready" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
+            "completed" -> holder.status.setTextColor(Color.parseColor("#607D8B"))
+            "cancelled" -> holder.status.setTextColor(Color.parseColor("#F44336"))
         }
 
         holder.itemView.setOnClickListener {
