@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -39,6 +40,7 @@ class CartFragment : Fragment() {
     private lateinit var cartAdapter: CartAdapter
     private var isProceedButtonClicked = false
     private var orderListener: ListenerRegistration? = null
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +58,7 @@ class CartFragment : Fragment() {
         totalAmount = view.findViewById(R.id.total_amount)
         noOrderLayout = view.findViewById(R.id.no_order_layout)
         exploreButton = view.findViewById(R.id.explore_button)
+        progressBar = view.findViewById(R.id.progressBar)
 
         cartAdapter = CartAdapter(requireContext(), cartOrders, ::removeOrderFromCart, ::updateTotalAmount)
         cartRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -135,6 +138,7 @@ class CartFragment : Fragment() {
     }
 
     private fun loadCartOrders() {
+        progressBar.visibility = View.VISIBLE
         cartOrders.clear()
         cartOrders.addAll(MyApplication.orders.reversed())
 
@@ -146,6 +150,7 @@ class CartFragment : Fragment() {
         proceedContainer.visibility = if (isCartEmpty) View.GONE else proceedContainer.visibility
 
         cartAdapter.notifyDataSetChanged()
+        progressBar.visibility = View.GONE
     }
 
     private fun removeOrderFromCart(order: Order) {

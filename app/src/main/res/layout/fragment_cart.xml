@@ -8,13 +8,18 @@
     android:background="#111"
     android:padding="15dp">
 
-    <!-- Main Content Inside ConstraintLayout -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:indeterminate="true"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <!-- Food Items List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cartRecyclerView"
             android:visibility="gone"
@@ -30,12 +35,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/no_order_layout" />
 
-        <!-- No Order Found -->
         <LinearLayout
             android:id="@+id/no_order_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_gravity="center"
             android:background="#111"
             android:gravity="center">
@@ -44,9 +49,7 @@
                 android:id="@+id/no_order"
                 android:layout_width="wrap_content"
                 android:layout_height="350dp"
-                android:src="@drawable/noorder"
-                tools:layout_editor_absoluteX="120dp"
-                tools:layout_editor_absoluteY="176dp" />
+                android:src="@drawable/noorder" />
 
             <TextView
                 android:id="@+id/no_order_text"
@@ -71,7 +74,6 @@
                 android:text="Explore Menu"/>
         </LinearLayout>
 
-        <!-- Floating Checkout Summary -->
         <LinearLayout
             android:id="@+id/proceedContainer"
             android:layout_width="match_parent"
@@ -84,16 +86,13 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent">
 
-            <!-- Price Breakdown -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="5dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,7 +100,6 @@
                     android:text="Sub-Total"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
-
                 <TextView
                     android:id="@+id/subtotal_amount"
                     android:layout_width="wrap_content"
@@ -116,7 +114,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="5dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -124,7 +121,6 @@
                     android:text="Delivery Charge"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
-
                 <TextView
                     android:id="@+id/charge_amount"
                     android:layout_width="wrap_content"
@@ -139,7 +135,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="5dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -147,7 +142,6 @@
                     android:text="Discount"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
-
                 <TextView
                     android:id="@+id/discount_amount"
                     android:layout_width="wrap_content"
@@ -162,7 +156,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="5dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -172,7 +165,6 @@
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/total_amount"
                     android:layout_width="wrap_content"
@@ -191,8 +183,8 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_gravity="bottom"
-        android:background="@drawable/rounded_drawable"
         android:layout_margin="15dp"
+        android:background="@drawable/rounded_drawable"
         android:backgroundTint="#F79901"
         android:text="Proceed"
         android:textAllCaps="false"

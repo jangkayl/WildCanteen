@@ -63,6 +63,14 @@ class DeliveryOrderAdapter(
 
         holder.itemView.setOnClickListener { onItemClick(batch) }
         holder.acceptBtn.setOnClickListener { onAcceptClick(batch) }
+
+        if(batch.deliveredBy != ""){
+            holder.acceptBtn.text = "Chat Buyer"
+            holder.acceptBtn.backgroundTintList = ContextCompat.getColorStateList(
+                holder.itemView.context,
+                R.color.green
+            )
+        }
     }
 
     private fun getRelativeTime(timestamp: Long): String {

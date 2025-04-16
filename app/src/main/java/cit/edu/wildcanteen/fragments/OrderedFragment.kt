@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +28,7 @@ class OrderedFragment : Fragment() {
     private var orderBatchListener: ListenerRegistration? = null
     private lateinit var noOrderLayout: LinearLayout
     private lateinit var exploreButton: Button
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +39,7 @@ class OrderedFragment : Fragment() {
         recyclerView = view.findViewById(R.id.orderedRecyclerView)
         noOrderLayout = view.findViewById(R.id.no_order_layout)
         exploreButton = view.findViewById(R.id.explore_button)
+        progressBar = view.findViewById(R.id.progress_bar)
         return view
     }
 
@@ -69,6 +72,7 @@ class OrderedFragment : Fragment() {
         )
         recyclerView.setHasFixedSize(true)
 
+        progressBar.visibility = View.VISIBLE
         loadOrderedBatches()
     }
 
@@ -78,8 +82,9 @@ class OrderedFragment : Fragment() {
         orderBatchListener = FirebaseRepository().listenForOrderBatches(
             userId = userId,
             onUpdate = { batches ->
+                progressBar.visibility = View.GONE
                 val pendingBatches = batches.filter {
-                    it.status == "Pending" || it.status == "Preparing" || it.status == "Ready"
+                    it.status == "Pending" || it.status == "Preparing" || it.status == "Delivering" || it.status == "Ready"
                 }.sortedByDescending { it.timestamp }
 
                 adapter.submitList(pendingBatches)
@@ -91,6 +96,7 @@ class OrderedFragment : Fragment() {
                 }
             },
             onFailure = { e ->
+                progressBar.visibility = View.GONE
                 Log.e("OrderedFragment", "Error loading ordered batches", e)
                 noOrderLayout.visibility = View.VISIBLE
             }

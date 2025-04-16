@@ -44,6 +44,7 @@ class OrderedBatchesAdapter(
         when (batch.status.lowercase()) {
             "pending" -> holder.status.setTextColor(Color.parseColor("#FFA500"))
             "preparing" -> holder.status.setTextColor(Color.parseColor("#2196F3"))
+            "delivering" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
             "ready" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
             "completed" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
             "cancelled" -> holder.status.setTextColor(Color.parseColor("#F44336"))

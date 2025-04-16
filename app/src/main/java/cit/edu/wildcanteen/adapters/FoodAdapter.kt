@@ -30,10 +30,12 @@ class FoodAdapter(
                 val food = foodList[adapterPosition]
                 val intent = Intent(context, FoodDetailsActivity::class.java).apply {
                     putExtra("FOOD_CATEGORY", food.category)
+                    putExtra("FOOD_CANTEEN_ID", food.canteenId)
                     putExtra("FOOD_ID", food.foodId.toString())
                     putExtra("FOOD_NAME", food.name)
                     putExtra("FOOD_PRICE", food.price.toString())
                     putExtra("FOOD_RATING", food.rating.toString())
+                    putExtra("FOOD_CANTEEN", food.canteenName)
                     putExtra("FOOD_DESCRIPTION", food.description)
                     putExtra("FOOD_IMAGE", food.imageUrl)
                     putExtra("FOOD_POPULAR", food.isPopular)

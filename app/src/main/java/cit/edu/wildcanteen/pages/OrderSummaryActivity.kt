@@ -123,7 +123,6 @@ class OrderSummaryActivity : AppCompatActivity() {
 
             val total = totalPriceTextView.text.toString().replace("₱", "").toDouble()
 
-            // Validate delivery address if delivery is selected
             if (deliveryMethod == "Delivery" && deliveryAddressInput.text.toString().isEmpty()) {
                 showErrorDialog("Please enter delivery address")
                 payNowButton.isEnabled = true

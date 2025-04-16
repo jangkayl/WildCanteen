@@ -25,8 +25,10 @@ class AddFoodItemActivity : AppCompatActivity() {
     private lateinit var etName: EditText
     private lateinit var etPrice: EditText
     private lateinit var etRating: EditText
+    private lateinit var etCanteen: EditText
     private lateinit var etDescription: EditText
     private lateinit var etImageUrl: EditText
+    private lateinit var etCanteenId: EditText
     private lateinit var etPopular: CheckBox
     private lateinit var btnAddFood: Button
     private lateinit var btnSelectImage: Button
@@ -49,9 +51,11 @@ class AddFoodItemActivity : AppCompatActivity() {
         etName = findViewById(R.id.etName)
         etPrice = findViewById(R.id.etPrice)
         etRating = findViewById(R.id.etRating)
+        etCanteen = findViewById(R.id.etCanteen)
         etDescription = findViewById(R.id.etDescription)
         etPopular = findViewById(R.id.cbPopular)
         etImageUrl = findViewById(R.id.etImageUrl)
+        etCanteenId = findViewById(R.id.etCanteenId)
         btnAddFood = findViewById(R.id.btnAddFood)
         btnSelectImage = findViewById(R.id.btnSelectImage)
         ivPreview = findViewById(R.id.ivPreview)
@@ -133,6 +137,8 @@ class AddFoodItemActivity : AppCompatActivity() {
         val name = etName.text.toString().trim()
         val price = etPrice.text.toString().toDoubleOrNull() ?: 0.0
         val rating = etRating.text.toString().toDoubleOrNull() ?: 0.0
+        val canteenName = etCanteen.text.toString().trim()
+        val canteenId = etCanteenId.text.toString().trim()
         val description = etDescription.text.toString().trim()
         val isPopular = etPopular.isChecked
         val foodItemSize = MyApplication.foodItems.size
@@ -142,7 +148,7 @@ class AddFoodItemActivity : AppCompatActivity() {
             return
         }
 
-        val foodItem = FoodItem(category,foodItemSize+1, name, price, rating, description, imageUrl, isPopular)
+        val foodItem = FoodItem(category,foodItemSize+1, name, price, rating, canteenId, canteenName, description, imageUrl, isPopular)
 
         firebaseRepository.addFoodItem(foodItem, {
             Toast.makeText(this, "Food item added successfully", Toast.LENGTH_SHORT).show()

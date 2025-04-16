@@ -71,7 +71,6 @@ class MyApplication : Application() {
             profileImageUrl = user.profileImageUrl
             password = user.password
             userType = user.userType
-            balance = user.balance
             isLoggedIn = true
             currentUser = user
             loadOrders()

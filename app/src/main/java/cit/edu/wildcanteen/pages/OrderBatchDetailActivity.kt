@@ -2,6 +2,7 @@ package cit.edu.wildcanteen.pages
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -9,10 +10,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import cit.edu.wildcanteen.CanteenOrderGroup
 import cit.edu.wildcanteen.OrderBatch
+import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import java.text.SimpleDateFormat
@@ -21,7 +21,6 @@ import java.util.Locale
 
 class OrderBatchDetailActivity : AppCompatActivity() {
     private lateinit var firebaseRepository: FirebaseRepository
-    private lateinit var adapter: OrderItemAdapter
     private lateinit var batchId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,24 +38,7 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         loadOrderBatchDetails()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        adapter.submitList(emptyList())
-    }
-
     private fun setupViews() {
-        adapter = OrderItemAdapter()
-        findViewById<RecyclerView>(R.id.orderItemsRecyclerView).apply {
-            layoutManager = LinearLayoutManager(this@OrderBatchDetailActivity)
-            adapter = this@OrderBatchDetailActivity.adapter
-
-            val divider = DividerItemDecoration(this@OrderBatchDetailActivity, DividerItemDecoration.VERTICAL)
-            ContextCompat.getDrawable(this@OrderBatchDetailActivity, R.drawable.divider)?.let {
-                divider.setDrawable(it)
-            }
-            addItemDecoration(divider)
-        }
-
         findViewById<ImageView>(R.id.btn_back).setOnClickListener {
             finish()
         }
@@ -93,7 +75,7 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.deliveryFeeText).text = ""
         findViewById<TextView>(R.id.referenceNumberText).visibility = View.GONE
         findViewById<TextView>(R.id.deliveryAddressText).visibility = View.GONE
-        adapter.submitList(emptyList())
+        findViewById<LinearLayout>(R.id.orderItemsContainer).removeAllViews()
     }
 
     private fun updateUI(batch: OrderBatch) {
@@ -140,6 +122,92 @@ class OrderBatchDetailActivity : AppCompatActivity() {
             "cancelled" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#F44336"))
         }
 
-        adapter.submitList(batch.orders)
+        Log.d("OrderBatchDetail", "Grouped orders count: ${batch.orders}")
+
+        val orderedCanteenNames = batch.orders.map { it.canteenName }.distinct()
+
+        val groupedOrders = orderedCanteenNames.map { canteenName ->
+            val ordersForCanteen = batch.orders.filter { it.canteenName == canteenName }
+            CanteenOrderGroup(canteenName, ordersForCanteen)
+        }
+
+        Log.d("OrderBatchDetail", "Grouped order list:")
+        groupedOrders.forEach {
+            Log.d("OrderBatchDetail", "Canteen: ${it.canteenName}, Items: ${it.orders.size}")
+        }
+
+        Log.d("OrderBatchDetail", "Grouped orders count: ${groupedOrders.size}")
+        groupedOrders.forEach { group ->
+            Log.d("OrderBatchDetail", "Canteen: ${group.orders}}, Items: ${group.orders.size}")
+        }
+
+        displayGroupedOrders(groupedOrders)
     }
+
+    private fun displayGroupedOrders(groupedOrders: List<CanteenOrderGroup>) {
+        val orderItemsContainer = findViewById<LinearLayout>(R.id.orderItemsContainer)
+        orderItemsContainer.removeAllViews()
+
+        for (group in groupedOrders) {
+            try {
+                Log.d("OrderBatchDetail", "Adding canteen header for: ${group.canteenName ?: "Unknown"}")
+
+                val headerParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, resources.getDimensionPixelSize(R.dimen.small_margin))
+                }
+
+                val canteenHeader = layoutInflater.inflate(R.layout.item_canteen_header, null).apply {
+                    layoutParams = headerParams
+                    findViewById<TextView>(R.id.canteenNameText).text = group.canteenName.takeIf { it.isNotBlank() } ?: "Unknown Canteen"
+                }
+                orderItemsContainer.addView(canteenHeader)
+
+                val divider = View(this).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        resources.getDimensionPixelSize(R.dimen.divider_height)
+                    ).apply {
+                        setMargins(0, 0, 0, resources.getDimensionPixelSize(R.dimen.small_margin))
+                    }
+                    setBackgroundColor(ContextCompat.getColor(this@OrderBatchDetailActivity, R.color.gray))
+                }
+                orderItemsContainer.addView(divider)
+
+                val itemParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, resources.getDimensionPixelSize(R.dimen.small_margin))
+                }
+
+                for (order in group.orders) {
+                    val orderItemView = layoutInflater.inflate(R.layout.item_order, null).apply {
+                        layoutParams = itemParams
+                        findViewById<TextView>(R.id.itemNameText).text = order.items.name
+                        findViewById<TextView>(R.id.itemQuantityText).text = "x${order.quantity}"
+                        findViewById<TextView>(R.id.itemPriceText).text = "₱${"%.2f".format(order.items.price * order.quantity)}"
+                    }
+                    orderItemsContainer.addView(orderItemView)
+                }
+
+                if (group != groupedOrders.last()) {
+                    val spacer = View(this).apply {
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            resources.getDimensionPixelSize(R.dimen.medium_margin)
+                        )
+                    }
+                    orderItemsContainer.addView(spacer)
+                }
+
+            } catch (e: Exception) {
+                Log.e("OrderBatchDetail", "Error displaying canteen group: ${e.message}", e)
+                Toast.makeText(this, "Error displaying order details", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 }

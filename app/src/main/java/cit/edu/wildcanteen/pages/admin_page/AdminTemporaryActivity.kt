@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.pages.OrderBatchesActivity
+import cit.edu.wildcanteen.repositories.FoodRepository
 
 class AdminTemporaryActivity : AppCompatActivity() {
 

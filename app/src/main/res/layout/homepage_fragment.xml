@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Make order"
-            android:backgroundTint="#888"
+            android:backgroundTint="@color/darkBrown"
             android:textColor="#FFF"
             android:background="@drawable/rounded_drawable"
             android:layout_margin="8dp"/>
@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Assist in Delivery"
-            android:backgroundTint="#888"
+            android:backgroundTint="@color/selectedColor"
             android:textColor="#FFF"
             android:background="@drawable/rounded_drawable"
             android:layout_margin="8dp"/>

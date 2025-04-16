@@ -111,22 +111,36 @@
         android:layout_below="@id/food_name"
         android:layout_alignParentStart="true" />
 
+    <!-- RecyclerView for feedbacks -->
+
+    <TextView
+        android:id="@+id/canteen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/food_rating"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="10dp"
+        android:text="College Canteen"
+        android:textColor="#ffa000"
+        android:textSize="16sp" />
+
     <TextView
         android:id="@+id/foodDescription"
         android:layout_width="347dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/food_rating"
+        android:layout_below="@+id/canteen"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="33dp"
         android:paddingTop="8dp"
         android:text="Delicious food with amazing taste!"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
-    <!-- RecyclerView for feedbacks -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerFeedbacks"
         android:layout_width="match_parent"

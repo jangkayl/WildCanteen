@@ -26,6 +26,7 @@ class OrderHistoryFragment : Fragment() {
     private lateinit var adapter: OrderedBatchesAdapter
     private lateinit var noOrderLayout: LinearLayout
     private lateinit var exploreButton: Button
+    private lateinit var progressBar: View
     private var orderBatchListener: ListenerRegistration? = null
 
     override fun onCreateView(
@@ -37,6 +38,7 @@ class OrderHistoryFragment : Fragment() {
         recyclerView = view.findViewById(R.id.historyRecyclerView)
         noOrderLayout = view.findViewById(R.id.no_order_layout)
         exploreButton = view.findViewById(R.id.explore_button)
+        progressBar = view.findViewById(R.id.progressBar)
         return view
     }
 
@@ -62,10 +64,7 @@ class OrderHistoryFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
         recyclerView.setHasFixedSize(true)
 
@@ -75,23 +74,24 @@ class OrderHistoryFragment : Fragment() {
     private fun loadOrderHistory() {
         val userId = MyApplication.studentId ?: return
 
+        progressBar.visibility = View.VISIBLE
+
         orderBatchListener = FirebaseRepository().listenForOrderBatches(
             userId = userId,
             onUpdate = { batches ->
+                progressBar.visibility = View.GONE
+
                 val historyBatches = batches.filter {
                     it.status == "Completed" || it.status == "Cancelled"
                 }.sortedByDescending { it.timestamp }
 
                 adapter.submitList(historyBatches)
 
-                if (historyBatches.isEmpty()) {
-                    noOrderLayout.visibility = View.VISIBLE
-                } else {
-                    noOrderLayout.visibility = View.GONE
-                }
+                noOrderLayout.visibility = if (historyBatches.isEmpty()) View.VISIBLE else View.GONE
             },
             onFailure = { e ->
                 Log.e("OrderHistoryFragment", "Error loading order history", e)
+                progressBar.visibility = View.GONE
                 noOrderLayout.visibility = View.VISIBLE
             }
         )

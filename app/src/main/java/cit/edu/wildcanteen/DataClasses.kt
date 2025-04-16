@@ -6,7 +6,6 @@ data class User(
     val name: String,
     val password: String,
     val userType: String,
-    val balance: Double
 )
 
 data class FoodItem(
@@ -15,6 +14,8 @@ data class FoodItem(
     val name: String,
     val price: Double,
     val rating: Double,
+    val canteenId: String,
+    val canteenName: String,
     val description: String,
     val imageUrl: String,
     val isPopular: Boolean,
@@ -28,11 +29,18 @@ data class CategoryItem(
 
 data class Order(
     val orderId: String,
+    val canteenId: String,
+    val canteenName: String,
     val userId: String,
     val userName: String,
     val items: FoodItem,
     var quantity: Int,
     var totalAmount: Double,
+)
+
+data class CanteenOrderGroup(
+    val canteenName: String,
+    val orders: List<Order>
 )
 
 data class OrderBatch(
@@ -61,4 +69,6 @@ data class Feedback(
     val text: String,
     val timestamp: Long
 )
+
+
 

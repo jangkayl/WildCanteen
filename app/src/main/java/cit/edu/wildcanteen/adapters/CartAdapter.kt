@@ -69,6 +69,8 @@ class CartAdapter(
             if (firstItem != null && view.id != R.id.cart_buttons) {
                 val intent = Intent(context, FoodDetailsActivity::class.java).apply {
                     putExtra("FOOD_CATEGORY", firstItem.category)
+                    putExtra("FOOD_CANTEEN_ID", firstItem.canteenId)
+                    putExtra("FOOD_CANTEEN_NAME", firstItem.canteenName)
                     putExtra("FOOD_ID", firstItem.foodId.toString())
                     putExtra("FOOD_NAME", firstItem.name)
                     putExtra("FOOD_PRICE", firstItem.price.toString())

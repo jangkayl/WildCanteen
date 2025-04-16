@@ -37,6 +37,8 @@ class FoodDetailsActivity : Activity() {
         val foodImage = intent.getStringExtra("FOOD_IMAGE")
         val foodDescription = intent.getStringExtra("FOOD_DESCRIPTION")
         val foodPopular = intent.getBooleanExtra("FOOD_POPULAR", false)
+        val foodCanteen = intent.getStringExtra("FOOD_CANTEEN") + " Canteen"
+        val foodCanteenId = intent.getStringExtra("FOOD_CANTEEN_ID")
         val foodFeedbacks = intent.getSerializableExtra("FOOD_FEEDBACKS") as? List<Feedback>
 
         findViewById<TextView>(R.id.food_name).text = foodName
@@ -91,6 +93,8 @@ class FoodDetailsActivity : Activity() {
         btnOrder.setOnClickListener {
             val order = Order(
                 orderId = System.currentTimeMillis().toString(),
+                canteenName = foodCanteen,
+                canteenId = foodCanteenId!!,
                 userId = MyApplication.studentId!!,
                 userName = MyApplication.name!!,
                 items = FoodItem(
@@ -98,6 +102,8 @@ class FoodDetailsActivity : Activity() {
                     name = foodName ?: "Unknown",
                     price = foodPrice?.toDoubleOrNull() ?: 0.0,
                     rating = foodRating?.toDoubleOrNull() ?: 0.0,
+                    canteenName = foodCanteen,
+                    canteenId = foodCanteenId,
                     description = foodDescription ?: "",
                     imageUrl = foodImage ?: "",
                     isPopular = foodPopular,

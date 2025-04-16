@@ -49,6 +49,17 @@
                 android:inputType="numberDecimal" />
 
             <EditText
+                android:id="@+id/etCanteenId"
+                style="@style/CanteenEditText"
+                android:hint="Canteen Id"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/etCanteen"
+                style="@style/CanteenEditText"
+                android:hint="Canteen Name" />
+
+            <EditText
                 android:id="@+id/etDescription"
                 style="@style/CanteenEditText"
                 android:hint="Description" />

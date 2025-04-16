@@ -50,6 +50,8 @@ class FirebaseRepository {
                         foodId = doc.getLong("foodId")?.toInt() ?: 0,
                         price = doc.getDouble("price") ?: 0.0,
                         rating = doc.getDouble("rating") ?: 0.0,
+                        canteenId = doc.getString("canteenId") ?: "",
+                        canteenName = doc.getString("canteenName") ?: "",
                         description = doc.getString("description") ?: "",
                         imageUrl = doc.getString("imageUrl") ?: "",
                         isPopular = doc.getBoolean("popular") ?: false,
@@ -91,6 +93,8 @@ class FirebaseRepository {
                             foodId = itemsMap["foodId"] as? Int ?: 0,
                             price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                             rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            canteenId = itemsMap["canteenId"] as? String?: "",
+                            canteenName = itemsMap["canteenName"] as? String ?: "",
                             description = itemsMap["description"] as? String ?: "",
                             imageUrl = itemsMap["imageUrl"] as? String ?: "",
                             isPopular = itemsMap["isPopular"] as? Boolean ?: false,
@@ -98,6 +102,8 @@ class FirebaseRepository {
 
                         Order(
                             orderId = data["orderId"] as? String ?: "",
+                            canteenId = data["canteenId"] as? String?: "",
+                            canteenName = data["canteenName"] as? String ?: "",
                             userId = data["userId"] as? String ?: "",
                             userName = data["userName"] as? String ?: "",
                             items = foodItem,
@@ -140,6 +146,8 @@ class FirebaseRepository {
                             foodId = itemsMap["foodId"] as? Int ?: 0,
                             price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                             rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            canteenId = itemsMap["canteenId"] as? String?: "",
+                            canteenName = itemsMap["canteenName"] as? String ?: "",
                             description = itemsMap["description"] as? String ?: "",
                             imageUrl = itemsMap["imageUrl"] as? String ?: "",
                             isPopular = itemsMap["isPopular"] as? Boolean ?: false,
@@ -147,6 +155,8 @@ class FirebaseRepository {
 
                         Order(
                             orderId = data["orderId"] as? String ?: "",
+                            canteenId = data["canteenId"] as? String?: "",
+                            canteenName = data["canteenName"] as? String ?: "",
                             userId = data["userId"] as? String ?: "",
                             userName = data["userName"] as? String ?: "",
                             items = foodItem,
@@ -210,6 +220,8 @@ class FirebaseRepository {
                         foodId = doc.getLong("foodId")?.toInt() ?: 0,
                         price = doc.getDouble("price") ?: 0.0,
                         rating = doc.getDouble("rating") ?: 0.0,
+                        canteenId = doc.getString("canteenId") ?: "",
+                        canteenName = doc.getString("canteenName") ?: "",
                         description = doc.getString("description") ?: "",
                         imageUrl = doc.getString("imageUrl") ?: "",
                         isPopular = doc.getBoolean("popular") ?: false,
@@ -245,6 +257,8 @@ class FirebaseRepository {
                             foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
                             price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                             rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            canteenId = itemsMap["canteenId"] as? String?: "",
+                            canteenName = itemsMap["canteenName"] as? String ?: "",
                             description = itemsMap["description"] as? String ?: "",
                             imageUrl = itemsMap["imageUrl"] as? String ?: "",
                             isPopular = itemsMap["isPopular"] as? Boolean ?: false,
@@ -252,6 +266,8 @@ class FirebaseRepository {
 
                         Order(
                             orderId = data["orderId"] as? String ?: "",
+                            canteenId = data["canteenId"] as? String?: "",
+                            canteenName = data["canteenName"] as? String ?: "",
                             userId = data["userId"] as? String ?: "",
                             userName = data["userName"] as? String ?: "",
                             items = foodItem,
@@ -288,6 +304,8 @@ class FirebaseRepository {
                             foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
                             price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                             rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                            canteenId = itemsMap["canteenId"] as? String?: "",
+                            canteenName = itemsMap["canteenName"] as? String ?: "",
                             description = itemsMap["description"] as? String ?: "",
                             imageUrl = itemsMap["imageUrl"] as? String ?: "",
                             isPopular = itemsMap["isPopular"] as? Boolean ?: false,
@@ -295,6 +313,8 @@ class FirebaseRepository {
 
                         Order(
                             orderId = data["orderId"] as? String ?: "",
+                            canteenId = data["canteenId"] as? String?: "",
+                            canteenName = data["canteenName"] as? String ?: "",
                             userId = data["userId"] as? String ?: "",
                             userName = data["userName"] as? String ?: "",
                             items = foodItem,
@@ -352,6 +372,8 @@ class FirebaseRepository {
 
                                 Order(
                                     orderId = orderData["orderId"] as? String ?: "",
+                                    canteenId = orderData["canteenId"] as? String?: "",
+                                    canteenName = orderData["canteenName"] as? String ?: "",
                                     userId = orderData["userId"] as? String ?: "",
                                     userName = orderData["userName"] as? String ?: "",
                                     items = FoodItem(
@@ -360,6 +382,8 @@ class FirebaseRepository {
                                         foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
                                         price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                                         rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                                        canteenId = itemsMap["canteenId"] as? String?: "",
+                                        canteenName = itemsMap["canteenName"] as? String ?: "",
                                         description = itemsMap["description"] as? String ?: "",
                                         imageUrl = itemsMap["imageUrl"] as? String ?: "",
                                         isPopular = itemsMap["isPopular"] as? Boolean ?: false,
@@ -429,6 +453,8 @@ class FirebaseRepository {
 
                             Order(
                                 orderId = orderData["orderId"] as? String ?: "",
+                                canteenId = orderData["canteenId"] as? String ?: "",
+                                canteenName = orderData["canteenName"] as? String ?: "",
                                 userId = orderData["userId"] as? String ?: "",
                                 userName = orderData["userName"] as? String ?: "",
                                 items = FoodItem(
@@ -437,6 +463,8 @@ class FirebaseRepository {
                                     foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
                                     price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
                                     rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                                    canteenName = itemsMap["canteenName"] as? String ?: "",
+                                    canteenId = itemsMap["canteenId"] as? String ?: "",
                                     description = itemsMap["description"] as? String ?: "",
                                     imageUrl = itemsMap["imageUrl"] as? String ?: "",
                                     isPopular = itemsMap["isPopular"] as? Boolean ?: false,
@@ -475,6 +503,14 @@ class FirebaseRepository {
         }
     }
 
+    fun acceptDeliveryOrder(batchId: String, studentId: String, callback: (Boolean, Exception?) -> Unit) {
+        val batchRef = orderBatchesCollection.document(batchId)
+
+        batchRef.update("deliveredBy", studentId, "status", "Delivering")
+            .addOnSuccessListener { callback(true, null) }
+            .addOnFailureListener { e -> callback(false, e) }
+    }
+
     fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val hashedPassword = hashPassword(user.password)
 
@@ -484,7 +520,6 @@ class FirebaseRepository {
             name = user.name,
             password = hashedPassword,
             userType = user.userType,
-            balance = user.balance
         )
 
         usersCollection.document(user.studentId)
@@ -504,7 +539,6 @@ class FirebaseRepository {
                             profileImageUrl = data["profileImageUrl"] as? String ?: "Unkown",
                             password = data["password"] as? String ?: "",
                             userType = data["userType"] as? String ?: "",
-                            balance = (data["balance"] as? Number)?.toDouble() ?: 0.0
                         )
                     }
                     onSuccess(user)
