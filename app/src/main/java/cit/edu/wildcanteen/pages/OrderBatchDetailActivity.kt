@@ -1,21 +1,19 @@
 package cit.edu.wildcanteen.pages
 
-import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.R
-import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -41,12 +39,22 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         loadOrderBatchDetails()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter.submitList(emptyList())
+    }
+
     private fun setupViews() {
         adapter = OrderItemAdapter()
         findViewById<RecyclerView>(R.id.orderItemsRecyclerView).apply {
             layoutManager = LinearLayoutManager(this@OrderBatchDetailActivity)
             adapter = this@OrderBatchDetailActivity.adapter
-            addItemDecoration(DividerItemDecoration(this@OrderBatchDetailActivity, DividerItemDecoration.VERTICAL))
+
+            val divider = DividerItemDecoration(this@OrderBatchDetailActivity, DividerItemDecoration.VERTICAL)
+            ContextCompat.getDrawable(this@OrderBatchDetailActivity, R.drawable.divider)?.let {
+                divider.setDrawable(it)
+            }
+            addItemDecoration(divider)
         }
 
         findViewById<ImageView>(R.id.btn_back).setOnClickListener {
@@ -55,6 +63,8 @@ class OrderBatchDetailActivity : AppCompatActivity() {
     }
 
     private fun loadOrderBatchDetails() {
+        resetUI()
+
         firebaseRepository.getOrderBatches(
             onSuccess = { batches ->
                 val batch = batches.firstOrNull { it.batchId == batchId } ?: run {
@@ -62,7 +72,6 @@ class OrderBatchDetailActivity : AppCompatActivity() {
                     finish()
                     return@getOrderBatches
                 }
-
                 updateUI(batch)
             },
             onFailure = { e ->
@@ -70,6 +79,20 @@ class OrderBatchDetailActivity : AppCompatActivity() {
                 finish()
             }
         )
+    }
+
+    private fun resetUI() {
+        findViewById<TextView>(R.id.batchIdText).text = ""
+        findViewById<TextView>(R.id.customerNameText).text = ""
+        findViewById<TextView>(R.id.statusText).text = ""
+        findViewById<TextView>(R.id.dateText).text = ""
+        findViewById<TextView>(R.id.paymentMethodText).text = ""
+        findViewById<TextView>(R.id.deliveryTypeText).text = ""
+        findViewById<TextView>(R.id.totalAmountText).text = ""
+        findViewById<TextView>(R.id.subtotalText).text = ""
+        findViewById<TextView>(R.id.referenceNumberText).visibility = View.GONE
+        findViewById<TextView>(R.id.deliveryAddressText).visibility = View.GONE
+        adapter.submitList(emptyList())
     }
 
     private fun updateUI(batch: OrderBatch) {
@@ -81,8 +104,32 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.paymentMethodText).text = batch.paymentMethod
         findViewById<TextView>(R.id.deliveryTypeText).text = batch.deliveryType
         findViewById<TextView>(R.id.totalAmountText).text = "₱${"%.2f".format(batch.totalAmount)}"
+        findViewById<TextView>(R.id.subtotalText).text = "₱${"%.2f".format(batch.totalAmount + 5)}"
 
-        // Set status color
+        if (batch.paymentMethod.equals("GCash", ignoreCase = true) && !batch.referenceNumber.isNullOrBlank()) {
+            findViewById<TextView>(R.id.referenceNumberText).apply {
+                visibility = View.VISIBLE
+                text = "Ref: ${batch.referenceNumber}"
+            }
+        }
+
+        if (batch.paymentMethod.equals("Cash", ignoreCase = true) && !batch.referenceNumber.isNullOrBlank()) {
+            findViewById<TextView>(R.id.referenceNumberText).apply {
+                visibility = View.VISIBLE
+                text = "Amount: ${batch.referenceNumber}"
+            }
+        }
+
+        if (batch.deliveryType.equals("Delivery", ignoreCase = true) && !batch.deliveryAddress.isNullOrBlank()) {
+            findViewById<LinearLayout>(R.id.deliveryLayout).apply {
+                visibility = View.VISIBLE
+            }
+            findViewById<TextView>(R.id.deliveryAddressText).apply {
+                visibility = View.VISIBLE
+                text = batch.deliveryAddress
+            }
+        }
+
         when (batch.status.lowercase()) {
             "pending" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#FFA500"))
             "preparing" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#2196F3"))
@@ -92,44 +139,5 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         }
 
         adapter.submitList(batch.orders)
-
-        // Show action buttons for admin
-        if (MyApplication.userType == "admin") {
-            findViewById<LinearLayout>(R.id.adminActionsLayout).visibility = View.VISIBLE
-
-            findViewById<Button>(R.id.btnUpdateStatus).setOnClickListener {
-                showStatusUpdateDialog(batch)
-            }
-        } else {
-            findViewById<LinearLayout>(R.id.adminActionsLayout).visibility = View.GONE
-        }
-    }
-
-    private fun showStatusUpdateDialog(batch: OrderBatch) {
-        val statuses = arrayOf("Pending", "Preparing", "Ready", "Completed", "Cancelled")
-        val currentIndex = statuses.indexOfFirst { it.equals(batch.status, ignoreCase = true) }
-
-        AlertDialog.Builder(this)
-            .setTitle("Update Order Status")
-            .setSingleChoiceItems(statuses, currentIndex) { dialog, which ->
-                val newStatus = statuses[which]
-                updateBatchStatus(batch.batchId, newStatus)
-                dialog.dismiss()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun updateBatchStatus(batchId: String, newStatus: String) {
-        val updates = mapOf("status" to newStatus)
-
-        firebaseRepository.db.collection("order_batches").document(batchId)
-            .update(updates)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Status updated to $newStatus", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to update status: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
     }
 }

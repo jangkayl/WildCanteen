@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen.pages
+package cit.edu.wildcanteen.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater

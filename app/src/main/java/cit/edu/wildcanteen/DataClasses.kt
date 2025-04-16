@@ -43,7 +43,11 @@ data class OrderBatch(
     val totalAmount: Double,
     val status: String,
     val paymentMethod: String,
+    val referenceNumber: String,
     val deliveryType: String,
+    val deliveredBy: String,
+    val deliveryAddress: String,
+    val deliveryFee: Double,
     val timestamp: Long
 )
 

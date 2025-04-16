@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="?attr/selectableItemBackground">
+    android:background="@drawable/rounded_drawable"
+    android:backgroundTint="#191111"
+    android:layout_marginBottom="16dp"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +18,8 @@
         <TextView
             android:id="@+id/batchIdText"
             android:layout_width="0dp"
+            android:text="Order #123456"
+            android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textStyle="bold"
@@ -23,6 +28,8 @@
         <TextView
             android:id="@+id/statusText"
             android:layout_width="0dp"
+            android:text="READY"
+            android:textColor="#FFA500"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
@@ -34,6 +41,8 @@
         android:id="@+id/customerNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Kyle Guro"
+        android:textColor="@color/gray"
         android:layout_marginTop="4dp"
         android:textSize="14sp" />
 
@@ -41,8 +50,9 @@
         android:id="@+id/dateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="May 15, 2023 3:45 PM"
+        android:textColor="#BABABA"
         android:layout_marginTop="4dp"
-        android:textColor="@android:color/darker_gray"
         android:textSize="12sp" />
 
     <LinearLayout
@@ -55,6 +65,7 @@
         <TextView
             android:id="@+id/itemCountText"
             android:layout_width="0dp"
+            android:text="May 15, 2023 3:45 PM"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@android:color/darker_gray"
@@ -64,6 +75,8 @@
             android:id="@+id/totalAmountText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="₱120.00"
+            android:textColor="@color/white"
             android:layout_weight="1"
             android:gravity="end"
             android:textStyle="bold"

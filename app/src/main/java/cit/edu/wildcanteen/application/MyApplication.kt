@@ -172,7 +172,6 @@ class MyApplication : Application() {
             })
         }
 
-
         fun addOrder(order: Order) {
             val existingOrder = orders.find { it.items.name == order.items.name }
 
@@ -184,6 +183,10 @@ class MyApplication : Application() {
             }
 
             saveOrders(emptyList())
+        }
+
+        fun clearOrdersCache() {
+            prefs.edit().remove("ORDERS").apply()
         }
 
         fun saveFoodItems(items: List<FoodItem>) {

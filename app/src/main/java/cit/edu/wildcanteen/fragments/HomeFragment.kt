@@ -17,6 +17,7 @@ import cit.edu.wildcanteen.pages.HomePageOrderActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FoodAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.pages.DeliveryAssistanceActivity
 import cit.edu.wildcanteen.pages.admin_page.AdminTemporaryActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.bumptech.glide.Glide
@@ -40,6 +41,7 @@ class HomeFragment : Fragment() {
         val userIdTextView = view.findViewById<TextView>(R.id.user_id)
         val profileImage = view.findViewById<ImageView>(R.id.user_profile)
         val notification = view.findViewById<ImageView>(R.id.notification)
+        val assistDelivery = view.findViewById<Button>(R.id.assistDelivery)
 
         usernameTextView.text = MyApplication.name
         userIdTextView.text = MyApplication.stringStudentId
@@ -60,6 +62,10 @@ class HomeFragment : Fragment() {
 
         notification.setOnClickListener {
             startActivity(Intent(requireContext(), AdminTemporaryActivity::class.java))
+        }
+
+        assistDelivery.setOnClickListener {
+            startActivity(Intent(requireContext(), DeliveryAssistanceActivity::class.java))
         }
 
         setupRecyclerView(view)

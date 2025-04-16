@@ -27,8 +27,11 @@ class OrderSummaryActivity : AppCompatActivity() {
     private lateinit var paymentMethodGroup: RadioGroup
     private lateinit var cashInputContainer: LinearLayout
     private lateinit var gcashInputContainer: LinearLayout
+    private lateinit var deliveryAddressContainer: LinearLayout
+    private lateinit var deliveryAddressInput: EditText
     private lateinit var cashAmountInput: EditText
     private lateinit var gcashRefInput: EditText
+    private lateinit var payNowButton: Button
 
     private val cartOrders = mutableListOf<Order>()
 
@@ -38,7 +41,7 @@ class OrderSummaryActivity : AppCompatActivity() {
         cartOrders.addAll(MyApplication.orders.reversed())
 
         val backButton: ImageView = findViewById(R.id.btn_back)
-        val payNowButton: Button = findViewById(R.id.btn_pay_now)
+        payNowButton = findViewById(R.id.btn_pay_now)
         deliveryFeeTextView = findViewById(R.id.deliveryFee)
         totalPriceTextView = findViewById(R.id.totalPrice)
         orderItemsContainer = findViewById(R.id.orderItemsContainer)
@@ -48,21 +51,24 @@ class OrderSummaryActivity : AppCompatActivity() {
 
         cashInputContainer = findViewById(R.id.cashInputContainer)
         gcashInputContainer = findViewById(R.id.gcashInputContainer)
+        deliveryAddressContainer = findViewById(R.id.deliveryAddressContainer)
+        deliveryAddressInput = findViewById(R.id.deliveryAddressInput)
         cashAmountInput = findViewById(R.id.cashAmountInput)
         gcashRefInput = findViewById(R.id.gcashRefInput)
 
         populateOrderItems()
-
         updateTotalPrice()
 
         findViewById<LinearLayout>(R.id.onSiteContainer).setOnClickListener {
             deliveryMethodGroup.check(R.id.onSiteRadio)
             updateDeliveryFee(R.id.onSiteRadio)
+            deliveryAddressContainer.visibility = View.GONE
         }
 
         findViewById<LinearLayout>(R.id.deliveryContainer).setOnClickListener {
             deliveryMethodGroup.check(R.id.deliveryRadio)
             updateDeliveryFee(R.id.deliveryRadio)
+            deliveryAddressContainer.visibility = View.VISIBLE
         }
 
         findViewById<LinearLayout>(R.id.cashContainer).setOnClickListener {
@@ -73,18 +79,29 @@ class OrderSummaryActivity : AppCompatActivity() {
             paymentMethodGroup.check(R.id.gcashRadio)
         }
 
+        deliveryMethodGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.deliveryRadio -> {
+                    deliveryAddressContainer.visibility = View.VISIBLE
+                    updateDeliveryFee(checkedId)
+                }
+                else -> {
+                    deliveryAddressContainer.visibility = View.GONE
+                    updateDeliveryFee(checkedId)
+                }
+            }
+        }
+
         paymentMethodGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.cashRadio -> {
                     cashInputContainer.visibility = View.VISIBLE
                     gcashInputContainer.visibility = View.GONE
                 }
-
                 R.id.gcashRadio -> {
                     cashInputContainer.visibility = View.GONE
                     gcashInputContainer.visibility = View.VISIBLE
                 }
-
                 else -> {
                     cashInputContainer.visibility = View.GONE
                     gcashInputContainer.visibility = View.GONE
@@ -97,6 +114,8 @@ class OrderSummaryActivity : AppCompatActivity() {
         }
 
         payNowButton.setOnClickListener {
+            payNowButton.isEnabled = false
+
             val deliveryMethod = when (deliveryMethodGroup.checkedRadioButtonId) {
                 R.id.onSiteRadio -> "On-Site Pickup"
                 else -> "Delivery"
@@ -104,12 +123,20 @@ class OrderSummaryActivity : AppCompatActivity() {
 
             val total = totalPriceTextView.text.toString().replace("₱", "").toDouble()
 
+            // Validate delivery address if delivery is selected
+            if (deliveryMethod == "Delivery" && deliveryAddressInput.text.toString().isEmpty()) {
+                showErrorDialog("Please enter delivery address")
+                payNowButton.isEnabled = true
+                return@setOnClickListener
+            }
+
             when (paymentMethodGroup.checkedRadioButtonId) {
                 R.id.cashRadio -> {
                     val cashAmount = cashAmountInput.text.toString().toDoubleOrNull() ?: 0.0
 
                     if (cashAmount < total) {
                         showErrorDialog("Cash amount must be greater than total")
+                        payNowButton.isEnabled = true
                         return@setOnClickListener
                     }
 
@@ -122,8 +149,10 @@ class OrderSummaryActivity : AppCompatActivity() {
                     processPayment(
                         deliveryMethod = deliveryMethod,
                         paymentMethod = "Cash",
+                        referenceNumber = "₱${"%.2f".format(cashAmount)} change ₱${"%.2f".format(change)}",
                         paymentDetails = paymentDetails,
-                        totalAmount = total
+                        totalAmount = total,
+                        deliveryAddress = if (deliveryMethod == "Delivery") deliveryAddressInput.text.toString() else ""
                     )
                 }
 
@@ -132,6 +161,7 @@ class OrderSummaryActivity : AppCompatActivity() {
 
                     if (refNumber.isEmpty()) {
                         showErrorDialog("Please enter GCash reference number")
+                        payNowButton.isEnabled = true
                         return@setOnClickListener
                     }
 
@@ -140,13 +170,16 @@ class OrderSummaryActivity : AppCompatActivity() {
                     processPayment(
                         deliveryMethod = deliveryMethod,
                         paymentMethod = "GCash",
+                        referenceNumber = refNumber,
                         paymentDetails = paymentDetails,
-                        totalAmount = total
+                        totalAmount = total,
+                        deliveryAddress = if (deliveryMethod == "Delivery") deliveryAddressInput.text.toString() else ""
                     )
                 }
 
                 else -> {
                     showErrorDialog("Please select a payment method")
+                    payNowButton.isEnabled = true
                 }
             }
         }
@@ -155,8 +188,10 @@ class OrderSummaryActivity : AppCompatActivity() {
     private fun processPayment(
         deliveryMethod: String,
         paymentMethod: String,
+        referenceNumber: String,
         paymentDetails: String,
-        totalAmount: Double
+        totalAmount: Double,
+        deliveryAddress: String
     ) {
         val userId = MyApplication.studentId!!
         val userName = MyApplication.name!!
@@ -170,7 +205,11 @@ class OrderSummaryActivity : AppCompatActivity() {
             totalAmount = totalAmount,
             status = "Pending",
             paymentMethod = paymentMethod,
+            referenceNumber = referenceNumber,
             deliveryType = deliveryMethod,
+            deliveredBy = "",
+            deliveryAddress = deliveryAddress,
+            deliveryFee = calculateDeliveryFee(),
             timestamp = System.currentTimeMillis()
         )
 
@@ -179,20 +218,33 @@ class OrderSummaryActivity : AppCompatActivity() {
             onSuccess = {
                 deleteAllOrdersFromCart(userId, onSuccess = {
                     MyApplication.orders.clear()
+                    MyApplication.clearOrdersCache()
 
                     showOrderConfirmationDialog(
                         deliveryMethod = deliveryMethod,
                         paymentDetails = paymentDetails,
-                        totalAmount = "₱${"%.2f".format(totalAmount)}"
+                        totalAmount = "₱${"%.2f".format(totalAmount)}",
+                        deliveryAddress = deliveryAddress
                     )
                 }, onFailure = { e ->
                     showErrorDialog("Order placed but failed to clear cart: ${e.message}")
+                    payNowButton.isEnabled = true
                 })
             },
             onFailure = { e ->
                 showErrorDialog("Failed to place order: ${e.message}")
+                payNowButton.isEnabled = true
             }
         )
+    }
+
+    private fun calculateDeliveryFee(): Double {
+        val subtotal = cartOrders.sumOf { it.items.price * it.quantity }
+        return if (deliveryMethodGroup.checkedRadioButtonId == R.id.deliveryRadio) {
+            if (subtotal >= 100) subtotal * 0.10 else 10.0
+        } else {
+            0.0
+        }
     }
 
     private fun deleteAllOrdersFromCart(
@@ -205,11 +257,9 @@ class OrderSummaryActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 val batch = FirebaseRepository().db.batch()
-
                 for (document in documents) {
                     batch.delete(document.reference)
                 }
-
                 batch.commit()
                     .addOnSuccessListener { onSuccess() }
                     .addOnFailureListener { e -> onFailure(e) }
@@ -217,27 +267,32 @@ class OrderSummaryActivity : AppCompatActivity() {
             .addOnFailureListener { e -> onFailure(e) }
     }
 
+    private fun showOrderConfirmationDialog(
+        deliveryMethod: String,
+        paymentDetails: String,
+        totalAmount: String,
+        deliveryAddress: String
+    ) {
+        val message = buildString {
+            append("ORDER CONFIRMED\n")
+            append("===============\n")
+            append("Delivery: $deliveryMethod\n\n")
 
-    private fun showOrderConfirmationDialog(deliveryMethod: String, paymentDetails: String, totalAmount: String) {
-        val message = """
-            ORDER CONFIRMED
-            ===============
-            Delivery: $deliveryMethod
-            
-            $paymentDetails
-            
-            Total Amount: $totalAmount
-            
-            Thank you for your order!
-            Your food will be ready soon.
-        """.trimIndent()
+            if (deliveryMethod == "Delivery") {
+                append("Delivery Address: $deliveryAddress\n\n")
+            }
+
+            append("$paymentDetails\n\n")
+            append("Total Amount: $totalAmount\n\n")
+            append("Thank you for your order!\n")
+            append("Your food will be ready soon.")
+        }
 
         AlertDialog.Builder(this)
             .setTitle("Order Confirmation")
             .setMessage(message)
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
-                // You can add navigation back to home here if needed
                 finish()
             }
             .setCancelable(false)
@@ -248,31 +303,33 @@ class OrderSummaryActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Error")
             .setMessage(message)
-            .setPositiveButton("OK", null)
+            .setPositiveButton("OK") { _, _ ->
+                payNowButton.isEnabled = true
+            }
+            .setOnDismissListener {
+                payNowButton.isEnabled = true
+            }
             .show()
     }
 
     private fun populateOrderItems() {
         orderItemsContainer.removeAllViews()
-
         val inflater = LayoutInflater.from(this)
 
         cartOrders.forEach { item ->
             val itemView = inflater.inflate(R.layout.row_order_summary, orderItemsContainer, false)
-
             val itemName = itemView.findViewById<TextView>(R.id.itemName)
             val itemTotalAmount = itemView.findViewById<TextView>(R.id.itemTotalAmount)
 
             itemName.text = "${item.quantity}x ${item.items.name}"
             itemTotalAmount.text = "₱${"%.2f".format(item.items.price * item.quantity)}"
-
             orderItemsContainer.addView(itemView)
         }
     }
 
     private fun updateTotalPrice() {
         val subtotal = cartOrders.sumOf { it.items.price * it.quantity }
-        val deliveryFee = if (deliveryMethodGroup.checkedRadioButtonId == R.id.deliveryRadio) 10.00 else 0.00
+        val deliveryFee = calculateDeliveryFee()
         val discount = 5.00
 
         deliveryFeeTextView.text = "₱${"%.2f".format(deliveryFee)}"

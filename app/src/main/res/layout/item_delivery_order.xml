@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="8dp">
 
         <TextView
-            android:id="@+id/userName"
+            android:id="@+id/customerName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -24,25 +24,26 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/orderStatus"
+            android:id="@+id/orderTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#F79901"
+            android:textColor="#AAAAAA"
             android:textSize="12sp"/>
     </LinearLayout>
 
     <TextView
-        android:id="@+id/itemCount"
+        android:id="@+id/deliveryAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:textColor="#CCCCCC"
-        android:textSize="14sp"
-        android:layout_marginBottom="4dp"/>
+        android:textSize="14sp"/>
 
     <TextView
-        android:id="@+id/orderDate"
+        android:id="@+id/totalAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#AAAAAA"
-        android:textSize="12sp"/>
+        android:textColor="#F79901"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 </LinearLayout>

@@ -1,30 +1,15 @@
 package cit.edu.wildcanteen.fragments
 
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
-import cit.edu.wildcanteen.adapters.CartAdapter
 import cit.edu.wildcanteen.adapters.OrdersPagerAdapter
-import cit.edu.wildcanteen.application.MyApplication
-import cit.edu.wildcanteen.pages.HomePageActivity
-import cit.edu.wildcanteen.pages.OrderSummaryActivity
-import cit.edu.wildcanteen.repositories.FirebaseRepository
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.firestore.ListenerRegistration
 
 class OrdersFragment : Fragment() {
 

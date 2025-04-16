@@ -76,6 +76,7 @@
             android:background="@drawable/rounded_drawable"
             android:layout_margin="8dp"/>
         <Button
+            android:id="@+id/assistDelivery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Assist in Delivery"

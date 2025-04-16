@@ -2,20 +2,54 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#111">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/historyRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"/>
+        android:padding="16dp"
+        android:clipToPadding="true"
+        android:scrollbars="none"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-    <TextView
-        android:id="@+id/emptyText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/no_order_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_gravity="center"
-        android:text="No order history"
-        android:textColor="@color/white"
-        android:visibility="gone"/>
+        android:background="#111"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/no_order"
+            android:layout_width="wrap_content"
+            android:layout_height="350dp"
+            android:src="@drawable/noorder"/>
+
+        <TextView
+            android:id="@+id/no_order_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="NO ORDER FOUND"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
+
+        <Button
+            android:id="@+id/explore_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_drawable"
+            android:backgroundTint="@color/selectedColor"
+            android:textColor="@color/white"
+            android:textSize="19sp"
+            android:layout_marginTop="30dp"
+            android:textAllCaps="false"
+            android:text="Explore Menu"/>
+    </LinearLayout>
 </FrameLayout>

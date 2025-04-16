@@ -35,25 +35,23 @@ class OrderedBatchesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val batch = getItem(position)
 
-        // Set basic info
         holder.orderNumber.text = "Order #${batch.batchId.takeLast(6)}"
         holder.status.text = batch.status.uppercase()
         holder.date.text = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
             .format(Date(batch.timestamp))
         holder.totalAmount.text = "₱${"%.2f".format(batch.totalAmount)}"
 
-        // Set status color
         when (batch.status.lowercase()) {
-            "pending" -> holder.status.setTextColor(Color.parseColor("#FFA500")) // Orange
-            "preparing" -> holder.status.setTextColor(Color.parseColor("#2196F3")) // Blue
-            "ready" -> holder.status.setTextColor(Color.parseColor("#4CAF50")) // Green
-            else -> holder.status.setTextColor(Color.parseColor("#607D8B")) // Gray
+            "pending" -> holder.status.setTextColor(Color.parseColor("#FFA500"))
+            "preparing" -> holder.status.setTextColor(Color.parseColor("#2196F3"))
+            "ready" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
+            "completed" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
+            "cancelled" -> holder.status.setTextColor(Color.parseColor("#F44336"))
+            else -> holder.status.setTextColor(Color.parseColor("#607D8B"))
         }
 
-        // Clear previous items
         holder.itemsContainer.removeAllViews()
 
-        // Add each item to the container
         batch.orders.forEach { order ->
             val itemView = LayoutInflater.from(holder.itemView.context)
                 .inflate(R.layout.item_order_line, holder.itemsContainer, false)

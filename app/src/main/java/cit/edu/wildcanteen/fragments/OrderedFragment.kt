@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,16 +19,16 @@ import cit.edu.wildcanteen.adapters.OrderedBatchesAdapter
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.pages.OrderBatchDetailActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ListenerRegistration
-import java.text.SimpleDateFormat
-import java.util.*
 
 class OrderedFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: OrderedBatchesAdapter
-    private lateinit var emptyView: TextView
     private var orderBatchListener: ListenerRegistration? = null
+    private lateinit var noOrderLayout: LinearLayout
+    private lateinit var exploreButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +37,8 @@ class OrderedFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_ordered, container, false)
         recyclerView = view.findViewById(R.id.orderedRecyclerView)
-        emptyView = view.findViewById(R.id.emptyText)
+        noOrderLayout = view.findViewById(R.id.no_order_layout)
+        exploreButton = view.findViewById(R.id.explore_button)
         return view
     }
 
@@ -43,11 +46,19 @@ class OrderedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = OrderedBatchesAdapter { batch ->
-            // Open detailed invoice when an order is clicked
             val intent = Intent(requireContext(), OrderBatchDetailActivity::class.java).apply {
                 putExtra("BATCH_ID", batch.batchId)
             }
             startActivity(intent)
+        }
+
+        exploreButton.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.linear_container, HomeFragment())
+                .commit()
+
+            val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+            bottomNav.selectedItemId = R.id.nav_home
         }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -58,6 +69,7 @@ class OrderedFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
+        recyclerView.setHasFixedSize(true)
 
         loadOrderedBatches()
     }
@@ -75,16 +87,14 @@ class OrderedFragment : Fragment() {
                 adapter.submitList(pendingBatches)
 
                 if (pendingBatches.isEmpty()) {
-                    emptyView.visibility = View.VISIBLE
-                    emptyView.text = "No current orders"
+                    noOrderLayout.visibility = View.VISIBLE
                 } else {
-                    emptyView.visibility = View.GONE
+                    noOrderLayout.visibility = View.GONE
                 }
             },
             onFailure = { e ->
                 Log.e("OrderedFragment", "Error loading ordered batches", e)
-                emptyView.visibility = View.VISIBLE
-                emptyView.text = "Error loading orders"
+                noOrderLayout.visibility = View.VISIBLE
             }
         )
     }

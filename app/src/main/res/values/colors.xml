@@ -10,6 +10,7 @@
     <color name="gray">#808080</color>
     <color name="orange">#e85221</color>
     <color name="selectedColor">#F79901</color>
+    <color name="darkOrange">#191111</color>
     <color name="unselectedColor">#FFFFFF</color>
     <color name="shimmer_background">#BDBDBD</color>
 </resources>

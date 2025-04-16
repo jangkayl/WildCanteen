@@ -201,6 +201,7 @@ class FirebaseRepository {
                 onFailure(error)
                 return@addSnapshotListener
             }
+            Log.e("FirebaseFoodItem", "Listening Food Item Updates", error)
             val foodItems = snapshot?.documents?.mapNotNull { doc ->
                 try {
                     FoodItem(
@@ -232,6 +233,7 @@ class FirebaseRepository {
                     return@addSnapshotListener
                 }
 
+                Log.e("FirebaseOrders", "Listening Order Updates", error)
                 val orders = snapshot?.documents?.mapNotNull { doc ->
                     try {
                         val data = doc.data ?: return@mapNotNull null
@@ -274,6 +276,7 @@ class FirebaseRepository {
                     return@addSnapshotListener
                 }
 
+                Log.e("FirebaseOrders", "Listening All Order Updates", error)
                 val orders = snapshot?.documents?.mapNotNull { doc ->
                     try {
                         val data = doc.data ?: return@mapNotNull null
@@ -337,11 +340,11 @@ class FirebaseRepository {
             orderBatchesCollection
         }
 
+        Log.e("Firebase", "Getting Order Batches")
         query.get()
             .addOnSuccessListener { documents ->
                 val orderBatches = documents.mapNotNull { doc ->
                     try {
-                        Log.e("Firebase", "Getting Order Batches")
                         val data = doc.data
                         val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
                             try {
@@ -378,7 +381,11 @@ class FirebaseRepository {
                             totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
                             status = data["status"] as? String ?: "Pending",
                             paymentMethod = data["paymentMethod"] as? String ?: "",
+                            referenceNumber = data["referenceNumber"] as? String ?: "",
                             deliveryType = data["deliveryType"] as? String ?: "",
+                            deliveredBy = data["deliveredBy"] as? String ?: "",
+                            deliveryAddress = data["deliveryAddress"] as? String ?: "",
+                            deliveryFee = data["deliveryFee"] as? Double ?: 0.0,
                             timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
                         )
                     } catch (e: Exception) {
@@ -406,6 +413,7 @@ class FirebaseRepository {
             orderBatchesCollection
         }
 
+        Log.e("Firebase", "Listening Order Batches")
         return query.addSnapshotListener { snapshot, error ->
             if (error != null) {
                 onFailure(error)
@@ -417,7 +425,6 @@ class FirebaseRepository {
                     val data = doc.data ?: return@mapNotNull null
                     val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
                         try {
-                            Log.e("Firebase", "Listening Order Batches")
                             val itemsMap = orderData["items"] as? Map<String, Any> ?: return@mapNotNull null
 
                             Order(
@@ -451,7 +458,11 @@ class FirebaseRepository {
                         totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
                         status = data["status"] as? String ?: "Pending",
                         paymentMethod = data["paymentMethod"] as? String ?: "",
+                        referenceNumber = data["referenceNumber"] as? String ?: "",
                         deliveryType = data["deliveryType"] as? String ?: "",
+                        deliveredBy = data["deliveredBy"] as? String ?: "",
+                        deliveryAddress = data["deliveryAddress"] as? String ?: "",
+                        deliveryFee = data["deliveryFee"] as? Double ?: 0.0,
                         timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
                     )
                 } catch (e: Exception) {

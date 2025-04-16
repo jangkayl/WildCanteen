@@ -17,9 +17,9 @@ class OrdersPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> CartFragment() // Your existing cart fragment
-            1 -> OrderedFragment() // New fragment for current orders
-            2 -> OrderHistoryFragment() // New fragment for order history
+            0 -> CartFragment()
+            1 -> OrderedFragment()
+            2 -> OrderHistoryFragment()
             else -> throw IllegalArgumentException("Invalid position")
         }
     }

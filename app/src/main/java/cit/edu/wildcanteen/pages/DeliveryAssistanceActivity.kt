@@ -2,6 +2,7 @@ package cit.edu.wildcanteen.pages
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -17,7 +18,7 @@ import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.firebase.firestore.ListenerRegistration
 
-class OrderBatchesActivity : AppCompatActivity() {
+class DeliveryAssistanceActivity : AppCompatActivity() {
     private lateinit var firebaseRepository: FirebaseRepository
     private var orderBatchListener: ListenerRegistration? = null
     private lateinit var adapter: OrderBatchAdapter
@@ -33,7 +34,7 @@ class OrderBatchesActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
 
         setupRecyclerView()
-        loadOrderBatches()
+        loadDeliveryOrders()
 
         findViewById<ImageView>(R.id.btn_back).setOnClickListener {
             finish()
@@ -53,30 +54,18 @@ class OrderBatchesActivity : AppCompatActivity() {
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
     }
 
-    private fun loadOrderBatches() {
-        progressBar.visibility = View.VISIBLE
-
-        val userId = if (MyApplication.userType == "admin") {
-            null
-        } else {
-            MyApplication.studentId
-        }
-
-        orderBatchListener = firebaseRepository.listenForOrderBatches(
-            userId = userId,
+    private fun loadDeliveryOrders() {
+        orderBatchListener = FirebaseRepository().listenForOrderBatches(
+            userId = null,
             onUpdate = { batches ->
-                progressBar.visibility = View.GONE
-                adapter.submitList(batches)
+                val deliveryOrders = batches.filter { batch ->
+                    batch.status == "Ready" && batch.deliveryType == "Delivery"
+                }.sortedByDescending { it.timestamp }
 
-                if (batches.isEmpty()) {
-                    findViewById<TextView>(R.id.emptyStateText).visibility = View.VISIBLE
-                } else {
-                    findViewById<TextView>(R.id.emptyStateText).visibility = View.GONE
-                }
+                adapter.submitList(deliveryOrders)
             },
             onFailure = { e ->
-                progressBar.visibility = View.GONE
-                Toast.makeText(this, "Failed to load orders: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("DeliveryAssistance", "Error loading delivery orders", e)
             }
         )
     }

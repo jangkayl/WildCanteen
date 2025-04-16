@@ -65,5 +65,8 @@ xmlns:tools="http://schemas.android.com/tools">
     <activity
         android:name=".pages.OrderBatchDetailActivity"
         android:exported="false" />
+    <activity
+        android:name=".pages.DeliveryAssistanceActivity"
+        android:exported="false" />
 </application>
 </manifest>
