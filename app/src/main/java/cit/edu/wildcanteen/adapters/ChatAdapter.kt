@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.R
+import cit.edu.wildcanteen.application.MyApplication
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import java.text.SimpleDateFormat
@@ -24,6 +25,11 @@ class ChatAdapter(private val onItemClick: (ChatMessage) -> Unit) : ListAdapter<
     fun setSearchQuery(query: String) {
         searchQuery = query
         notifyDataSetChanged()
+    }
+
+    fun forcefullyUpdateList(newList: List<ChatMessage>) {
+        submitList(null)
+        submitList(newList.toList())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
@@ -44,13 +50,26 @@ class ChatAdapter(private val onItemClick: (ChatMessage) -> Unit) : ListAdapter<
         private val unreadBadge: View = itemView.findViewById(R.id.unread_badge)
 
         fun bind(chatMessage: ChatMessage, searchQuery: String) {
-            userName.text = highlightText(chatMessage.senderName, searchQuery)
+            val isCurrentUserSender = chatMessage.senderId == MyApplication.studentId
+            val displayName = if (isCurrentUserSender) chatMessage.recipientName else chatMessage.senderName
+            val displayImage = if (isCurrentUserSender) chatMessage.recipientImage else chatMessage.senderImage
+
+            userName.text = highlightText(displayName, searchQuery)
             messageText.text = highlightText(chatMessage.messageText, searchQuery)
             messageTime.text = formatTimestamp(chatMessage.timestamp)
-            unreadBadge.isVisible = !chatMessage.isRead
+
+            if (!isCurrentUserSender && !chatMessage.isRead) {
+                unreadBadge.isVisible = true
+                messageText.setTypeface(null, android.graphics.Typeface.BOLD)
+                messageText.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.white))
+            } else {
+                unreadBadge.isVisible = false
+                messageText.setTypeface(null, android.graphics.Typeface.NORMAL)
+                messageText.setTextColor(ContextCompat.getColor(itemView.context, R.color.gray))
+            }
 
             Glide.with(itemView.context)
-                .load(chatMessage.senderImage)
+                .load(displayImage)
                 .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.hd_user)
                 .error(R.drawable.hd_user)

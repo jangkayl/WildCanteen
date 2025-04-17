@@ -6,14 +6,33 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <!-- Toolbar -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <!-- Custom Chat Header -->
+    <LinearLayout
+        android:id="@+id/chatHeader"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
         android:background="@color/selectedColor"
-        android:titleTextColor="@android:color/white"
-        app:title="Chat"/>
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/back_arrow"/>
+
+        <TextView
+            android:id="@+id/chatTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chat"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <!-- RecyclerView for messages -->
     <androidx.recyclerview.widget.RecyclerView
@@ -21,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp"
+        android:layout_marginTop="56dp"
         android:clipToPadding="false"
         android:padding="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
@@ -39,7 +59,6 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:autofillHints=""
             android:hint="Type a message..."
             android:textColor="@color/white"
             android:textColorHint="@color/black"
@@ -50,7 +69,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"/>
 
-        <!-- Replaced FloatingActionButton with a regular Button -->
         <Button
             android:id="@+id/sendButton"
             android:layout_width="25dp"

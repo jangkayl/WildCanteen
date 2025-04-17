@@ -2,6 +2,7 @@ package cit.edu.wildcanteen.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.adapters.DeliveryOrderAdapter
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.databinding.FragmentAcceptedOrdersBinding
+import cit.edu.wildcanteen.pages.ChatConversationActivity
 import cit.edu.wildcanteen.pages.OrderBatchDetailActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.firebase.firestore.ListenerRegistration
@@ -92,13 +94,28 @@ class AcceptedOrdersFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun chatBuyer(batch: OrderBatch){
+    private fun chatBuyer(batch: OrderBatch) {
         Toast.makeText(requireContext(), "Chat Buyer", Toast.LENGTH_SHORT).show()
+
+        val repo = FirebaseRepository()
+
+        repo.getUserProfileImageUrl(batch.userId, onSuccess = { recipientImageUrl ->
+            if (recipientImageUrl != null) {
+
+                val intent = Intent(context, ChatConversationActivity::class.java).apply {
+                    putExtra("senderId", MyApplication.studentId)
+                    putExtra("senderName", MyApplication.name)
+                    putExtra("senderImage", MyApplication.profileImageUrl)
+                    putExtra("recipientId", batch.userId)
+                    putExtra("recipientName", batch.userName)
+                    putExtra("recipientImage", recipientImageUrl)
+                }
+                context?.startActivity(intent)
+            }
+        }, onFailure = {
+            Toast.makeText(requireContext(), "Failed to load recipient image", Toast.LENGTH_SHORT).show()
+        })
+
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        orderBatchListener?.remove()
-        _binding = null
-    }
 }

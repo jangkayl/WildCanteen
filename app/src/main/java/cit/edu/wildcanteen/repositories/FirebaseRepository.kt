@@ -6,11 +6,12 @@ import java.security.MessageDigest
 import android.util.Base64
 import android.util.Log
 import cit.edu.wildcanteen.ChatMessage
-import cit.edu.wildcanteen.ChatRoom
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.User
+import cit.edu.wildcanteen.UserInfo
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 
@@ -21,7 +22,6 @@ class FirebaseRepository {
     private val foodCollection = db.collection("food_items")
     private val orderBatchesCollection = db.collection("order_batches")
     private val chatMessagesCollection = db.collection("chat_messages")
-    private val chatRoomsCollection = db.collection("chat_rooms")
 
     fun sendChatMessage(
         chatMessage: ChatMessage,
@@ -29,137 +29,113 @@ class FirebaseRepository {
         onFailure: (Exception) -> Unit
     ) {
         val messageDocRef = chatMessagesCollection.document()
+
         val messageWithId = chatMessage.copy(messageId = messageDocRef.id)
 
         messageDocRef.set(messageWithId)
-            .addOnSuccessListener {
-                updateChatRoom(messageWithId)
-                onSuccess()
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
     }
 
-    private fun updateChatRoom(chatMessage: ChatMessage) {
-        val participantIds = listOf(chatMessage.senderId, chatMessage.recipientId).sorted()
-        val roomId = participantIds.joinToString("_")
-
-        val chatRoom = ChatRoom(
-            roomId = roomId,
-            participantIds = participantIds,
-            lastMessage = chatMessage,
-            timestamp = chatMessage.timestamp
-        )
-
-        chatRoomsCollection.document(roomId)
-            .set(chatRoom)
-            .addOnFailureListener { e ->
-                Log.e("FirebaseChat", "Failed to update chat room", e)
-            }
-    }
-
-    fun createChatRoom(
-        chatRoom: ChatRoom,
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
+    fun markMessageAsRead(
+        messageId: String,
+        onSuccess: () -> Unit = {},
+        onFailure: (Exception) -> Unit = { Log.e("FirebaseRepo", "Error marking message as read", it) }
     ) {
-        chatRoomsCollection.document(chatRoom.roomId)
-            .set(chatRoom)
-            .addOnSuccessListener {
-                // Also add the initial message
-                sendChatMessage(chatRoom.lastMessage,
-                    onSuccess = onSuccess,
-                    onFailure = onFailure
-                )
-            }
-            .addOnFailureListener(onFailure)
+        chatMessagesCollection.document(messageId)
+            .update("isRead", true)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
     }
 
-    fun listenForChatMessages(
+    fun listenForUserChats(
+        userId: String,
+        onUpdate: (List<ChatMessage>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ): ListenerRegistration {
+        val query = chatMessagesCollection
+            .where(
+                Filter.or(
+                Filter.equalTo("senderId", userId),
+                Filter.equalTo("recipientId", userId)
+            ))
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+
+        return query.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                onFailure(error)
+                return@addSnapshotListener
+            }
+
+            val messages = snapshot?.documents?.mapNotNull { doc ->
+                try {
+                    ChatMessage(
+                        messageId = doc.id,
+                        roomId = doc.getString("roomId") ?: "",
+                        senderId = doc.getString("senderId") ?: "",
+                        senderName = doc.getString("senderName") ?: "",
+                        senderImage = doc.getString("senderImage") ?: "",
+                        recipientId = doc.getString("recipientId") ?: "",
+                        recipientName = doc.getString("recipientName") ?: "",
+                        recipientImage = doc.getString("recipientImage") ?: "",
+                        messageText = doc.getString("messageText") ?: "",
+                        timestamp = doc.getLong("timestamp") ?: 0L,
+                        isRead = doc.getBoolean("isRead") ?: false
+                    )
+                } catch (e: Exception) {
+                    Log.e("FirebaseChat", "Error parsing message", e)
+                    null
+                }
+            } ?: emptyList()
+
+            val latestMessages = messages
+                .groupBy { it.roomId }
+                .mapNotNull { (_, messages) -> messages.maxByOrNull { it.timestamp } }
+                .sortedByDescending { it.timestamp }
+
+            onUpdate(latestMessages)
+        }
+    }
+
+    fun listenForConversationMessages(
         userId1: String,
         userId2: String,
         onUpdate: (List<ChatMessage>) -> Unit,
         onFailure: (Exception) -> Unit
     ): ListenerRegistration {
-        val participantIds = listOf(userId1, userId2).sorted()
+        val roomId = listOf(userId1, userId2).sorted().joinToString("_")
 
         return chatMessagesCollection
-            .whereEqualTo("senderId", userId1)
-            .whereEqualTo("recipientId", userId2)
-            .orderBy("timestamp")
-            .addSnapshotListener { senderSnapshot, senderError ->
-                if (senderError != null) {
-                    onFailure(senderError)
-                    return@addSnapshotListener
-                }
-
-                chatMessagesCollection
-                    .whereEqualTo("senderId", userId2)
-                    .whereEqualTo("recipientId", userId1)
-                    .orderBy("timestamp")
-                    .get()
-                    .addOnSuccessListener { recipientSnapshot ->
-                        val allMessages = mutableListOf<ChatMessage>()
-
-                        senderSnapshot?.documents?.mapNotNull { doc ->
-                            doc.toObject(ChatMessage::class.java)
-                        }?.let { allMessages.addAll(it) }
-
-                        recipientSnapshot.documents.mapNotNull { doc ->
-                            doc.toObject(ChatMessage::class.java)
-                        }.let { allMessages.addAll(it) }
-
-                        val sortedMessages = allMessages.sortedBy { it.timestamp }
-                        onUpdate(sortedMessages)
-                    }
-                    .addOnFailureListener { recipientError ->
-                        onFailure(recipientError)
-                    }
-            }
-    }
-
-    fun listenForChatRooms(
-        userId: String,
-        onUpdate: (List<ChatRoom>) -> Unit,
-        onFailure: (Exception) -> Unit
-    ): ListenerRegistration {
-        return chatRoomsCollection
-            .whereArrayContains("participantIds", userId)
-            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .whereEqualTo("roomId", roomId)
+            .orderBy("timestamp", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     onFailure(error)
                     return@addSnapshotListener
                 }
 
-                val chatRooms = snapshot?.documents?.mapNotNull { doc ->
+                val messages = snapshot?.documents?.mapNotNull { doc ->
                     try {
-                        val data = doc.data ?: return@mapNotNull null
-                        val lastMessageData = data["lastMessage"] as? Map<String, Any> ?: return@mapNotNull null
-
-                        ChatRoom(
-                            roomId = data["roomId"] as? String ?: doc.id,
-                            participantIds = data["participantIds"] as? List<String> ?: emptyList(),
-                            lastMessage = ChatMessage(
-                                messageId = lastMessageData["messageId"] as? String ?: "",
-                                senderId = lastMessageData["senderId"] as? String ?: "",
-                                senderName = lastMessageData["senderName"] as? String ?: "",
-                                senderImage = lastMessageData["senderImage"] as? String ?: "",
-                                recipientId = lastMessageData["recipientId"] as? String ?: "",
-                                messageText = lastMessageData["messageText"] as? String ?: "",
-                                timestamp = (lastMessageData["timestamp"] as? Number)?.toLong() ?: 0L,
-                                isRead = lastMessageData["isRead"] as? Boolean ?: false
-                            ),
-                            timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                        ChatMessage(
+                            messageId = doc.id,
+                            roomId = doc.getString("roomId") ?: "",
+                            senderId = doc.getString("senderId") ?: "",
+                            senderName = doc.getString("senderName") ?: "",
+                            senderImage = doc.getString("senderImage") ?: "",
+                            recipientId = doc.getString("recipientId") ?: "",
+                            recipientName = doc.getString("recipientName") ?: "",
+                            recipientImage = doc.getString("recipientImage") ?: "",
+                            messageText = doc.getString("messageText") ?: "",
+                            timestamp = doc.getLong("timestamp") ?: 0L,
+                            isRead = doc.getBoolean("isRead") ?: false
                         )
                     } catch (e: Exception) {
-                        Log.e("FirebaseChat", "Error parsing chat room", e)
+                        Log.e("FirebaseChat", "Error parsing message", e)
                         null
                     }
                 } ?: emptyList()
 
-                onUpdate(chatRooms)
+                onUpdate(messages)
             }
     }
 
@@ -673,6 +649,35 @@ class FirebaseRepository {
             .addOnFailureListener { onFailure(it) }
     }
 
+    fun getAllUsers(
+        onSuccess: (List<UserInfo>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ): ListenerRegistration {
+        return usersCollection
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    onFailure(error)
+                    return@addSnapshotListener
+                }
+
+                val users = snapshot?.documents?.mapNotNull { doc ->
+                    Log.d("FirebaseRepo", "Document data: ${doc.data}")
+                    try {
+                        UserInfo(
+                            userId = doc.id,
+                            name = doc.getString("name"),
+                            profileImageUrl = doc.getString("profileImageUrl")
+                        )
+                    } catch (e: Exception) {
+                        Log.e("FirebaseRepo", "Error parsing user", e)
+                        null
+                    }
+                } ?: emptyList()
+
+                onSuccess(users)
+            }
+    }
+
     fun getUser(userId: String, onSuccess: (User?) -> Unit, onFailure: (Exception) -> Unit) {
         usersCollection.document(userId).get()
             .addOnSuccessListener { document ->
@@ -692,6 +697,23 @@ class FirebaseRepository {
                 }
             }
             .addOnFailureListener { onFailure(it) }
+    }
+
+    fun getUserProfileImageUrl(
+        userId: String,
+        onSuccess: (String?) -> Unit,
+        onFailure: (Exception) -> Unit = { Log.e("FirebaseRepo", "Error fetching user info", it) }
+    ) {
+        usersCollection.document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val userInfo = document.toObject(UserInfo::class.java)
+                    onSuccess(userInfo?.profileImageUrl)
+                } else {
+                    onFailure(Exception("User not found"))
+                }
+            }
+            .addOnFailureListener { e -> onFailure(e) }
     }
 
     fun updateUser(userId: String, updates: Map<String, Any>, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {

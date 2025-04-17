@@ -4,27 +4,32 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.ChatAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 import android.widget.EditText
-import cit.edu.wildcanteen.ChatMessage
+import android.os.Handler
+import android.os.Looper
+import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.pages.ChatConversationActivity
-import cit.edu.wildcanteen.repositories.FoodRepository
+import cit.edu.wildcanteen.pages.UserSearchActivity
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 
 class ChatsFragment : Fragment() {
+    private lateinit var firebaseRepository: FirebaseRepository
     private lateinit var recyclerView: RecyclerView
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var searchEditText: EditText
     private lateinit var fabNewMessage: FloatingActionButton
-    private val allChats = mutableListOf<ChatMessage>()
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,30 +45,85 @@ class ChatsFragment : Fragment() {
         recyclerView = view.findViewById(R.id.chats_recycler_view)
         searchEditText = view.findViewById(R.id.search_chats)
         fabNewMessage = view.findViewById(R.id.fab_new_message)
+        firebaseRepository = FirebaseRepository()
 
         setupRecyclerView()
-        loadSampleData()
         setupSearchFunctionality()
         setupFabClickListener()
+        setupChatObserver()
+
+        updateChatList()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateChatList()
+        Log.d("ChatsFragment", "onResume: forcing UI update")
+    }
+
+    private fun setupChatObserver() {
+        MyApplication.chatUpdatesLiveData.removeObservers(viewLifecycleOwner)
+
+        MyApplication.chatUpdatesLiveData.observe(viewLifecycleOwner, Observer { chatMessages ->
+            Log.d("ChatsFragment", "Observer triggered with ${chatMessages.size} messages")
+            handler.post {
+                Log.d("ChatsFragment", "Handler executing UI update on main thread")
+                updateChatList()
+                recyclerView.invalidate()
+            }
+        })
     }
 
     private fun setupRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         chatAdapter = ChatAdapter { chatMessage ->
-            val intent = Intent(context, ChatConversationActivity::class.java)
-            intent.putExtra("senderId", chatMessage.senderId)
+            if (!chatMessage.isRead && chatMessage.recipientId == MyApplication.studentId) {
+                firebaseRepository.markMessageAsRead(chatMessage.messageId)
+            }
+
+            val intent = Intent(context, ChatConversationActivity::class.java).apply {
+                putExtra("senderId", chatMessage.senderId)
+                putExtra("senderName", chatMessage.senderName)
+                putExtra("senderImage", chatMessage.senderImage)
+                putExtra("recipientId", chatMessage.recipientId)
+                putExtra("recipientName", chatMessage.recipientName)
+                putExtra("recipientImage", chatMessage.recipientImage)
+            }
             context?.startActivity(intent)
         }
         recyclerView.adapter = chatAdapter
     }
 
+    private fun updateChatList() {
+        if (!isAdded) return
 
-    private fun loadSampleData() {
-        val sampleChats = FoodRepository.loadSampleData()
+        val currentQuery = searchEditText.text?.toString() ?: ""
+        val dataToShow = if (currentQuery.isNotEmpty()) {
+            MyApplication.allChats.filter { chat ->
+                chat.senderName.contains(currentQuery, ignoreCase = true) ||
+                        chat.messageText.contains(currentQuery, ignoreCase = true)
+            }
+        } else {
+            MyApplication.allChats
+        }
 
-        allChats.clear()
-        allChats.addAll(sampleChats)
-        chatAdapter.submitList(allChats)
+        Log.d("ChatsFragment", "updateChatList: Updating with ${dataToShow.size} items")
+
+        try {
+            if (::chatAdapter.isInitialized) {
+                try {
+                    chatAdapter.forcefullyUpdateList(dataToShow)
+                } catch (e: Exception) {
+                    chatAdapter.submitList(dataToShow)
+                }
+
+                recyclerView.post {
+                    chatAdapter.notifyDataSetChanged()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ChatsFragment", "Error updating adapter", e)
+        }
     }
 
     private fun setupSearchFunctionality() {
@@ -71,27 +131,39 @@ class ChatsFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                filterChats(s.toString())
+                filterChats(s?.toString() ?: "")
             }
         })
     }
 
     private fun filterChats(query: String) {
         val filteredList = if (query.isEmpty()) {
-            allChats
+            MyApplication.allChats
         } else {
-            allChats.filter { chat ->
+            MyApplication.allChats.filter { chat ->
                 chat.senderName.contains(query, ignoreCase = true) ||
                         chat.messageText.contains(query, ignoreCase = true)
             }
         }
         chatAdapter.setSearchQuery(query)
-        chatAdapter.submitList(filteredList)
+
+        try {
+            chatAdapter.forcefullyUpdateList(filteredList)
+        } catch (e: Exception) {
+            chatAdapter.submitList(filteredList)
+        }
     }
 
     private fun setupFabClickListener() {
         fabNewMessage.setOnClickListener {
-            // Handle new message button click
+            val intent = Intent(requireContext(), UserSearchActivity::class.java)
+            startActivity(intent)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Remove observer to prevent memory leaks
+        MyApplication.chatUpdatesLiveData.removeObservers(viewLifecycleOwner)
     }
 }

@@ -5,11 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import cit.edu.wildcanteen.pages.HomePageActivity
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.User
+import cit.edu.wildcanteen.fragments.ChatsFragment
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +24,7 @@ class MyApplication : Application() {
     companion object {
         var isLoggedIn: Boolean = false
         private var currentUser: User? = null
+        private lateinit var firebaseRepository: FirebaseRepository
 
         lateinit var appContext: Context
             private set
@@ -36,10 +41,14 @@ class MyApplication : Application() {
         var profileImageUrl: String? = null
         var password: String? = null
         var userType: String? = null
-        var balance: Double? = null
         var orders: MutableList<Order> = mutableListOf()
         var foodItems: MutableList<FoodItem> = mutableListOf()
         var popularFoodItems: MutableList<FoodItem> = mutableListOf()
+
+        // Global chat-related data
+        var allChats: MutableList<ChatMessage> = mutableListOf()
+        var chatListener: ListenerRegistration? = null
+        val chatUpdatesLiveData = MutableLiveData<List<ChatMessage>>()
 
         fun loadUserSession(context: Context) {
             val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -62,6 +71,38 @@ class MyApplication : Application() {
             printUserDetails()
         }
 
+        private fun initializeChat() {
+            firebaseRepository = FirebaseRepository()
+            val currentUserId = studentId ?: return
+            Log.d("MyApplication", "Chats messages listening starting")
+
+            clearChatListener()
+
+            chatListener = firebaseRepository.listenForUserChats(
+                currentUserId,
+                onUpdate = { messages ->
+                    Log.d("MyApplication", "Received ${messages.size} chat messages from Firebase")
+
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                        val updatedChats = messages.toMutableList()
+
+                        allChats = updatedChats
+
+                        chatUpdatesLiveData.value = updatedChats
+                        Log.d("MyApplication", "LiveData updated with ${updatedChats.size} messages")
+                    }
+                },
+                onFailure = { exception ->
+                    Log.e("MyApplication", "Error listening for chats", exception)
+                }
+            )
+        }
+
+        private fun clearChatListener() {
+            chatListener?.remove()
+            chatListener = null
+            Log.d("MyApplication", "Chat listener removed")
+        }
 
         // Load user details
         fun loadUserDetails(user: User) {
@@ -94,6 +135,7 @@ class MyApplication : Application() {
             profileImageUrl = null
             password = null
             orders.clear()
+            clearChatListener()
 
             prefs.edit().clear().apply()
             printUserDetails()
@@ -252,6 +294,7 @@ class MyApplication : Application() {
 
         private fun printUserDetails() {
             Log.e("User details", currentUser.toString());
+            initializeChat()
         }
     }
 

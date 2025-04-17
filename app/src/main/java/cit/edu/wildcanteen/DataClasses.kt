@@ -8,6 +8,12 @@ data class User(
     val userType: String,
 )
 
+data class UserInfo(
+    val userId: String? = null,
+    val name: String? = null,
+    val profileImageUrl: String? = null
+)
+
 data class FoodItem(
     val category: String,
     val foodId: Int,
@@ -71,29 +77,20 @@ data class Feedback(
 )
 
 data class ChatMessage(
-    val messageId: String,
-    val senderId: String,
-    val senderName: String,
-    val senderImage: String,
-    val recipientId: String,
-    val messageText: String,
-    val timestamp: Long,
-    val isRead: Boolean
-)
+    val messageId: String = "",
+    val roomId: String = "",
+    val senderId: String = "",
+    val senderName: String = "",
+    val senderImage: String = "",
+    val recipientId: String = "",
+    val recipientName: String = "",
+    val recipientImage: String = "",
+    val messageText: String = "",
+    val timestamp: Long = 0L,
+    val isRead: Boolean = false
+) {
+    constructor() : this("", "", "", "", "", "", "", "", "", 0L, false)
+}
 
-data class ChatRoom(
-    val roomId: String,
-    val participantIds: List<String>,
-    val lastMessage: ChatMessage,
-    val timestamp: Long
-)
 
-data class Message(
-    val id: String,
-    val text: String,
-    val senderId: String,
-    val timestamp: Long,
-    val isSent: Boolean,
-    val isRead: Boolean
-)
 
