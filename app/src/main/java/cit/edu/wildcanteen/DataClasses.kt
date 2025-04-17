@@ -70,5 +70,30 @@ data class Feedback(
     val timestamp: Long
 )
 
+data class ChatMessage(
+    val messageId: String,
+    val senderId: String,
+    val senderName: String,
+    val senderImage: String,
+    val recipientId: String,
+    val messageText: String,
+    val timestamp: Long,
+    val isRead: Boolean
+)
 
+data class ChatRoom(
+    val roomId: String,
+    val participantIds: List<String>,
+    val lastMessage: ChatMessage,
+    val timestamp: Long
+)
+
+data class Message(
+    val id: String,
+    val text: String,
+    val senderId: String,
+    val timestamp: Long,
+    val isSent: Boolean,
+    val isRead: Boolean
+)
 

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="?attr/selectableItemBackground"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/user_avatar"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="Profile image"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:background="@drawable/rounded_avatar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/hd_user" />
+
+    <View
+        android:id="@+id/unread_badge"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/rounded_drawable"
+        android:backgroundTint="@color/selectedColor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/user_avatar"
+        app:layout_constraintEnd_toEndOf="@id/user_avatar" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/message_time"
+        app:layout_constraintStart_toEndOf="@id/user_avatar"
+        app:layout_constraintTop_toTopOf="@id/user_avatar"
+        tools:text="John Doe" />
+
+    <TextView
+        android:id="@+id/message_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/user_avatar"
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        tools:text="Hey, when are you coming?" />
+
+    <TextView
+        android:id="@+id/message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/gray"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/user_name"
+        tools:text="10:30 AM" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/user_avatar"
+        app:layout_constraintTop_toBottomOf="@id/message_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

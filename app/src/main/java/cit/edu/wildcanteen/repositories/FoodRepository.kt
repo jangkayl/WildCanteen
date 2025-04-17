@@ -1,7 +1,9 @@
 package cit.edu.wildcanteen.repositories
 
+import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.FoodItem
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Date
 
 object FoodRepository {
 
@@ -52,4 +54,58 @@ object FoodRepository {
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onError(it) }
     }
+
+    fun loadSampleData(): List<ChatMessage> {
+        return listOf(
+            ChatMessage(
+                messageId = "msg1",
+                senderId = "user1",
+                senderName = "John Doe",
+                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
+                recipientId = "user2",
+                messageText = "Hey, when are you coming to the event tonight?",
+                timestamp = Date().time - 3600000,
+                isRead = false
+            ),
+            ChatMessage(
+                messageId = "msg2",
+                senderId = "user3",
+                senderName = "Emily Parker",
+                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
+                recipientId = "user2",
+                messageText = "I just sent you the files we discussed yesterday. Please check!",
+                timestamp = Date().time - 7200000,
+                isRead = true
+            ),
+            ChatMessage(
+                messageId = "msg3",
+                senderId = "group1",
+                senderName = "Wildlife Club",
+                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743439085/WildCanteen_profile/auspdtqau39bk8djcpmg.jpg",
+                recipientId = "user2",
+                messageText = "Meeting rescheduled to Friday at 5PM. Don't forget to bring your research!",
+                timestamp = Date().time - 86400000,
+                isRead = false
+            ),
+            ChatMessage(
+                messageId = "msg4",
+                senderId = "user4",
+                senderName = "Sarah Wilson",
+                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
+                recipientId = "user2",
+                messageText = "Thanks for helping with the conservation project!",
+                timestamp = Date().time - 172800000,
+                isRead = true
+            ),
+            ChatMessage(
+                messageId = "msg5",
+                senderId = "user5",
+                senderName = "Mike Johnson",
+                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355822/WildCanteen_profile/i0edrnapdxdonepm5okq.jpg",
+                recipientId = "user2",
+                messageText = "Did you see the new wildlife sanctuary opening next week?",
+                timestamp = Date().time - 259200000,
+                isRead = true
+            )
+        )}
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/selectedColor"
+        android:titleTextColor="@android:color/white"
+        app:title="Chat"/>
+
+    <!-- RecyclerView for messages -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messagesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <!-- Message input area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/darkOrange"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/messageInput"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:autofillHints=""
+            android:hint="Type a message..."
+            android:textColor="@color/white"
+            android:textColorHint="@color/black"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:background="@drawable/rounded_drawable"
+            android:backgroundTint="#80626161"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"/>
+
+        <!-- Replaced FloatingActionButton with a regular Button -->
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginHorizontal="15dp"
+            android:text=""
+            android:background="@drawable/send"
+            android:contentDescription="Send"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
