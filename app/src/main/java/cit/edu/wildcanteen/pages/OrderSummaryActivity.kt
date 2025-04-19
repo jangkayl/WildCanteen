@@ -101,6 +101,7 @@ class OrderSummaryActivity : AppCompatActivity() {
                 R.id.gcashRadio -> {
                     cashInputContainer.visibility = View.GONE
                     gcashInputContainer.visibility = View.VISIBLE
+                    findViewById<TextView>(R.id.amountGcash).text = "\t\tAmount: ₱${"%.2f".format(cartOrders.sumOf { it.items.price * it.quantity } - 5)}"
                 }
                 else -> {
                     cashInputContainer.visibility = View.GONE
@@ -118,7 +119,12 @@ class OrderSummaryActivity : AppCompatActivity() {
 
             val deliveryMethod = when (deliveryMethodGroup.checkedRadioButtonId) {
                 R.id.onSiteRadio -> "On-Site Pickup"
-                else -> "Delivery"
+                R.id.deliveryRadio -> "Delivery"
+                else -> {
+                    showErrorDialog("Please select a delivery method")
+                    payNowButton.isEnabled = true
+                    return@setOnClickListener
+                }
             }
 
             val total = totalPriceTextView.text.toString().replace("₱", "").toDouble()

@@ -1,7 +1,6 @@
 package cit.edu.wildcanteen.adapters
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +10,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +36,7 @@ class OrderedBatchesAdapter(
         val deliveringButton: LinearLayout = view.findViewById(R.id.deliveringButton)
         val messageDelivererButton: Button = view.findViewById(R.id.messageDelivererButton)
         val markAsDeliveredButton: Button = view.findViewById(R.id.markAsDelivered)
+        val sendFeedback: TextView = view.findViewById(R.id.sendFeedback)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -64,6 +63,11 @@ class OrderedBatchesAdapter(
         }
 
         holder.deliveringButton.visibility = if (batch.status.equals("Delivering", ignoreCase = true)) View.VISIBLE else View.GONE
+        holder.sendFeedback.visibility = if (batch.status.equals("Completed", ignoreCase = true)) View.VISIBLE else View.GONE
+
+        holder.sendFeedback.setOnClickListener {
+            Toast.makeText(holder.itemView.context, "Send Feedback", Toast.LENGTH_SHORT).show()
+        }
 
         holder.messageDelivererButton.setOnClickListener {
             handleMessageDelivererClick(holder, batch)
@@ -132,7 +136,7 @@ class OrderedBatchesAdapter(
                 FirebaseRepository().markOrderBatchAsCompleted(batch.batchId) { success, exception ->
                     if (success) {
                         Toast.makeText(context, "Marked as delivered!", Toast.LENGTH_SHORT).show()
-                        sendMessage(batch, "Thank you for delivering the Order #${batch.batchId}. Your timely service is truly appreciated.", holder)
+                        sendMessage(batch, "Thank you for delivering the Order #${batch.batchId.takeLast(6)}. Your timely service is truly appreciated.", holder)
                         notifyItemChanged(position)
                     } else {
                         Toast.makeText(context, "Failed to update status: ${exception?.message}", Toast.LENGTH_SHORT).show()

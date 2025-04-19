@@ -130,4 +130,17 @@
             app:backgroundTint="@color/selectedColor" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/sendFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:text="Send Feedback"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:layout_gravity="end"
+        android:textColor="@color/selectedColor"/>
+
 </LinearLayout>

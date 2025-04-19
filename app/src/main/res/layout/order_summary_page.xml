@@ -429,10 +429,19 @@
                                 android:text="\t\tGcash Name: John Kyle Villarazo"
                                 android:textColor="#BBBBBB"
                                 android:layout_marginTop="8dp"/>
+
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="\t\tGcash Number: 09112233445"
+                                android:textColor="#BBBBBB"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:id="@+id/amountGcash"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="\t\tAmount: 100"
                                 android:textColor="#BBBBBB"
                                 android:layout_marginTop="8dp"
                                 android:layout_marginBottom="20dp"/>
