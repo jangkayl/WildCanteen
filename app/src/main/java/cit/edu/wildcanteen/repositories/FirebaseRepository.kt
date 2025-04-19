@@ -11,6 +11,7 @@ import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.User
 import cit.edu.wildcanteen.UserInfo
+import cit.edu.wildcanteen.application.MyApplication
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -529,6 +530,7 @@ class FirebaseRepository {
                             referenceNumber = data["referenceNumber"] as? String ?: "",
                             deliveryType = data["deliveryType"] as? String ?: "",
                             deliveredBy = data["deliveredBy"] as? String ?: "",
+                            deliveredByName = data["deliveredByName"] as? String ?: "",
                             deliveryAddress = data["deliveryAddress"] as? String ?: "",
                             deliveryFee = data["deliveryFee"] as? Double ?: 0.0,
                             timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
@@ -610,6 +612,7 @@ class FirebaseRepository {
                         referenceNumber = data["referenceNumber"] as? String ?: "",
                         deliveryType = data["deliveryType"] as? String ?: "",
                         deliveredBy = data["deliveredBy"] as? String ?: "",
+                        deliveredByName = data["deliveredByName"] as? String ?: "",
                         deliveryAddress = data["deliveryAddress"] as? String ?: "",
                         deliveryFee = data["deliveryFee"] as? Double ?: 0.0,
                         timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
@@ -624,10 +627,18 @@ class FirebaseRepository {
         }
     }
 
-    fun acceptDeliveryOrder(batchId: String, studentId: String, callback: (Boolean, Exception?) -> Unit) {
+    fun acceptDeliveryOrder(batchId: String, studentId: String, name: String, callback: (Boolean, Exception?) -> Unit) {
         val batchRef = orderBatchesCollection.document(batchId)
 
-        batchRef.update("deliveredBy", studentId, "status", "Delivering")
+        batchRef.update("deliveredBy", studentId, "status", "Delivering", "deliveredByName", name)
+            .addOnSuccessListener { callback(true, null) }
+            .addOnFailureListener { e -> callback(false, e) }
+    }
+
+    fun markOrderBatchAsCompleted(batchId: String, callback: (Boolean, Exception?) -> Unit) {
+        val batchRef = orderBatchesCollection.document(batchId)
+
+        batchRef.update("status", "Completed")
             .addOnSuccessListener { callback(true, null) }
             .addOnFailureListener { e -> callback(false, e) }
     }

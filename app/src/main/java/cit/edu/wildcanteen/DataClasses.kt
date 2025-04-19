@@ -60,6 +60,7 @@ data class OrderBatch(
     val referenceNumber: String,
     val deliveryType: String,
     val deliveredBy: String,
+    val deliveredByName: String,
     val deliveryAddress: String,
     val deliveryFee: Double,
     val timestamp: Long

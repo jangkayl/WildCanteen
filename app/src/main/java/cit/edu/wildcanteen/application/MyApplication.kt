@@ -12,7 +12,6 @@ import cit.edu.wildcanteen.repositories.FirebaseRepository
 import cit.edu.wildcanteen.pages.HomePageActivity
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.User
-import cit.edu.wildcanteen.fragments.ChatsFragment
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

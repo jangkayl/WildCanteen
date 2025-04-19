@@ -2,7 +2,6 @@ package cit.edu.wildcanteen.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +64,7 @@ class AcceptedOrdersFragment : Fragment() {
             onUpdate = { batches ->
                 binding.progressBar.visibility = View.GONE
                 val acceptedOrders = batches.filter { batch ->
-                    batch.status == "Delivering" &&
+                    batch.status == "Delivering" || batch.status == "Completed" &&
                             batch.deliveredBy == MyApplication.studentId
                 }.sortedByDescending { it.timestamp }
 
@@ -95,8 +94,6 @@ class AcceptedOrdersFragment : Fragment() {
     }
 
     private fun chatBuyer(batch: OrderBatch) {
-        Toast.makeText(requireContext(), "Chat Buyer", Toast.LENGTH_SHORT).show()
-
         val repo = FirebaseRepository()
 
         repo.getUserProfileImageUrl(batch.userId, onSuccess = { recipientImageUrl ->

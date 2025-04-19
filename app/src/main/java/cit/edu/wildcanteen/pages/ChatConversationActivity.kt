@@ -3,6 +3,7 @@ package cit.edu.wildcanteen.pages
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.databinding.ActivityChatConversationBinding
 import cit.edu.wildcanteen.repositories.FirebaseRepository
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.ListenerRegistration
 import java.util.*
 
@@ -35,6 +37,7 @@ class ChatConversationActivity : AppCompatActivity() {
 
         firebaseRepository = FirebaseRepository()
 
+        val chatUserImage = findViewById<ImageView>(R.id.chatUserImage)
         currentUserId = MyApplication.studentId!!
         if(intent.getStringExtra("senderId") == currentUserId){
             otherUserId = intent.getStringExtra("recipientId")!!
@@ -48,6 +51,14 @@ class ChatConversationActivity : AppCompatActivity() {
 
         roomId = listOf(currentUserId, otherUserId).sorted().joinToString("_")
 
+        Glide.with(this)
+            .load(otherUserImage)
+            .placeholder(R.drawable.hd_user)
+            .error(R.drawable.hd_user)
+            .circleCrop()
+            .into(chatUserImage)
+
+        findViewById<TextView>(R.id.chatUserTitle).text = otherUserName
         findViewById<ImageView>(R.id.back_button).setOnClickListener {
             finish()
         }
@@ -95,7 +106,6 @@ class ChatConversationActivity : AppCompatActivity() {
             },
             onFailure = { exception ->
                 Log.e("ChatActivity", "Error listening for messages", exception)
-                // Show error to user
             }
         )
     }

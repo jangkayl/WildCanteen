@@ -202,11 +202,12 @@ class OrderSummaryActivity : AppCompatActivity() {
             userName = userName,
             orders = cartOrders,
             totalAmount = totalAmount,
-            status = "Pending",
+            status = "Ready",
             paymentMethod = paymentMethod,
             referenceNumber = referenceNumber,
             deliveryType = deliveryMethod,
             deliveredBy = "",
+            deliveredByName = "",
             deliveryAddress = deliveryAddress,
             deliveryFee = calculateDeliveryFee(),
             timestamp = System.currentTimeMillis()

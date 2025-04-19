@@ -59,6 +59,7 @@ xmlns:tools="http://schemas.android.com/tools">
         android:exported="false"/>
     <activity
         android:name=".pages.OrderSummaryActivity"
+        android:windowSoftInputMode="adjustPan"
         android:exported="false"/>
     <activity
         android:name=".pages.OrderBatchesActivity"

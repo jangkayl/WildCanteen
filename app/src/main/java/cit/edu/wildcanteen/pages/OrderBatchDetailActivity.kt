@@ -118,7 +118,7 @@ class OrderBatchDetailActivity : AppCompatActivity() {
             "pending" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#FFA500"))
             "preparing" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#2196F3"))
             "ready" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#4CAF50"))
-            "completed" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#607D8B"))
+            "completed" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#4CAF50"))
             "cancelled" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#F44336"))
         }
 

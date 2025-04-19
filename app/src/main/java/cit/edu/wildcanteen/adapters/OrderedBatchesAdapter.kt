@@ -1,16 +1,26 @@
 package cit.edu.wildcanteen.adapters
 
+import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.R
+import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.pages.ChatConversationActivity
+import cit.edu.wildcanteen.repositories.FirebaseRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,11 +29,15 @@ class OrderedBatchesAdapter(
 ) : ListAdapter<OrderBatch, OrderedBatchesAdapter.ViewHolder>(DiffCallback()) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val firebaseRepository = FirebaseRepository()
         val orderNumber: TextView = view.findViewById(R.id.orderNumberText)
         val status: TextView = view.findViewById(R.id.statusText)
         val date: TextView = view.findViewById(R.id.dateText)
         val itemsContainer: LinearLayout = view.findViewById(R.id.itemsContainer)
         val totalAmount: TextView = view.findViewById(R.id.totalAmountText)
+        val deliveringButton: LinearLayout = view.findViewById(R.id.deliveringButton)
+        val messageDelivererButton: Button = view.findViewById(R.id.messageDelivererButton)
+        val markAsDeliveredButton: Button = view.findViewById(R.id.markAsDelivered)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,16 +55,39 @@ class OrderedBatchesAdapter(
             .format(Date(batch.timestamp))
         holder.totalAmount.text = "₱${"%.2f".format(batch.totalAmount)}"
 
-        when (batch.status.lowercase()) {
-            "pending" -> holder.status.setTextColor(Color.parseColor("#FFA500"))
-            "preparing" -> holder.status.setTextColor(Color.parseColor("#2196F3"))
-            "delivering" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
-            "ready" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
-            "completed" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
-            "cancelled" -> holder.status.setTextColor(Color.parseColor("#F44336"))
-            else -> holder.status.setTextColor(Color.parseColor("#607D8B"))
+        setStatusColor(holder, batch.status)
+
+        populateOrderItems(holder, batch)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(batch)
         }
 
+        holder.deliveringButton.visibility = if (batch.status.equals("Delivering", ignoreCase = true)) View.VISIBLE else View.GONE
+
+        holder.messageDelivererButton.setOnClickListener {
+            handleMessageDelivererClick(holder, batch)
+        }
+
+        holder.markAsDeliveredButton.setOnClickListener {
+            handleMarkAsDeliveredClick(holder, batch, position)
+        }
+    }
+
+    private fun setStatusColor(holder: ViewHolder, status: String) {
+        val color = when (status.lowercase()) {
+            "pending" -> "#FFA500" // Orange
+            "preparing" -> "#2196F3" // Blue
+            "delivering" -> "#4CAF50" // Green
+            "ready" -> "#4CAF50" // Green
+            "completed" -> "#4CAF50" // Green
+            "cancelled" -> "#F44336" // Red
+            else -> "#607D8B" // Grey
+        }
+        holder.status.setTextColor(Color.parseColor(color))
+    }
+
+    private fun populateOrderItems(holder: ViewHolder, batch: OrderBatch) {
         holder.itemsContainer.removeAllViews()
 
         batch.orders.forEach { order ->
@@ -67,10 +104,85 @@ class OrderedBatchesAdapter(
 
             holder.itemsContainer.addView(itemView)
         }
+    }
 
-        holder.itemView.setOnClickListener {
-            onItemClick(batch)
-        }
+    private fun handleMessageDelivererClick(holder: ViewHolder, batch: OrderBatch) {
+        holder.firebaseRepository.getUserProfileImageUrl(batch.deliveredBy, onSuccess = { recipientImageUrl ->
+            val intent = Intent(holder.itemView.context, ChatConversationActivity::class.java).apply {
+                putExtra("senderId", MyApplication.studentId)
+                putExtra("senderName", MyApplication.name)
+                putExtra("senderImage", MyApplication.profileImageUrl)
+                putExtra("recipientId", batch.deliveredBy)
+                putExtra("recipientName", batch.deliveredByName)
+                putExtra("recipientImage", recipientImageUrl)
+            }
+            holder.itemView.context.startActivity(intent)
+        }, onFailure = {
+            Toast.makeText(holder.itemView.context, "Failed to load recipient image", Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun handleMarkAsDeliveredClick(holder: ViewHolder, batch: OrderBatch, position: Int) {
+        val context = holder.itemView.context
+
+        val dialog = android.app.AlertDialog.Builder(context)
+            .setTitle("Confirm Delivery")
+            .setMessage("Are you sure you have received your order?")
+            .setPositiveButton("Yes") { _, _ ->
+                FirebaseRepository().markOrderBatchAsCompleted(batch.batchId) { success, exception ->
+                    if (success) {
+                        Toast.makeText(context, "Marked as delivered!", Toast.LENGTH_SHORT).show()
+                        sendMessage(batch, "Thank you for delivering the Order #${batch.batchId}. Your timely service is truly appreciated.", holder)
+                        notifyItemChanged(position)
+                    } else {
+                        Toast.makeText(context, "Failed to update status: ${exception?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
+    }
+
+    private fun sendMessage(batch: OrderBatch, text: String, holder: ViewHolder){
+        val roomId = listOf(MyApplication.studentId!!, batch.deliveredBy).sorted().joinToString("_")
+
+        FirebaseRepository().getUserProfileImageUrl(batch.deliveredBy, onSuccess = { recipientImageUrl ->
+            val newMessage = ChatMessage(
+                messageId = "",
+                roomId = roomId,
+                senderId = MyApplication.studentId!!,
+                senderName = MyApplication.name ?: "You",
+                senderImage = MyApplication.profileImageUrl ?: "",
+                recipientId = batch.deliveredBy,
+                recipientName = batch.deliveredByName,
+                recipientImage = recipientImageUrl.toString(),
+                messageText = text,
+                timestamp = System.currentTimeMillis(),
+                isRead = false
+            )
+
+            FirebaseRepository().sendChatMessage(
+                newMessage,
+                onSuccess = {
+                    Log.d("Chat", "Message sent successfully")
+                },
+                onFailure = { exception ->
+                    Log.e("Chat", "Failed to send message", exception)
+                }
+            )
+
+            val intent = Intent(holder.itemView.context, ChatConversationActivity::class.java).apply {
+                putExtra("senderId", MyApplication.studentId)
+                putExtra("senderName", MyApplication.name)
+                putExtra("senderImage", MyApplication.profileImageUrl)
+                putExtra("recipientId", batch.deliveredBy)
+                putExtra("recipientName", batch.deliveredByName)
+                putExtra("recipientImage", recipientImageUrl)
+            }
+            holder.itemView.context.startActivity(intent)
+        })
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<OrderBatch>() {

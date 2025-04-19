@@ -50,7 +50,7 @@ class DeliveryOrderAdapter(
         holder.itemCount.text = "${batch.orders.size} items"
         holder.address.text = batch.deliveryAddress
 
-        if (batch.paymentMethod.equals("cash", ignoreCase = true)) {
+        if (batch.paymentMethod.equals("Cash", ignoreCase = true)) {
             holder.paymentMethod.text = "Cash on Delivery"
             holder.paymentMethod.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.selectedColor))
             holder.changeAmount.text = batch.referenceNumber
@@ -70,6 +70,13 @@ class DeliveryOrderAdapter(
                 holder.itemView.context,
                 R.color.green
             )
+        }
+
+        if(batch.deliveredBy != "" && batch.status.equals("Completed", ignoreCase = true)){
+            holder.deliveryFee.text = "Earn: ₱${"%.2f".format(batch.deliveryFee)}"
+            holder.acceptBtn.visibility = View.GONE
+            holder.deliveryFee.text = "Earned: ₱${"%.2f".format(batch.deliveryFee)}"
+            holder.deliveryFee.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.green))
         }
     }
 

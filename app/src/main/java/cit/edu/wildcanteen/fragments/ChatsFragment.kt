@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.widget.EditText
 import android.os.Handler
 import android.os.Looper
+import android.widget.LinearLayout
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.pages.ChatConversationActivity
 import cit.edu.wildcanteen.pages.UserSearchActivity
@@ -30,6 +31,7 @@ class ChatsFragment : Fragment() {
     private lateinit var searchEditText: EditText
     private lateinit var fabNewMessage: FloatingActionButton
     private val handler = Handler(Looper.getMainLooper())
+    private lateinit var noChatLayout: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +48,7 @@ class ChatsFragment : Fragment() {
         searchEditText = view.findViewById(R.id.search_chats)
         fabNewMessage = view.findViewById(R.id.fab_new_message)
         firebaseRepository = FirebaseRepository()
+        noChatLayout = view.findViewById(R.id.no_chat_layout)
 
         setupRecyclerView()
         setupSearchFunctionality()
@@ -107,6 +110,8 @@ class ChatsFragment : Fragment() {
             MyApplication.allChats
         }
 
+        noChatLayout.visibility = if (dataToShow.isEmpty()) View.VISIBLE else View.GONE
+
         Log.d("ChatsFragment", "updateChatList: Updating with ${dataToShow.size} items")
 
         try {
@@ -163,7 +168,6 @@ class ChatsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Remove observer to prevent memory leaks
         MyApplication.chatUpdatesLiveData.removeObservers(viewLifecycleOwner)
     }
 }

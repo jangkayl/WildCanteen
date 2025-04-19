@@ -58,7 +58,7 @@
         android:orientation="vertical"
         android:layout_marginBottom="8dp">
 
-        <!-- Items will be added programmatically -->
+        <!-- Items will be added dynamically -->
     </LinearLayout>
 
     <!-- Divider -->
@@ -95,4 +95,39 @@
             android:textSize="16sp"
             android:textStyle="bold"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/deliveringButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/messageDelivererButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp"
+            android:text="Message Deliverer"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_drawable"
+            app:backgroundTint="@color/green" />
+        <Button
+            android:id="@+id/markAsDelivered"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp"
+            android:text="Mark as Delivered"
+            android:textAllCaps="false"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_drawable"
+            app:backgroundTint="@color/selectedColor" />
+    </LinearLayout>
+
 </LinearLayout>

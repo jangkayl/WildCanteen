@@ -2,16 +2,20 @@ package cit.edu.wildcanteen.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.adapters.DeliveryOrderAdapter
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.databinding.FragmentAvailableOrdersBinding
+import cit.edu.wildcanteen.pages.ChatConversationActivity
 import cit.edu.wildcanteen.pages.OrderBatchDetailActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.firebase.firestore.ListenerRegistration
@@ -21,6 +25,7 @@ class AvailableOrdersFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: DeliveryOrderAdapter
     private var orderBatchListener: ListenerRegistration? = null
+    private var firebaseRepository = FirebaseRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,11 +114,14 @@ class AvailableOrdersFragment : Fragment() {
         builder.setMessage(message)
 
         builder.setPositiveButton("Yes, Accept") { dialog, _ ->
-            FirebaseRepository().acceptDeliveryOrder(batch.batchId, MyApplication.studentId!!) { success, e ->
+            FirebaseRepository().acceptDeliveryOrder(batch.batchId, MyApplication.studentId!!, MyApplication.name!!) { success, e ->
                 if (success) {
-                    android.widget.Toast.makeText(context, "You accepted the delivery!", android.widget.Toast.LENGTH_SHORT).show()
+                   Toast.makeText(context, "You accepted the delivery!", Toast.LENGTH_SHORT).show()
+
+                    sendMessage(batch, "Your Order #${batch.batchId.takeLast(6)} in now on the way!")
+
                 } else {
-                    android.widget.Toast.makeText(context, "Failed to accept delivery.", android.widget.Toast.LENGTH_SHORT).show()
+                   Toast.makeText(context, "Failed to accept delivery.", Toast.LENGTH_SHORT).show()
                 }
             }
             dialog.dismiss()
@@ -127,6 +135,48 @@ class AvailableOrdersFragment : Fragment() {
         dialog.show()
     }
 
+    private fun sendMessage(batch: OrderBatch, text: String) {
+        val roomId = listOf(MyApplication.studentId!!, batch.userId).sorted().joinToString("_")
+
+        firebaseRepository.getUserProfileImageUrl(batch.userId, onSuccess = { recipientImageUrl ->
+            val newMessage = ChatMessage(
+                messageId = "",
+                roomId = roomId,
+                senderId = MyApplication.studentId!!,
+                senderName = MyApplication.name ?: "You",
+                senderImage = MyApplication.profileImageUrl ?: "",
+                recipientId = batch.userId,
+                recipientName = batch.userName,
+                recipientImage = recipientImageUrl.toString(),
+                messageText = text,
+                timestamp = System.currentTimeMillis(),
+                isRead = false
+            )
+
+            firebaseRepository.sendChatMessage(
+                newMessage,
+                onSuccess = {
+                    Log.d("Chat", "Message sent successfully")
+                },
+                onFailure = { exception ->
+                    Log.e("Chat", "Failed to send message", exception)
+                }
+            )
+
+            val intent = Intent(context, ChatConversationActivity::class.java).apply {
+                putExtra("senderId", MyApplication.studentId)
+                putExtra("senderName", MyApplication.name)
+                putExtra("senderImage", MyApplication.profileImageUrl)
+                putExtra("recipientId", batch.userId)
+                putExtra("recipientName", batch.userName)
+                putExtra("recipientImage", recipientImageUrl)
+            }
+            context?.startActivity(intent)
+        }, onFailure = {
+            Toast.makeText(requireContext(), "Failed to load recipient image", Toast.LENGTH_SHORT).show()
+        })
+
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
