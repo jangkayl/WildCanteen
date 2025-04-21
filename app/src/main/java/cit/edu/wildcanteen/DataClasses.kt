@@ -73,25 +73,23 @@ data class Feedback(
     val profileImageUrl: String,
     val rating: Double,
     val imageUrl: List<String>,
-    val text: String,
+    val feedback: String,
     val timestamp: Long
 )
 
 data class ChatMessage(
-    val messageId: String = "",
-    val roomId: String = "",
-    val senderId: String = "",
-    val senderName: String = "",
-    val senderImage: String = "",
-    val recipientId: String = "",
-    val recipientName: String = "",
-    val recipientImage: String = "",
-    val messageText: String = "",
-    val timestamp: Long = 0L,
-    val isRead: Boolean = false
-) {
-    constructor() : this("", "", "", "", "", "", "", "", "", 0L, false)
-}
+    val messageId: String,
+    val roomId: String,
+    val senderId: String,
+    val senderName: String,
+    val senderImage: String,
+    val recipientId: String,
+    val recipientName: String,
+    val recipientImage: String,
+    val messageText: String ,
+    val timestamp: Long,
+    val isRead: Boolean
+)
 
 
 

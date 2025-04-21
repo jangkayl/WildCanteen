@@ -56,6 +56,21 @@ class ChatsFragment : Fragment() {
         setupChatObserver()
 
         updateChatList()
+
+        // Add this to print all chat details when fragment is opened
+        Log.d("ChatsFragment", "Current user ID: ${MyApplication.studentId}")
+        Log.d("ChatsFragment", "All chats count: ${MyApplication.allChats.size}")
+        MyApplication.allChats.forEachIndexed { index, chat ->
+            Log.d("ChatsFragment", """
+            Chat $index:
+            - Message ID: ${chat.messageId}
+            - Sender: ${chat.senderName} (${chat.senderId})
+            - Recipient: ${chat.recipientName} (${chat.recipientId})
+            - Message: ${chat.messageText}
+            - Timestamp: ${chat.timestamp}
+            - Read: ${chat.isRead}
+        """.trimIndent())
+        }
     }
 
     override fun onResume() {
@@ -100,35 +115,19 @@ class ChatsFragment : Fragment() {
     private fun updateChatList() {
         if (!isAdded) return
 
-        val currentQuery = searchEditText.text?.toString() ?: ""
-        val dataToShow = if (currentQuery.isNotEmpty()) {
+        val currentQuery = searchEditText.text?.toString()?.trim() ?: ""
+        val filteredChats = if (currentQuery.isNotEmpty()) {
             MyApplication.allChats.filter { chat ->
                 chat.senderName.contains(currentQuery, ignoreCase = true) ||
+                        chat.recipientName.contains(currentQuery, ignoreCase = true) ||
                         chat.messageText.contains(currentQuery, ignoreCase = true)
             }
         } else {
             MyApplication.allChats
         }
 
-        noChatLayout.visibility = if (dataToShow.isEmpty()) View.VISIBLE else View.GONE
-
-        Log.d("ChatsFragment", "updateChatList: Updating with ${dataToShow.size} items")
-
-        try {
-            if (::chatAdapter.isInitialized) {
-                try {
-                    chatAdapter.forcefullyUpdateList(dataToShow)
-                } catch (e: Exception) {
-                    chatAdapter.submitList(dataToShow)
-                }
-
-                recyclerView.post {
-                    chatAdapter.notifyDataSetChanged()
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("ChatsFragment", "Error updating adapter", e)
-        }
+        noChatLayout.visibility = if (filteredChats.isEmpty()) View.VISIBLE else View.GONE
+        chatAdapter.submitList(filteredChats)
     }
 
     private fun setupSearchFunctionality() {
@@ -146,7 +145,8 @@ class ChatsFragment : Fragment() {
             MyApplication.allChats
         } else {
             MyApplication.allChats.filter { chat ->
-                chat.senderName.contains(query, ignoreCase = true) ||
+                val otherPersonName = if (chat.senderId == MyApplication.studentId) chat.recipientName else chat.senderName
+                otherPersonName.contains(query, ignoreCase = true) ||
                         chat.messageText.contains(query, ignoreCase = true)
             }
         }
@@ -158,6 +158,7 @@ class ChatsFragment : Fragment() {
             chatAdapter.submitList(filteredList)
         }
     }
+
 
     private fun setupFabClickListener() {
         fabNewMessage.setOnClickListener {

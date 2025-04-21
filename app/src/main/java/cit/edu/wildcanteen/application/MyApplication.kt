@@ -99,6 +99,7 @@ class MyApplication : Application() {
 
         private fun clearChatListener() {
             chatListener?.remove()
+            allChats.clear()
             chatListener = null
             Log.d("MyApplication", "Chat listener removed")
         }
@@ -122,6 +123,8 @@ class MyApplication : Application() {
                 putBoolean("IS_LOGGED_IN", true)
                 apply()
             }
+
+            initializeChat()
             printUserDetails()
         }
 
@@ -135,6 +138,7 @@ class MyApplication : Application() {
             password = null
             orders.clear()
             clearChatListener()
+            chatUpdatesLiveData.postValue(emptyList())
 
             prefs.edit().clear().apply()
             printUserDetails()
@@ -293,7 +297,6 @@ class MyApplication : Application() {
 
         private fun printUserDetails() {
             Log.e("User details", currentUser.toString());
-            initializeChat()
         }
     }
 
