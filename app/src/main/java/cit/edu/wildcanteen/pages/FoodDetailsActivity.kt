@@ -14,6 +14,7 @@ import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FeedbackAdapter
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FirebaseRepository
+import cit.edu.wildcanteen.repositories.StaticRepository
 import com.bumptech.glide.Glide
 
 class FoodDetailsActivity : Activity() {
@@ -119,31 +120,38 @@ class FoodDetailsActivity : Activity() {
             finish()
         }
 
-        findViewById<TextView>(R.id.foodDescription).text = foodDescription
-
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerFeedbacks)
-        val noFeedbackText = findViewById<TextView>(R.id.noFeedbackText)
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        feedbackAdapter = FeedbackAdapter(emptyList())
-        recyclerView.adapter = feedbackAdapter
+        setupRecyclerView()
     }
 
-    private fun updateFeedbackUI(feedbacks: List<Feedback>) {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerFeedbacks)
-        val noFeedbackText = findViewById<TextView>(R.id.noFeedbackText)
+    private fun setupRecyclerView() {
+        feedbackAdapter = FeedbackAdapter(StaticRepository.staticFeedbacks())
 
-        if (feedbacks.isEmpty()) {
-            recyclerView.visibility = View.GONE
-            noFeedbackText.visibility = View.VISIBLE
-        } else {
-            recyclerView.visibility = View.VISIBLE
-            noFeedbackText.visibility = View.GONE
+        val recyclerView: RecyclerView = findViewById(R.id.recyclerFeedbacks)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.visibility = View.VISIBLE
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.adapter = feedbackAdapter
 
-            feedbackAdapter = FeedbackAdapter(feedbacks)
-            recyclerView.adapter = feedbackAdapter
+        recyclerView.post {
+            var totalHeight = 0
+            for (i in 0 until feedbackAdapter.itemCount) {
+                val holder = feedbackAdapter.createViewHolder(recyclerView, feedbackAdapter.getItemViewType(i))
+                feedbackAdapter.bindViewHolder(holder, i)
+
+                holder.itemView.measure(
+                    View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+
+                val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
+                totalHeight += holder.itemView.measuredHeight + params.bottomMargin
+            }
+
+            recyclerView.layoutParams.height = totalHeight
+            recyclerView.requestLayout()
         }
     }
+
     override fun finish() {
         super.finish()
         overridePendingTransition(R.anim.fade_in, R.anim.slide_down)

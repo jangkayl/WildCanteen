@@ -1,11 +1,11 @@
 package cit.edu.wildcanteen.repositories
 
 import cit.edu.wildcanteen.ChatMessage
+import cit.edu.wildcanteen.Feedback
 import cit.edu.wildcanteen.FoodItem
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.Date
 
-object FoodRepository {
+object StaticRepository {
 
     fun getPopularFoodList(): List<FoodItem> {
         return listOf(
@@ -55,62 +55,58 @@ object FoodRepository {
             .addOnFailureListener { onError(it) }
     }
 
-//    fun loadSampleData(): List<ChatMessage> {
-//        return listOf(
-//            ChatMessage(
-//                messageId = "msg1",
-//                roomId = "",
-//                senderId = "user1",
-//                senderName = "John Doe",
-//                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
-//                recipientId = "user2",
-//                messageText = "Hey, when are you coming to the event tonight?",
-//                timestamp = Date().time - 3600000,
-//                isRead = false
-//            ),
-//            ChatMessage(
-//                messageId = "msg2",
-//                roomId = "",
-//                senderId = "user3",
-//                senderName = "Emily Parker",
-//                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
-//                recipientId = "user2",
-//                messageText = "I just sent you the files we discussed yesterday. Please check!",
-//                timestamp = Date().time - 7200000,
-//                isRead = true
-//            ),
-//            ChatMessage(
-//                messageId = "msg3",
-//                roomId = "",
-//                senderId = "group1",
-//                senderName = "Wildlife Club",
-//                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743439085/WildCanteen_profile/auspdtqau39bk8djcpmg.jpg",
-//                recipientId = "user2",
-//                messageText = "Meeting rescheduled to Friday at 5PM. Don't forget to bring your research!",
-//                timestamp = Date().time - 86400000,
-//                isRead = false
-//            ),
-//            ChatMessage(
-//                messageId = "msg4",
-//                roomId = "",
-//                senderId = "user4",
-//                senderName = "Sarah Wilson",
-//                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
-//                recipientId = "user2",
-//                messageText = "Thanks for helping with the conservation project!",
-//                timestamp = Date().time - 172800000,
-//                isRead = true
-//            ),
-//            ChatMessage(
-//                messageId = "msg5",
-//                roomId = "",
-//                senderId = "user5",
-//                senderName = "Mike Johnson",
-//                senderImage = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355822/WildCanteen_profile/i0edrnapdxdonepm5okq.jpg",
-//                recipientId = "user2",
-//                messageText = "Did you see the new wildlife sanctuary opening next week?",
-//                timestamp = Date().time - 259200000,
-//                isRead = true
-//            )
-//        )}
+    fun staticFeedbacks(): List<Feedback>{
+        return listOf(
+            Feedback(
+                foodId = 1,
+                userId = "chef123",
+                name = "Chef Gordon",
+                profileImageUrl = "",
+                rating = 5.0,
+                imageUrl = listOf(),
+                feedback = "This chicken is so good it made me question my own recipes!",
+                timestamp = System.currentTimeMillis(),
+            ),
+            Feedback(
+                foodId = 1,
+                userId = "foodie42",
+                name = "Jenny the Foodie",
+                profileImageUrl = "",
+                rating = 4.5,
+                imageUrl = listOf(),
+                feedback = "Perfect balance of spices! My taste buds are throwing a party 🎉",
+                timestamp = System.currentTimeMillis() - 86400000,
+            ),
+            Feedback(
+                foodId = 1,
+                userId = "student99",
+                name = "Hungry Student",
+                profileImageUrl = "",
+                rating = 5.0,
+                imageUrl = listOf(),
+                feedback = "Saved me from another instant noodle dinner. 10/10 would skip class for this",
+                timestamp = System.currentTimeMillis() - 172800000,
+            ),
+            Feedback(
+                foodId = 1,
+                userId = "student99",
+                name = "Bahog Bugan",
+                profileImageUrl = "",
+                rating = 2.0,
+                imageUrl = listOf(),
+                feedback = "Way lami piste bogo man diay ni",
+                timestamp = System.currentTimeMillis() - 172800000,
+            ),
+            Feedback(
+                foodId = 1,
+                userId = "critic8",
+                name = "Michelin Maybe",
+                profileImageUrl = "",
+                rating = 4.0,
+                imageUrl = listOf(),
+                feedback = "Almost as good as my mom's cooking. Almost.",
+                timestamp = System.currentTimeMillis() - 259200000,
+            )
+        )
+    }
 }

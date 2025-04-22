@@ -6,13 +6,6 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/foodImage"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/chicken" />
-
-    <ImageView
         android:id="@+id/btn_back"
         android:layout_width="35dp"
         android:layout_height="35dp"
@@ -23,150 +16,190 @@
         android:backgroundTint="#F79901"
         android:src="@drawable/back_arrow"
         android:layout_alignParentStart="true"
+        android:elevation="20dp"
         android:layout_alignParentTop="true" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:background="@drawable/rounded_drawable"
-        android:backgroundTint="#F79901"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:elevation="8dp"
-        android:layout_marginBottom="-24dp"
-        android:layout_alignBottom="@id/foodImage"
-        android:layout_centerHorizontal="true">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <Button
-            android:id="@+id/btn_decrease"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:text="-"
-            android:textColor="#000000"
-            android:textSize="26sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/food_quantity"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="1"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            <ImageView
+                android:id="@+id/foodImage"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/chicken" />
 
-        <Button
-            android:id="@+id/btn_increase"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:text="+"
-            android:textColor="#000000"
-            android:textSize="21sp" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_drawable"
+                android:backgroundTint="#F79901"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:elevation="8dp"
+                android:layout_marginBottom="-24dp"
+                android:layout_alignBottom="@id/foodImage"
+                android:layout_centerHorizontal="true">
+
+                <Button
+                    android:id="@+id/btn_decrease"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="-"
+                    android:textColor="#000000"
+                    android:textSize="26sp" />
+
+                <TextView
+                    android:id="@+id/food_quantity"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="20dp" />
+
+                <Button
+                    android:id="@+id/btn_increase"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="+"
+                    android:textColor="#000000"
+                    android:textSize="21sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/foodDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linearLayout"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="28dp">
+
+                <TextView
+                    android:id="@+id/food_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/food_price"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:text="Sweet Chicken"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@id/food_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="99.00"
+                    android:textColor="#ff5722"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/food_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="31dp"
+                android:paddingBottom="10dp"
+                android:text="3.00"
+                android:textColor="#ffa000"
+                android:textSize="16sp"
+                android:layout_below="@id/foodDetails"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/canteen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/food_rating"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="31dp"
+                android:layout_marginTop="16dp"
+                android:paddingBottom="10dp"
+                android:text="College Canteen"
+                android:textColor="#ffa000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/foodDescription"
+                android:layout_width="347dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/canteen"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="31dp"
+                android:layout_marginEnd="33dp"
+                android:paddingTop="8dp"
+                android:text="Delicious food with amazing taste!"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/feedbackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/foodDescription"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="31dp"
+                android:ellipsize="end"
+                android:text="Feedbacks"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+
+            <!-- RecyclerView for feedbacks -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerFeedbacks"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="31dp"
+                android:clipToPadding="false"
+                android:fitsSystemWindows="true"
+                android:scrollbars="none"
+                android:layout_below="@id/feedbackText"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="150dp"/>
+
+            <!-- Text if no feedbacks are available -->
+            <TextView
+                android:id="@+id/noFeedbackText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No feedbacks yet. Tap to add one!"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                android:layout_below="@id/foodDescription"
+                android:layout_marginTop="16dp"/>
+        </RelativeLayout>
+    </ScrollView>
 
     <RelativeLayout
-        android:id="@+id/foodDetails"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/linearLayout"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="28dp">
-
-        <TextView
-            android:id="@+id/food_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/food_price"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:text="Sweet Chicken"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@id/food_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="99.00"
-            android:textColor="#ff5722"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/food_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="31dp"
-        android:paddingBottom="10dp"
-        android:text="3.00"
-        android:textColor="#ffa000"
-        android:textSize="16sp"
-        android:layout_below="@id/foodDetails"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/canteen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/food_rating"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="31dp"
-        android:layout_marginTop="16dp"
-        android:paddingBottom="10dp"
-        android:text="College Canteen"
-        android:textColor="#ffa000"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/foodDescription"
-        android:layout_width="347dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/canteen"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="31dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="33dp"
-        android:paddingTop="8dp"
-        android:text="Delicious food with amazing taste!"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
-
-    <!-- RecyclerView for feedbacks -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerFeedbacks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_below="@id/foodDescription"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Text if no feedbacks are available -->
-    <TextView
-        android:id="@+id/noFeedbackText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No feedbacks yet. Tap to add one!"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        android:layout_below="@id/foodDescription"
-        android:layout_marginTop="16dp"/>
-
-    <RelativeLayout
+        android:id="@+id/bottom_button_container"
         android:layout_width="262dp"
         android:layout_height="57dp"
         android:layout_centerHorizontal="true"
@@ -197,5 +230,7 @@
             android:textSize="25sp"
             android:textStyle="bold" />
     </RelativeLayout>
+
+
 
 </RelativeLayout>
