@@ -22,6 +22,7 @@ class FoodDetailsActivity : Activity() {
     private lateinit var firebaseRepository: FirebaseRepository
     private lateinit var feedbackAdapter: FeedbackAdapter
     private lateinit var foodId: String
+    private lateinit var feedbacks: List<Feedback>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,9 +125,17 @@ class FoodDetailsActivity : Activity() {
     }
 
     private fun setupRecyclerView() {
+        feedbacks = StaticRepository.staticFeedbacks()
         feedbackAdapter = FeedbackAdapter(StaticRepository.staticFeedbacks())
-
         val recyclerView: RecyclerView = findViewById(R.id.recyclerFeedbacks)
+
+        if (feedbacks.isEmpty()) {
+            findViewById<TextView>(R.id.noFeedbackText).visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            return
+        }
+
+        findViewById<TextView>(R.id.noFeedbackText).visibility = View.GONE
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.visibility = View.VISIBLE
         recyclerView.isNestedScrollingEnabled = false

@@ -13,6 +13,8 @@ import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.R
 import com.bumptech.glide.Glide
 import androidx.cardview.widget.CardView
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MessageAdapter(private val currentUserId: String) :
     ListAdapter<ChatMessage, MessageAdapter.MessageViewHolder>(MessageDiffCallback()) {
@@ -20,6 +22,10 @@ class MessageAdapter(private val currentUserId: String) :
     companion object {
         private const val VIEW_TYPE_SENT = 1
         private const val VIEW_TYPE_RECEIVED = 2
+        private const val ONE_MINUTE = 60000L
+        private const val ONE_HOUR = 3600000L
+        private const val ONE_DAY = 86400000L
+        private const val ONE_WEEK = ONE_DAY * 7
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -74,12 +80,37 @@ class MessageAdapter(private val currentUserId: String) :
         private fun formatTimestamp(timestamp: Long): String {
             val now = System.currentTimeMillis()
             val diff = now - timestamp
+            val calendar = Calendar.getInstance().apply { timeInMillis = timestamp }
+            val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+            val dayOfWeekFormat = SimpleDateFormat("EEE", Locale.getDefault()) // Abbreviated day name (Mon, Tue, etc.)
+            val dateTimeFormat = SimpleDateFormat("MMM d, h:mm a", Locale.getDefault())
 
             return when {
-                diff < 60000 -> "Just now"
-                diff < 3600000 -> "${diff / 60000}m ago"
-                else -> android.text.format.DateFormat.format("h:mm a", timestamp).toString()
+                diff < ONE_MINUTE -> "Just now"
+                diff < ONE_HOUR -> "${diff / ONE_MINUTE}m ago"
+                isToday(calendar) -> timeFormat.format(Date(timestamp))
+                isYesterday(calendar) -> "Yesterday, ${timeFormat.format(Date(timestamp))}"
+                isWithinWeek(diff) -> "${dayOfWeekFormat.format(Date(timestamp))}, ${timeFormat.format(Date(timestamp))}"
+                else -> dateTimeFormat.format(Date(timestamp))
             }
+        }
+
+        private fun isToday(calendar: Calendar): Boolean {
+            val today = Calendar.getInstance()
+            return (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                    calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR))
+        }
+
+        private fun isYesterday(calendar: Calendar): Boolean {
+            val yesterday = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, -1)
+            }
+            return (calendar.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) &&
+                    calendar.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR))
+        }
+
+        private fun isWithinWeek(diff: Long): Boolean {
+            return diff < ONE_WEEK
         }
     }
 

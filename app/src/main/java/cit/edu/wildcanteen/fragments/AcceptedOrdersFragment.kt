@@ -112,7 +112,11 @@ class AcceptedOrdersFragment : Fragment() {
         }, onFailure = {
             Toast.makeText(requireContext(), "Failed to load recipient image", Toast.LENGTH_SHORT).show()
         })
-
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        orderBatchListener?.remove()
+        _binding = null
+    }
 }

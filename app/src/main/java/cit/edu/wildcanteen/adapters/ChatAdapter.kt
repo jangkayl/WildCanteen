@@ -22,6 +22,13 @@ class ChatAdapter(private val onItemClick: (ChatMessage) -> Unit) : ListAdapter<
 
     private var searchQuery: String = ""
 
+    companion object {
+        private const val ONE_MINUTE = 60000L
+        private const val ONE_HOUR = 3600000L
+        private const val ONE_DAY = 86400000L
+        private const val ONE_WEEK = ONE_DAY * 7
+    }
+
     fun setSearchQuery(query: String) {
         searchQuery = query
         notifyDataSetChanged()
@@ -109,14 +116,37 @@ class ChatAdapter(private val onItemClick: (ChatMessage) -> Unit) : ListAdapter<
         private fun formatTimestamp(timestamp: Long): String {
             val now = System.currentTimeMillis()
             val diff = now - timestamp
+            val calendar = Calendar.getInstance().apply { timeInMillis = timestamp }
+            val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+            val dayOfWeekFormat = SimpleDateFormat("EEE", Locale.getDefault()) // Abbreviated day name (Mon, Tue, etc.)
+            val dateTimeFormat = SimpleDateFormat("MMM d, h:mm a", Locale.getDefault())
 
             return when {
-                diff < 60000 -> "Just now"
-                diff < 3600000 -> "${diff / 60000}m ago"
-                diff < 86400000 -> SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(timestamp))
-                diff < 604800000 -> SimpleDateFormat("EEE", Locale.getDefault()).format(Date(timestamp))
-                else -> SimpleDateFormat("MMM d", Locale.getDefault()).format(Date(timestamp))
+                diff < ONE_MINUTE -> "Just now"
+                diff < ONE_HOUR -> "${diff / ONE_MINUTE}m ago"
+                isToday(calendar) -> timeFormat.format(Date(timestamp))
+                isYesterday(calendar) -> "Yesterday, ${timeFormat.format(Date(timestamp))}"
+                isWithinWeek(diff) -> "${dayOfWeekFormat.format(Date(timestamp))}, ${timeFormat.format(Date(timestamp))}"
+                else -> dateTimeFormat.format(Date(timestamp))
             }
+        }
+
+        private fun isToday(calendar: Calendar): Boolean {
+            val today = Calendar.getInstance()
+            return (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                    calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR))
+        }
+
+        private fun isYesterday(calendar: Calendar): Boolean {
+            val yesterday = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, -1)
+            }
+            return (calendar.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) &&
+                    calendar.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR))
+        }
+
+        private fun isWithinWeek(diff: Long): Boolean {
+            return diff < ONE_WEEK
         }
     }
 

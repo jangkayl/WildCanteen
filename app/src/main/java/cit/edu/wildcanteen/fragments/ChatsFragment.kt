@@ -56,21 +56,6 @@ class ChatsFragment : Fragment() {
         setupChatObserver()
 
         updateChatList()
-
-        // Add this to print all chat details when fragment is opened
-        Log.d("ChatsFragment", "Current user ID: ${MyApplication.studentId}")
-        Log.d("ChatsFragment", "All chats count: ${MyApplication.allChats.size}")
-        MyApplication.allChats.forEachIndexed { index, chat ->
-            Log.d("ChatsFragment", """
-            Chat $index:
-            - Message ID: ${chat.messageId}
-            - Sender: ${chat.senderName} (${chat.senderId})
-            - Recipient: ${chat.recipientName} (${chat.recipientId})
-            - Message: ${chat.messageText}
-            - Timestamp: ${chat.timestamp}
-            - Read: ${chat.isRead}
-        """.trimIndent())
-        }
     }
 
     override fun onResume() {

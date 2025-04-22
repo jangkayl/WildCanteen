@@ -170,10 +170,9 @@
             <!-- RecyclerView for feedbacks -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerFeedbacks"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginHorizontal="31dp"
+                android:layout_marginHorizontal="25dp"
                 android:clipToPadding="false"
                 android:fitsSystemWindows="true"
                 android:scrollbars="none"
@@ -188,12 +187,11 @@
                 android:id="@+id/noFeedbackText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No feedbacks yet. Tap to add one!"
+                android:text="No feedbacks yet"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="@color/white"
-                android:visibility="gone"
-                android:layout_below="@id/foodDescription"
+                android:layout_below="@id/feedbackText"
                 android:layout_marginTop="16dp"/>
         </RelativeLayout>
     </ScrollView>

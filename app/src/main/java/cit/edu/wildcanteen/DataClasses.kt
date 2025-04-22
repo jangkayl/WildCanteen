@@ -74,6 +74,8 @@ data class Feedback(
     val rating: Double,
     val imageUrl: List<String>,
     val feedback: String,
+    var likes: Int,
+    var disLikes: Int,
     val timestamp: Long
 )
 

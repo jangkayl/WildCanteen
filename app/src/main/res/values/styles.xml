@@ -8,4 +8,9 @@
         <item name="android:textColor">#5D4037</item>
         <item name="android:layout_marginBottom">12dp</item>
     </style>
+
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#BDBDBD</item>
+        <item name="colorControlActivated">#FFD700</item>
+    </style>
 </resources>
