@@ -90,6 +90,11 @@ class FeedbackAdapter(
         updateLikeDislikeViews(holder, currentFeedback, position)
     }
 
+    fun updateFeedbacks(newFeedbacks: List<Feedback>) {
+        this.feedbacks = newFeedbacks
+        notifyDataSetChanged()
+    }
+
     private fun handleDislikeClick(holder: FeedbackViewHolder, position: Int) {
         val currentFeedback = feedbacks[position]
         val isCurrentlyDisliked = userInteractions[position] == false

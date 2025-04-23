@@ -18,6 +18,8 @@ import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.pages.ChatConversationActivity
+import cit.edu.wildcanteen.pages.OrderBatchDetailActivity
+import cit.edu.wildcanteen.pages.SendFeedbackActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import java.text.SimpleDateFormat
 import java.util.*
@@ -66,7 +68,10 @@ class OrderedBatchesAdapter(
         holder.sendFeedback.visibility = if (batch.status.equals("Completed", ignoreCase = true)) View.VISIBLE else View.GONE
 
         holder.sendFeedback.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "Send Feedback", Toast.LENGTH_SHORT).show()
+            val intent = Intent(holder.itemView.context, SendFeedbackActivity::class.java).apply {
+                putExtra("BATCH_ID", batch.batchId)
+            }
+            holder.itemView.context.startActivity(intent)
         }
 
         holder.messageDelivererButton.setOnClickListener {

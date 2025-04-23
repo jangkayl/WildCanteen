@@ -3,6 +3,7 @@ package cit.edu.wildcanteen.pages
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,7 @@ import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import cit.edu.wildcanteen.repositories.StaticRepository
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.ListenerRegistration
 
 class FoodDetailsActivity : Activity() {
 
@@ -23,6 +25,8 @@ class FoodDetailsActivity : Activity() {
     private lateinit var feedbackAdapter: FeedbackAdapter
     private lateinit var foodId: String
     private lateinit var feedbacks: List<Feedback>
+    private var feedbackListenerRegistration: ListenerRegistration? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +45,6 @@ class FoodDetailsActivity : Activity() {
         val foodPopular = intent.getBooleanExtra("FOOD_POPULAR", false)
         val foodCanteen = intent.getStringExtra("FOOD_CANTEEN") + " Canteen"
         val foodCanteenId = intent.getStringExtra("FOOD_CANTEEN_ID")
-        val foodFeedbacks = intent.getSerializableExtra("FOOD_FEEDBACKS") as? List<Feedback>
 
         findViewById<TextView>(R.id.food_name).text = foodName
         if (foodPrice != null) {
@@ -125,44 +128,53 @@ class FoodDetailsActivity : Activity() {
     }
 
     private fun setupRecyclerView() {
-        feedbacks = StaticRepository.staticFeedbacks()
-        feedbackAdapter = FeedbackAdapter(StaticRepository.staticFeedbacks())
         val recyclerView: RecyclerView = findViewById(R.id.recyclerFeedbacks)
-
-        if (feedbacks.isEmpty()) {
-            findViewById<TextView>(R.id.noFeedbackText).visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
-            return
-        }
-
-        findViewById<TextView>(R.id.noFeedbackText).visibility = View.GONE
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.visibility = View.VISIBLE
         recyclerView.isNestedScrollingEnabled = false
+        feedbackAdapter = FeedbackAdapter(emptyList())
         recyclerView.adapter = feedbackAdapter
 
-        recyclerView.post {
-            var totalHeight = 0
-            for (i in 0 until feedbackAdapter.itemCount) {
-                val holder = feedbackAdapter.createViewHolder(recyclerView, feedbackAdapter.getItemViewType(i))
-                feedbackAdapter.bindViewHolder(holder, i)
+        feedbackListenerRegistration = firebaseRepository.getFeedbacksForFoodListener(
+            foodId = foodId.toInt(),
+            onFeedbackReceived = { fetchedFeedbacks ->
+                feedbacks = fetchedFeedbacks
+                feedbackAdapter.updateFeedbacks(fetchedFeedbacks)
 
-                holder.itemView.measure(
-                    View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                )
+                if (fetchedFeedbacks.isEmpty()) {
+                    findViewById<TextView>(R.id.noFeedbackText).visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                } else {
+                    findViewById<TextView>(R.id.noFeedbackText).visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
 
-                val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
-                totalHeight += holder.itemView.measuredHeight + params.bottomMargin
+                    recyclerView.post {
+                        var totalHeight = 0
+                        for (i in 0 until feedbackAdapter.itemCount) {
+                            val holder = feedbackAdapter.createViewHolder(recyclerView, feedbackAdapter.getItemViewType(i))
+                            feedbackAdapter.bindViewHolder(holder, i)
+                            holder.itemView.measure(
+                                View.MeasureSpec.makeMeasureSpec(recyclerView.width, View.MeasureSpec.EXACTLY),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                            )
+                            val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
+                            totalHeight += holder.itemView.measuredHeight + params.bottomMargin
+                        }
+
+                        recyclerView.layoutParams.height = totalHeight
+                        recyclerView.requestLayout()
+                    }
+                }
+            },
+            onError = { exception ->
+                Toast.makeText(this, "Error loading feedbacks: ${exception.message}", Toast.LENGTH_LONG).show()
             }
-
-            recyclerView.layoutParams.height = totalHeight
-            recyclerView.requestLayout()
-        }
+        )
     }
+
 
     override fun finish() {
         super.finish()
+        feedbackListenerRegistration?.remove()
         overridePendingTransition(R.anim.fade_in, R.anim.slide_down)
     }
 }

@@ -6,6 +6,7 @@ import java.security.MessageDigest
 import android.util.Base64
 import android.util.Log
 import cit.edu.wildcanteen.ChatMessage
+import cit.edu.wildcanteen.Feedback
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.OrderBatch
@@ -23,6 +24,62 @@ class FirebaseRepository {
     private val foodCollection = db.collection("food_items")
     private val orderBatchesCollection = db.collection("order_batches")
     private val chatMessagesCollection = db.collection("chat_messages")
+    private val feedbacksCollection = db.collection("feedbacks")
+
+    fun addFeedback(feedback: Feedback, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val itemDocRef = feedbacksCollection.document()
+
+        itemDocRef.set(feedback, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d("FirebaseFeedback", "Feedback item added: ${feedback.name}")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseFeedback", "Failed to add feedback", e)
+                onFailure(e)
+            }
+    }
+
+    fun getFeedbacksForFoodListener(
+        foodId: Int,
+        onFeedbackReceived: (List<Feedback>) -> Unit,
+        onError: (Exception) -> Unit
+    ): ListenerRegistration {
+        return feedbacksCollection
+            .whereEqualTo("foodId", foodId)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("FirebaseFeedback", "Error fetching feedbacks: ${error.message}", error)
+                    onError(error)
+                    return@addSnapshotListener
+                }
+
+                Log.d("FirebaseDebug", "Got ${snapshot?.size()} documents")
+                val feedbacks = mutableListOf<Feedback>()
+                snapshot?.documents?.forEach { doc ->
+                    try {
+                        val feedback = Feedback(
+                            foodId = doc.getLong("foodId")?.toInt() ?: 0,
+                            userId = doc.getString("userId") ?: "",
+                            name = doc.getString("name") ?: "",
+                            profileImageUrl = doc.getString("profileImageUrl") ?: "",
+                            rating = doc.getDouble("rating") ?: 0.0,
+                            imageUrl = doc.get("imageUrl") as? List<String> ?: emptyList(),
+                            feedback = doc.getString("feedback") ?: "",
+                            likes = doc.getLong("likes")?.toInt() ?: 0,
+                            disLikes = doc.getLong("disLikes")?.toInt() ?: 0,
+                            timestamp = doc.getLong("timestamp") ?: 0L
+                        )
+                        feedbacks.add(feedback)
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFeedback", "Error parsing feedback document ${doc.id}", e)
+                    }
+                }
+
+                onFeedbackReceived(feedbacks)
+            }
+    }
 
     fun sendChatMessage(
         chatMessage: ChatMessage,
@@ -468,6 +525,59 @@ class FirebaseRepository {
             .addOnFailureListener { e ->
                 Log.e("FirebaseOrderBatch", "Failed to add order batch", e)
                 onFailure(e)
+            }
+    }
+
+    fun getAllOrdersFromBatch(batchId: String, onSuccess: (List<Order>) -> Unit, onFailure: (Exception) -> Unit) {
+        orderBatchesCollection.document(batchId).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    try {
+                        val data = document.data ?: throw Exception("Document data is null")
+
+                        val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
+                            try {
+                                val itemsMap = orderData["items"] as? Map<String, Any> ?: return@mapNotNull null
+
+                                Order(
+                                    orderId = orderData["orderId"] as? String ?: "",
+                                    canteenId = orderData["canteenId"] as? String ?: "",
+                                    canteenName = orderData["canteenName"] as? String ?: "",
+                                    userId = orderData["userId"] as? String ?: "",
+                                    userName = orderData["userName"] as? String ?: "",
+                                    items = FoodItem(
+                                        category = itemsMap["category"] as? String ?: "",
+                                        name = itemsMap["name"] as? String ?: "",
+                                        foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
+                                        price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                                        rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                                        canteenId = itemsMap["canteenId"] as? String ?: "",
+                                        canteenName = itemsMap["canteenName"] as? String ?: "",
+                                        description = itemsMap["description"] as? String ?: "",
+                                        imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                                        isPopular = itemsMap["isPopular"] as? Boolean ?: false,
+                                    ),
+                                    quantity = (orderData["quantity"] as? Number)?.toInt() ?: 0,
+                                    totalAmount = (orderData["totalAmount"] as? Number)?.toDouble() ?: 0.0
+                                )
+                            } catch (e: Exception) {
+                                Log.e("FirebaseOrder", "Error parsing order", e)
+                                null
+                            }
+                        } ?: emptyList()
+
+                        onSuccess(ordersList)
+                    } catch (e: Exception) {
+                        Log.e("FirebaseOrderBatch", "Error parsing order batch document", e)
+                        onFailure(e)
+                    }
+                } else {
+                    onFailure(Exception("Order batch not found"))
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseOrderBatch", "Failed to fetch order batch", exception)
+                onFailure(exception)
             }
     }
 
