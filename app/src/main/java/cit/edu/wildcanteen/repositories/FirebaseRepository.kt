@@ -29,13 +29,27 @@ class FirebaseRepository {
     fun addFeedback(feedback: Feedback, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val itemDocRef = feedbacksCollection.document()
 
-        itemDocRef.set(feedback, SetOptions.merge())
+        val feedbackWithId = feedback.copy(feedbackId = itemDocRef.id)
+
+        itemDocRef.set(feedbackWithId)
             .addOnSuccessListener {
                 Log.d("FirebaseFeedback", "Feedback item added: ${feedback.name}")
                 onSuccess()
             }
             .addOnFailureListener { e ->
                 Log.e("FirebaseFeedback", "Failed to add feedback", e)
+                onFailure(e)
+            }
+    }
+
+    fun deleteFeedback(feedbackId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        feedbacksCollection.document(feedbackId).delete()
+            .addOnSuccessListener {
+                Log.d("FirebaseFeedback", "Feedback deleted successfully")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseFeedback", "Error deleting feedback", e)
                 onFailure(e)
             }
     }
@@ -60,6 +74,7 @@ class FirebaseRepository {
                 snapshot?.documents?.forEach { doc ->
                     try {
                         val feedback = Feedback(
+                            feedbackId = doc.getString("feedbackId") ?: "",
                             foodId = doc.getLong("foodId")?.toInt() ?: 0,
                             userId = doc.getString("userId") ?: "",
                             name = doc.getString("name") ?: "",
@@ -67,8 +82,6 @@ class FirebaseRepository {
                             rating = doc.getDouble("rating") ?: 0.0,
                             imageUrl = doc.get("imageUrl") as? List<String> ?: emptyList(),
                             feedback = doc.getString("feedback") ?: "",
-                            likes = doc.getLong("likes")?.toInt() ?: 0,
-                            disLikes = doc.getLong("disLikes")?.toInt() ?: 0,
                             timestamp = doc.getLong("timestamp") ?: 0L
                         )
                         feedbacks.add(feedback)

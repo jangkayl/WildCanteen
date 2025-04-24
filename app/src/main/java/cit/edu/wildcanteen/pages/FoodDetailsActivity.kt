@@ -1,9 +1,9 @@
 package cit.edu.wildcanteen.pages
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +15,6 @@ import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FeedbackAdapter
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FirebaseRepository
-import cit.edu.wildcanteen.repositories.StaticRepository
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.ListenerRegistration
 
@@ -74,10 +73,10 @@ class FoodDetailsActivity : Activity() {
         val btnDecrease = findViewById<Button>(R.id.btn_decrease)
         val btnOrder = findViewById<Button>(R.id.btn_order)
         val btnBack = findViewById<ImageView>(R.id.btn_back)
-
         val existingOrder = MyApplication.orders.find { it.items.name == foodName }
         var quantity = existingOrder?.quantity ?: 1
         quantityText.text = quantity.toString()
+        feedbacks = emptyList()
 
         btnBack.setOnClickListener {
             finish()
@@ -131,7 +130,10 @@ class FoodDetailsActivity : Activity() {
         val recyclerView: RecyclerView = findViewById(R.id.recyclerFeedbacks)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.isNestedScrollingEnabled = false
-        feedbackAdapter = FeedbackAdapter(emptyList())
+        feedbackAdapter = FeedbackAdapter(feedbacks, MyApplication.studentId!!) { feedbackToDelete ->
+            showDeleteConfirmationDialog(feedbackToDelete)
+        }
+
         recyclerView.adapter = feedbackAdapter
 
         feedbackListenerRegistration = firebaseRepository.getFeedbacksForFoodListener(
@@ -171,6 +173,26 @@ class FoodDetailsActivity : Activity() {
         )
     }
 
+    private fun showDeleteConfirmationDialog(feedback: Feedback) {
+        AlertDialog.Builder(this)
+            .setTitle("Delete Feedback")
+            .setMessage("Are you sure you want to delete this feedback?")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteFeedback(feedback)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteFeedback(feedback: Feedback) {
+        firebaseRepository.deleteFeedback(feedback.feedbackId, {
+            val updatedList = feedbacks.toMutableList().apply { remove(feedback) }
+            feedbackAdapter.updateFeedbacks(updatedList)
+            Toast.makeText(this, "Feedback deleted", Toast.LENGTH_SHORT).show()
+        }, { e ->
+            Toast.makeText(this, "Failed to delete feedback: ${e.message}", Toast.LENGTH_SHORT).show()
+        })
+    }
 
     override fun finish() {
         super.finish()

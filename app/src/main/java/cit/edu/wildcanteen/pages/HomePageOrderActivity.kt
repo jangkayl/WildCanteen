@@ -3,6 +3,8 @@ package cit.edu.wildcanteen.pages
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,11 @@ class HomePageOrderActivity : Activity() {
         super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.slide_left, R.anim.fade_out)
         setContentView(R.layout.homepage_main)
+
+        findViewById<LinearLayout>(R.id.logoBack).setOnClickListener {
+            finish()
+        }
+
         setupRecyclerView()
         setupCategories()
         setupAllMenu()

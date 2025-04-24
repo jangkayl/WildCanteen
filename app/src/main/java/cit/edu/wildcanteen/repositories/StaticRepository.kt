@@ -55,68 +55,58 @@ object StaticRepository {
             .addOnFailureListener { onError(it) }
     }
 
-    fun staticFeedbacks(): List<Feedback>{
-        return listOf(
-            Feedback(
-                foodId = 1,
-                userId = "123123123",
-                name = "Nexter Haha",
-                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355822/WildCanteen_profile/i0edrnapdxdonepm5okq.jpg",
-                rating = 5.0,
-                imageUrl = listOf(),
-                feedback = "This chicken is so good it made me question my own recipes!",
-                likes = 3,
-                disLikes = 4,
-                timestamp = System.currentTimeMillis(),
-            ),
-            Feedback(
-                foodId = 1,
-                userId = "111111111",
-                name = "JangKayl",
-                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
-                rating = 5.0,
-                imageUrl = listOf(),
-                feedback = "Saved me from another instant noodle dinner. 10/10 would skip class for this",
-                likes = 5,
-                disLikes = 4,
-                timestamp = System.currentTimeMillis() - 172800000,
-            ),
-            Feedback(
-                foodId = 1,
-                userId = "123456789",
-                name = "Ambot ani",
-                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743439085/WildCanteen_profile/auspdtqau39bk8djcpmg.jpg",
-                rating = 2.0,
-                imageUrl = listOf(),
-                feedback = "Way lami piste bogo man diay ni",
-                likes = 3,
-                disLikes = 2,
-                timestamp = System.currentTimeMillis() - 172800000,
-            ),
-            Feedback(
-                foodId = 1,
-                userId = "123123123",
-                name = "Nexter Haha",
-                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355822/WildCanteen_profile/i0edrnapdxdonepm5okq.jpg",
-                rating = 5.0,
-                imageUrl = listOf(),
-                feedback = "This chicken is so good it made me question my own recipes!",
-                likes = 3,
-                disLikes = 4,
-                timestamp = System.currentTimeMillis(),
-            ),
-            Feedback(
-                foodId = 1,
-                userId = "172068369",
-                name = "Kyle Ambot",
-                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355665/WildCanteen_profile/uvchlaaghzocztkthkme.jpg",
-                rating = 4.0,
-                imageUrl = listOf(),
-                feedback = "Almost as good as my mom's cooking. Almost.",
-                likes = 3,
-                disLikes = 1,
-                timestamp = System.currentTimeMillis() - 259200000,
-            )
-        )
-    }
+//    fun staticFeedbacks(): List<Feedback>{
+//        return listOf(
+//            Feedback(
+//                foodId = 1,
+//                userId = "123123123",
+//                name = "Nexter Haha",
+//                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355822/WildCanteen_profile/i0edrnapdxdonepm5okq.jpg",
+//                rating = 5.0,
+//                imageUrl = listOf(),
+//                feedback = "This chicken is so good it made me question my own recipes!",
+//                timestamp = System.currentTimeMillis(),
+//            ),
+//            Feedback(
+//                foodId = 1,
+//                userId = "111111111",
+//                name = "JangKayl",
+//                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743422145/WildCanteen_profile/evj4sfqvd3twatfxaern.jpg",
+//                rating = 5.0,
+//                imageUrl = listOf(),
+//                feedback = "Saved me from another instant noodle dinner. 10/10 would skip class for this",
+//                timestamp = System.currentTimeMillis() - 172800000,
+//            ),
+//            Feedback(
+//                foodId = 1,
+//                userId = "123456789",
+//                name = "Ambot ani",
+//                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743439085/WildCanteen_profile/auspdtqau39bk8djcpmg.jpg",
+//                rating = 2.0,
+//                imageUrl = listOf(),
+//                feedback = "Way lami piste bogo man diay ni",
+//                timestamp = System.currentTimeMillis() - 172800000,
+//            ),
+//            Feedback(
+//                foodId = 1,
+//                userId = "123123123",
+//                name = "Nexter Haha",
+//                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355822/WildCanteen_profile/i0edrnapdxdonepm5okq.jpg",
+//                rating = 5.0,
+//                imageUrl = listOf(),
+//                feedback = "This chicken is so good it made me question my own recipes!",
+//                timestamp = System.currentTimeMillis(),
+//            ),
+//            Feedback(
+//                foodId = 1,
+//                userId = "172068369",
+//                name = "Kyle Ambot",
+//                profileImageUrl = "https://res.cloudinary.com/dk1eywzgc/image/upload/v1743355665/WildCanteen_profile/uvchlaaghzocztkthkme.jpg",
+//                rating = 4.0,
+//                imageUrl = listOf(),
+//                feedback = "Almost as good as my mom's cooking. Almost.",
+//                timestamp = System.currentTimeMillis() - 259200000,
+//            )
+//        )
+//    }
 }

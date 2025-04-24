@@ -67,6 +67,7 @@ data class OrderBatch(
 )
 
 data class Feedback(
+    val feedbackId: String,
     val foodId: Int,
     val userId: String,
     val name: String,
@@ -74,8 +75,6 @@ data class Feedback(
     val rating: Double,
     val imageUrl: List<String>,
     val feedback: String,
-    var likes: Int,
-    var disLikes: Int,
     val timestamp: Long
 )
 

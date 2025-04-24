@@ -46,7 +46,6 @@ class FeedbackPagerAdapter(
         holder.ratingBar.rating = 0f
         holder.feedbackEditText.text.clear()
 
-        // Check if feedback was already submitted for this position
         if (submittedPositions.contains(position)) {
             showSubmittedState(holder)
             return
@@ -95,6 +94,7 @@ class FeedbackPagerAdapter(
         feedbackText: String
     ) {
         val feedback = Feedback(
+            feedbackId = "",
             foodId = orders[position].items.foodId,
             userId = MyApplication.studentId!!,
             name = MyApplication.name!!,
@@ -102,8 +102,6 @@ class FeedbackPagerAdapter(
             rating = rating,
             imageUrl = emptyList(),
             feedback = feedbackText,
-            likes = 0,
-            disLikes = 0,
             timestamp = System.currentTimeMillis()
         )
 

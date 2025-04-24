@@ -5,6 +5,30 @@
     android:orientation="vertical"
     android:background="#111">
 
+    <LinearLayout
+        android:id="@+id/logoBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/wildlogo"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WildCanteen"
+            android:textColor="#FFF"
+            android:textSize="16sp"
+            android:paddingLeft="5dp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -15,26 +39,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/wildlogo"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="WildCanteen"
-                    android:textColor="#FFF"
-                    android:textSize="16sp"
-                    android:paddingLeft="5dp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
