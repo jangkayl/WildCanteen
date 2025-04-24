@@ -78,6 +78,7 @@ xmlns:tools="http://schemas.android.com/tools">
         android:exported="false" />
     <activity
         android:name=".pages.SendFeedbackActivity"
+        android:windowSoftInputMode="adjustResize"
         android:exported="false" />
 </application>
 </manifest>

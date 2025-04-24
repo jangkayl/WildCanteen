@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
     android:background="@color/black">
 
@@ -24,7 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/chicken"
                 android:clipToOutline="true"
                 android:background="@drawable/rounded_drawable" />
 
@@ -85,7 +85,7 @@
         <EditText
             android:id="@+id/feedbackEditText"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:hint="Share your dining experience..."
             android:inputType="textMultiLine"
@@ -105,6 +105,20 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/submittedIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submitted ✓"
+            android:textColor="@color/green"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/submitButton"
+            app:layout_constraintEnd_toEndOf="@+id/submitButton"
+            app:layout_constraintStart_toStartOf="@+id/submitButton"
+            app:layout_constraintTop_toTopOf="@+id/submitButton" />
     </LinearLayout>
 
     <!-- Custom Page Indicator -->

@@ -187,7 +187,7 @@
                 android:id="@+id/noFeedbackText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No feedbacks yet"
+                android:text="No feedback yet"
                 android:gravity="center"
                 android:visibility="gone"
                 android:textSize="20sp"
