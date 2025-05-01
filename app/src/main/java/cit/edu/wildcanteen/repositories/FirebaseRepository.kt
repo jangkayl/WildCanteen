@@ -703,6 +703,84 @@ class FirebaseRepository {
         }
     }
 
+    fun listenForAcceptedOrderBatches(
+        userId: String? = null,
+        onUpdate: (List<OrderBatch>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ): ListenerRegistration {
+        val query = if (userId != null && MyApplication.userType == "student") {
+            orderBatchesCollection.whereEqualTo("deliveredBy", userId)
+        } else {
+            orderBatchesCollection
+        }
+
+        Log.e("Firebase", "Listening Order Batches")
+        return query.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                onFailure(error)
+                return@addSnapshotListener
+            }
+
+            val orderBatches = snapshot?.documents?.mapNotNull { doc ->
+                try {
+                    val data = doc.data ?: return@mapNotNull null
+                    val ordersList = (data["orders"] as? List<Map<String, Any>>)?.mapNotNull { orderData ->
+                        try {
+                            val itemsMap = orderData["items"] as? Map<String, Any> ?: return@mapNotNull null
+
+                            Order(
+                                orderId = orderData["orderId"] as? String ?: "",
+                                canteenId = orderData["canteenId"] as? String ?: "",
+                                canteenName = orderData["canteenName"] as? String ?: "",
+                                userId = orderData["userId"] as? String ?: "",
+                                userName = orderData["userName"] as? String ?: "",
+                                items = FoodItem(
+                                    category = itemsMap["category"] as? String ?: "",
+                                    name = itemsMap["name"] as? String ?: "",
+                                    foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
+                                    price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
+                                    rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
+                                    canteenName = itemsMap["canteenName"] as? String ?: "",
+                                    canteenId = itemsMap["canteenId"] as? String ?: "",
+                                    description = itemsMap["description"] as? String ?: "",
+                                    imageUrl = itemsMap["imageUrl"] as? String ?: "",
+                                    isPopular = itemsMap["isPopular"] as? Boolean ?: false,
+                                ),
+                                quantity = (orderData["quantity"] as? Number)?.toInt() ?: 0,
+                                totalAmount = (orderData["totalAmount"] as? Number)?.toDouble() ?: 0.0
+                            )
+                        } catch (e: Exception) {
+                            Log.e("FirebaseOrderBatch", "Error parsing order", e)
+                            null
+                        }
+                    } ?: emptyList()
+
+                    OrderBatch(
+                        batchId = data["batchId"] as? String ?: doc.id,
+                        userId = data["userId"] as? String ?: "",
+                        userName = data["userName"] as? String ?: "",
+                        orders = ordersList,
+                        totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
+                        status = data["status"] as? String ?: "Pending",
+                        paymentMethod = data["paymentMethod"] as? String ?: "",
+                        referenceNumber = data["referenceNumber"] as? String ?: "",
+                        deliveryType = data["deliveryType"] as? String ?: "",
+                        deliveredBy = data["deliveredBy"] as? String ?: "",
+                        deliveredByName = data["deliveredByName"] as? String ?: "",
+                        deliveryAddress = data["deliveryAddress"] as? String ?: "",
+                        deliveryFee = data["deliveryFee"] as? Double ?: 0.0,
+                        timestamp = (data["timestamp"] as? Number)?.toLong() ?: 0L
+                    )
+                } catch (e: Exception) {
+                    Log.e("FirebaseOrderBatch", "Error parsing order batch", e)
+                    null
+                }
+            }?.sortedByDescending { it.timestamp } ?: emptyList()
+
+            onUpdate(orderBatches)
+        }
+    }
+
     fun acceptDeliveryOrder(batchId: String, studentId: String, name: String, callback: (Boolean, Exception?) -> Unit) {
         val batchRef = orderBatchesCollection.document(batchId)
 

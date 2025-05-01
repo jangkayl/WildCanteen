@@ -59,12 +59,12 @@ class AcceptedOrdersFragment : Fragment() {
 
     private fun loadAcceptedOrders() {
         binding.progressBar.visibility = View.VISIBLE
-        orderBatchListener = FirebaseRepository().listenForOrderBatches(
+        orderBatchListener = FirebaseRepository().listenForAcceptedOrderBatches(
             userId = MyApplication.studentId,
             onUpdate = { batches ->
                 binding.progressBar.visibility = View.GONE
                 val acceptedOrders = batches.filter { batch ->
-                    batch.status == "Delivering" || batch.status == "Completed" &&
+                    (batch.status == "Delivering" || batch.status == "Completed") &&
                             batch.deliveredBy == MyApplication.studentId
                 }.sortedByDescending { it.timestamp }
 
