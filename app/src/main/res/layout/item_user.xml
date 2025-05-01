@@ -3,12 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="@color/black"
     android:padding="16dp">
 
     <ImageView
         android:id="@+id/user_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:src="@drawable/hd_user"
         android:layout_marginEnd="16dp"/>
 
     <TextView
@@ -16,5 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:textColor="@color/white"
+        android:text="Kyle"
         android:textSize="16sp"/>
 </LinearLayout>

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/black"
     android:padding="16dp">
 
     <EditText
@@ -12,7 +13,8 @@
         android:hint="Search users..."
         android:imeOptions="actionSearch"
         android:inputType="text"
-        android:background="@android:drawable/editbox_background" />
+        android:padding="10dp"
+        android:background="@drawable/rounded_drawable" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/users_recycler_view"
