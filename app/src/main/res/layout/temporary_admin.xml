@@ -22,15 +22,17 @@
         android:layout_height="wrap_content"
         android:text="➕ Add New Food"
         android:backgroundTint="#FF9800"
+        android:background="@drawable/rounded_button"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:layout_marginBottom="20dp" />
 
     <Button
-        android:id="@+id/btnViewOrders"
+        android:id="@+id/btnViewAllMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="📦 View All Orders"
+        android:text="🍱 View All Menu"
+        android:background="@drawable/rounded_button"
         android:backgroundTint="#F57C00"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
@@ -38,9 +40,22 @@
     <Button
         android:id="@+id/btnViewBatches"
         android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
-        android:text="View all Batches"
+        android:text="View all Orders"
+        android:background="@drawable/rounded_button"
         android:backgroundTint="#F57C00"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_marginTop="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#ED1515"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 

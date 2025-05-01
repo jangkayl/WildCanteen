@@ -19,7 +19,7 @@ import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.CartAdapter
 import cit.edu.wildcanteen.application.MyApplication
-import cit.edu.wildcanteen.pages.OrderSummaryActivity
+import cit.edu.wildcanteen.pages.student_pages.OrderSummaryActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ListenerRegistration

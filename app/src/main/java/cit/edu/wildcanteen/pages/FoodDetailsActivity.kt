@@ -2,10 +2,14 @@ package cit.edu.wildcanteen.pages
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.Feedback
@@ -14,6 +18,7 @@ import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.FeedbackAdapter
 import cit.edu.wildcanteen.application.MyApplication
+import cit.edu.wildcanteen.pages.student_pages.OrderPlaced
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.ListenerRegistration
@@ -66,7 +71,9 @@ class FoodDetailsActivity : Activity() {
                 }
             }
         }
+
         findViewById<TextView>(R.id.foodDescription).text = foodDescription
+        findViewById<TextView>(R.id.canteen).text = foodCanteen
 
         val quantityText = findViewById<TextView>(R.id.food_quantity)
         val btnIncrease = findViewById<Button>(R.id.btn_increase)
@@ -92,6 +99,31 @@ class FoodDetailsActivity : Activity() {
                 quantity--
                 quantityText.text = quantity.toString()
             }
+        }
+
+        if(MyApplication.userType == "admin"){
+            val deleteIcon = findViewById<ImageView>(R.id.delete_icon)
+
+            findViewById<RelativeLayout>(R.id.bottom_button_container).visibility = View.GONE
+            findViewById<LinearLayout>(R.id.linearLayout).visibility = View.GONE
+
+            findViewById<RelativeLayout>(R.id.delete_button).visibility = View.VISIBLE
+            deleteIcon.visibility = View.VISIBLE
+            deleteIcon.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, android.R.color.white)
+            )
+
+            findViewById<Button>(R.id.btn_delete).setOnClickListener {
+                showDeleteFoodConfirmationDialog(
+                    foodId = foodId,
+                    foodName = foodName ?: "this item"
+                )
+            }
+
+            val foodDetails = findViewById<RelativeLayout>(R.id.foodDetails)
+            val params = foodDetails.layoutParams as RelativeLayout.LayoutParams
+            params.addRule(RelativeLayout.BELOW, R.id.foodImage)
+            foodDetails.layoutParams = params
         }
 
         btnOrder.setOnClickListener {
@@ -182,6 +214,42 @@ class FoodDetailsActivity : Activity() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    private fun showDeleteFoodConfirmationDialog(foodId: String, foodName: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Delete Food Item")
+            .setMessage("Are you sure you want to delete $foodName? This action cannot be undone.")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteFoodItem(foodId)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteFoodItem(foodId: String) {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Deleting food item...")
+            setCancelable(false)
+            show()
+        }
+
+        firebaseRepository.deleteFoodItem(
+            foodId = foodId.toInt(),
+            onSuccess = {
+                progressDialog.dismiss()
+                Toast.makeText(this, "Food item deleted successfully", Toast.LENGTH_SHORT).show()
+                finish()
+            },
+            onFailure = { exception ->
+                progressDialog.dismiss()
+                Toast.makeText(
+                    this,
+                    "Failed to delete food item: ${exception.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        )
     }
 
     private fun deleteFeedback(feedback: Feedback) {

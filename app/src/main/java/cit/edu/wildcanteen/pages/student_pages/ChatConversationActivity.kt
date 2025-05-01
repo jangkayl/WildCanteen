@@ -1,11 +1,10 @@
-package cit.edu.wildcanteen.pages
+package cit.edu.wildcanteen.pages.student_pages
 
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.MessageAdapter
@@ -15,7 +14,6 @@ import cit.edu.wildcanteen.databinding.ActivityChatConversationBinding
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.ListenerRegistration
-import java.util.*
 
 class ChatConversationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatConversationBinding

@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen.pages
+package cit.edu.wildcanteen.pages.student_pages
 
 import android.content.Intent
 import android.os.Bundle
@@ -37,7 +37,6 @@ class UserSearchActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         userAdapter = UserAdapter { user ->
-            // Start chat with selected user
             startChatWithUser(user)
         }
 

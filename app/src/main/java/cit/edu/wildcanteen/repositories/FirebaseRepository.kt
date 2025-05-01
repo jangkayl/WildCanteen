@@ -263,59 +263,6 @@ class FirebaseRepository {
             }
     }
 
-    fun getAllOrders(onSuccess: (List<Order>) -> Unit, onFailure: (Exception) -> Unit) {
-        Log.d("FirebaseOrders", "Fetching all orders")
-
-        ordersCollection.get()
-            .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    Log.d("FirebaseOrders", "No orders found")
-                } else {
-                    Log.d("FirebaseOrders", "Orders retrieved: ${documents.size()}")
-                }
-
-                val orders = documents.mapNotNull { doc ->
-                    try {
-                        val data = doc.data
-                        val itemsMap = data["items"] as? Map<*, *> ?: return@mapNotNull null
-
-                        val foodItem = FoodItem(
-                            category = itemsMap["category"] as? String ?: "",
-                            name = itemsMap["name"] as? String ?: "",
-                            foodId = itemsMap["foodId"] as? Int ?: 0,
-                            price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
-                            rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
-                            canteenId = itemsMap["canteenId"] as? String?: "",
-                            canteenName = itemsMap["canteenName"] as? String ?: "",
-                            description = itemsMap["description"] as? String ?: "",
-                            imageUrl = itemsMap["imageUrl"] as? String ?: "",
-                            isPopular = itemsMap["isPopular"] as? Boolean ?: false,
-                        )
-
-                        Order(
-                            orderId = data["orderId"] as? String ?: "",
-                            canteenId = data["canteenId"] as? String?: "",
-                            canteenName = data["canteenName"] as? String ?: "",
-                            userId = data["userId"] as? String ?: "",
-                            userName = data["userName"] as? String ?: "",
-                            items = foodItem,
-                            quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
-                            totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
-                        )
-                    } catch (e: Exception) {
-                        Log.e("FirebaseOrders", "Error parsing order: ${doc.id}", e)
-                        null
-                    }
-                }
-
-                onSuccess(orders)
-            }
-            .addOnFailureListener { exception ->
-                Log.e("FirebaseOrders", "Failed to fetch orders", exception)
-                onFailure(exception)
-            }
-    }
-
     fun getOrders(userId: String, onSuccess: (List<Order>) -> Unit, onFailure: (Exception) -> Unit) {
         Log.d("FirebaseOrders", "Fetching orders for user: $userId")
 
@@ -393,6 +340,41 @@ class FirebaseRepository {
             }
     }
 
+    fun deleteFoodItem(
+        foodId: Int,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        foodCollection
+            .whereEqualTo("foodId", foodId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    onFailure(Exception("Food item not found"))
+                    return@addOnSuccessListener
+                }
+
+                val batch = db.batch()
+                for (document in documents) {
+                    batch.delete(document.reference)
+                }
+
+                batch.commit()
+                    .addOnSuccessListener {
+                        Log.d("FirebaseFood", "Food item deleted: $foodId")
+                        onSuccess()
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("FirebaseFood", "Error deleting food item", e)
+                        onFailure(e)
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseFood", "Error finding food item to delete", e)
+                onFailure(e)
+            }
+    }
+
     fun listenForFoodItemsUpdates(
         onUpdate: (List<FoodItem>) -> Unit,
         onFailure: (Exception) -> Unit
@@ -438,53 +420,6 @@ class FirebaseRepository {
                 }
 
                 Log.e("FirebaseOrders", "Listening Order Updates", error)
-                val orders = snapshot?.documents?.mapNotNull { doc ->
-                    try {
-                        val data = doc.data ?: return@mapNotNull null
-                        val itemsMap = data["items"] as? Map<*, *> ?: return@mapNotNull null
-
-                        val foodItem = FoodItem(
-                            category = itemsMap["category"] as? String ?: "",
-                            name = itemsMap["name"] as? String ?: "",
-                            foodId = (itemsMap["foodId"] as? Number)?.toInt() ?: 0,
-                            price = (itemsMap["price"] as? Number)?.toDouble() ?: 0.0,
-                            rating = (itemsMap["rating"] as? Number)?.toDouble() ?: 0.0,
-                            canteenId = itemsMap["canteenId"] as? String?: "",
-                            canteenName = itemsMap["canteenName"] as? String ?: "",
-                            description = itemsMap["description"] as? String ?: "",
-                            imageUrl = itemsMap["imageUrl"] as? String ?: "",
-                            isPopular = itemsMap["isPopular"] as? Boolean ?: false,
-                        )
-
-                        Order(
-                            orderId = data["orderId"] as? String ?: "",
-                            canteenId = data["canteenId"] as? String?: "",
-                            canteenName = data["canteenName"] as? String ?: "",
-                            userId = data["userId"] as? String ?: "",
-                            userName = data["userName"] as? String ?: "",
-                            items = foodItem,
-                            quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
-                            totalAmount = (data["totalAmount"] as? Number)?.toDouble() ?: 0.0,
-                        )
-                    } catch (e: Exception) {
-                        Log.e("FirebaseOrders", "Error parsing order", e)
-                        null
-                    }
-                } ?: emptyList()
-
-                onUpdate(orders)
-            }
-    }
-
-    fun listenForAllOrderUpdates(onUpdate: (List<Order>) -> Unit): ListenerRegistration {
-        return ordersCollection
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Log.e("FirebaseOrders", "Listen failed", error)
-                    return@addSnapshotListener
-                }
-
-                Log.e("FirebaseOrders", "Listening All Order Updates", error)
                 val orders = snapshot?.documents?.mapNotNull { doc ->
                     try {
                         val data = doc.data ?: return@mapNotNull null
@@ -672,13 +607,31 @@ class FirebaseRepository {
             }
     }
 
+    fun updateOrderBatchStatus(
+        batchId: String,
+        newStatus: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        orderBatchesCollection.document(batchId)
+            .update("status", newStatus)
+            .addOnSuccessListener {
+                Log.d("FirebaseOrderBatch", "Order batch $batchId status updated to $newStatus")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseOrderBatch", "Failed to update order batch status", e)
+                onFailure(e)
+            }
+    }
+
     fun listenForOrderBatches(
         userId: String? = null,
         onUpdate: (List<OrderBatch>) -> Unit,
         onFailure: (Exception) -> Unit
     ): ListenerRegistration {
-        val query = if (userId != null) {
-            orderBatchesCollection.whereEqualTo("userId", userId)
+        val query = if (userId != null && MyApplication.userType == "student") {
+                orderBatchesCollection.whereEqualTo("userId", userId)
         } else {
             orderBatchesCollection
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -30,56 +31,19 @@
 
     </RelativeLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/emptyStateText"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:gravity="center"
-        android:text="No orders found"
-        android:textSize="16sp"
-        android:visibility="gone" />
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/selectedColor"
+        app:tabIndicatorColor="@color/selectedColor"
+        app:tabMode="fixed"
+        app:tabGravity="fill"/>
 
-    <LinearLayout
-        android:id="@+id/no_order_layout"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:background="#111"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/no_order"
-            android:layout_width="wrap_content"
-            android:layout_height="350dp"
-            android:src="@drawable/waitinglogo"/>
-
-        <TextView
-            android:id="@+id/no_order_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="No orders yet"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="25sp"/>
-
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/orderBatchesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

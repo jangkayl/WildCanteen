@@ -15,8 +15,8 @@ import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.adapters.DeliveryOrderAdapter
 import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.databinding.FragmentAvailableOrdersBinding
-import cit.edu.wildcanteen.pages.ChatConversationActivity
-import cit.edu.wildcanteen.pages.OrderBatchDetailActivity
+import cit.edu.wildcanteen.pages.student_pages.ChatConversationActivity
+import cit.edu.wildcanteen.pages.student_pages.OrderBatchDetailActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.firebase.firestore.ListenerRegistration
 

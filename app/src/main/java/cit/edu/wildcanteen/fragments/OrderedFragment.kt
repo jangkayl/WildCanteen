@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.adapters.OrderedBatchesAdapter
 import cit.edu.wildcanteen.application.MyApplication
-import cit.edu.wildcanteen.pages.OrderBatchDetailActivity
+import cit.edu.wildcanteen.pages.student_pages.OrderBatchDetailActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ListenerRegistration

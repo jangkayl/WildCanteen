@@ -44,28 +44,23 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/notification"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:backgroundTint="#2e0605"
-            android:src="@drawable/notification"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <Button
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:text="ANNOUNCEMENTS I THINK???"
+            android:layout_height="200dp"
             android:textColor="#FFF"
-            android:backgroundTint="#888"
+            android:backgroundTint="#E91313"
             android:textStyle="bold"
             android:layout_margin="8dp"
-            android:background="@drawable/rounded_drawable"/>
+            android:clipToOutline="true"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/announcements"
+            android:background="@drawable/rounded_drawable" />
         <Button
             android:id="@+id/homepageOrder"
             android:layout_width="match_parent"

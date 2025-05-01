@@ -10,8 +10,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import cit.edu.wildcanteen.pages.DevelopersActivity
-import cit.edu.wildcanteen.pages.EditProfileActivity
+import cit.edu.wildcanteen.pages.student_pages.DevelopersActivity
+import cit.edu.wildcanteen.pages.student_pages.EditProfileActivity
 import cit.edu.wildcanteen.pages.LogoutActivity
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication

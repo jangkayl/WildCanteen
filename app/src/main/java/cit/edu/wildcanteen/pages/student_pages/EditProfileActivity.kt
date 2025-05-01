@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen.pages
+package cit.edu.wildcanteen.pages.student_pages
 
 import android.app.Activity
 import android.content.Intent

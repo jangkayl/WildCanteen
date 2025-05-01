@@ -43,11 +43,10 @@ class OrderBatchAdapter(
             .format(Date(batch.timestamp))
         holder.itemCount.text = "${batch.orders.size} items"
 
-        // Set status color
         when (batch.status.lowercase()) {
-            "pending" -> holder.status.setTextColor(Color.parseColor("#FFA500"))
             "preparing" -> holder.status.setTextColor(Color.parseColor("#2196F3"))
             "ready" -> holder.status.setTextColor(Color.parseColor("#4CAF50"))
+            "delivering" -> holder.status.setTextColor(Color.parseColor("#8af28e"))
             "completed" -> holder.status.setTextColor(Color.parseColor("#607D8B"))
             "cancelled" -> holder.status.setTextColor(Color.parseColor("#F44336"))
         }

@@ -9,6 +9,9 @@ import cit.edu.wildcanteen.application.MyApplication
 import java.security.MessageDigest
 import android.util.Base64
 import cit.edu.wildcanteen.R
+import cit.edu.wildcanteen.pages.admin_page.AdminTemporaryActivity
+import cit.edu.wildcanteen.pages.student_pages.HomePageActivity
+import cit.edu.wildcanteen.pages.student_pages.NewUserActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 
 class LoginActivity : AppCompatActivity() {
@@ -19,8 +22,18 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if(MyApplication.isLoggedIn){
-            startActivity(Intent(this, HomePageActivity::class.java))
-            finish()
+            if(MyApplication.userType == "student"){
+                if(MyApplication.name == "John Doe"){
+                    startActivity(Intent(this, NewUserActivity::class.java))
+                    finish()
+                } else {
+                    startActivity(Intent(this, HomePageActivity::class.java))
+                    finish()
+                }
+            } else {
+                startActivity(Intent(this, AdminTemporaryActivity::class.java))
+                finish()
+            }
         }
 
         setContentView(R.layout.login)
@@ -68,9 +81,20 @@ class LoginActivity : AppCompatActivity() {
                 val hashedInputPassword = hashPassword(password)
 
                 if (hashedInputPassword == user.password) {
-                    MyApplication.loadUserDetails(user)
-                    startActivity(Intent(this, HomePageActivity::class.java))
-                    finish()
+                    if(user.userType == "student"){
+                        MyApplication.loadUserDetails(user)
+                        if(user.name == "John Doe"){
+                            startActivity(Intent(this, NewUserActivity::class.java))
+                            finish()
+                        } else {
+                            startActivity(Intent(this, HomePageActivity::class.java))
+                            finish()
+                        }
+                    } else if(user.userType == "admin") {
+                        MyApplication.loadUserDetails(user)
+                        startActivity(Intent(this, AdminTemporaryActivity::class.java))
+                        finish()
+                    }
                 } else {
                     showToast("Invalid credentials")
                 }

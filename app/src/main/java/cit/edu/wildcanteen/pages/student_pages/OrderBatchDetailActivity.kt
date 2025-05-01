@@ -1,19 +1,23 @@
-package cit.edu.wildcanteen.pages
+package cit.edu.wildcanteen.pages.student_pages
 
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import cit.edu.wildcanteen.CanteenOrderGroup
 import cit.edu.wildcanteen.OrderBatch
-import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.R
+import cit.edu.wildcanteen.application.MyApplication
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -114,8 +118,15 @@ class OrderBatchDetailActivity : AppCompatActivity() {
             }
         }
 
+        if(MyApplication.userType == "admin" && (!batch.status.equals("Completed", ignoreCase = true) && !batch.status.equals("Cancelled", ignoreCase = true))){
+            findViewById<Button>(R.id.btnChangeStatus).visibility = View.VISIBLE
+        }
+
+        findViewById<Button>(R.id.btnChangeStatus).setOnClickListener {
+            changeStatusAlert();
+        }
+
         when (batch.status.lowercase()) {
-            "pending" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#FFA500"))
             "preparing" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#2196F3"))
             "ready" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#4CAF50"))
             "completed" -> findViewById<TextView>(R.id.statusText).setTextColor(Color.parseColor("#4CAF50"))
@@ -210,4 +221,86 @@ class OrderBatchDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun changeStatusAlert() {
+        val statusOptions = arrayOf("Ready", "Completed", "Cancelled")
+        val batchId = findViewById<TextView>(R.id.batchIdText).text.toString().removePrefix("Order #")
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Change Order Status")
+
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 30, 50, 30)
+        }
+
+        val spinner = Spinner(this)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, statusOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        val currentStatus = findViewById<TextView>(R.id.statusText).text.toString()
+        val currentIndex = statusOptions.indexOfFirst { it.equals(currentStatus, ignoreCase = true) }
+        if (currentIndex >= 0) {
+            spinner.setSelection(currentIndex)
+        }
+
+        container.addView(spinner, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        builder.setView(container)
+
+        builder.setPositiveButton("Update") { dialog, which ->
+            val selectedStatus = spinner.selectedItem.toString()
+
+            if (selectedStatus == "Ready") {
+                AlertDialog.Builder(this)
+                    .setTitle("Confirm Order Ready")
+                    .setMessage("Are you sure the order is ready?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        updateStatusAndUI(selectedStatus, currentStatus)
+                    }
+                    .setNegativeButton("No") { innerDialog, _ ->
+                        innerDialog.dismiss()
+                        changeStatusAlert()
+                    }
+                    .show()
+            } else {
+                updateStatusAndUI(selectedStatus, currentStatus)
+            }
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, which ->
+            dialog.dismiss()
+        }
+
+        builder.create().show()
+    }
+
+    private fun updateStatusAndUI(selectedStatus: String, currentStatus: String) {
+        val statusText = findViewById<TextView>(R.id.statusText)
+
+        statusText.text = selectedStatus
+        when (selectedStatus.lowercase()) {
+            "ready" -> statusText.setTextColor(Color.parseColor("#4CAF50"))
+            "completed" -> statusText.setTextColor(Color.parseColor("#4CAF50"))
+            "cancelled" -> statusText.setTextColor(Color.parseColor("#F44336"))
+        }
+
+        Log.e("Ambot", "Batch ID $batchId")
+
+        FirebaseRepository().updateOrderBatchStatus(
+            batchId = batchId,
+            newStatus = selectedStatus,
+            onSuccess = {
+                Toast.makeText(this, "Status updated to $selectedStatus", Toast.LENGTH_SHORT).show()
+            },
+            onFailure = { e ->
+                statusText.text = currentStatus
+                when (currentStatus.lowercase()) {
+                    "Ready" -> statusText.setTextColor(Color.parseColor("#4CAF50"))
+                    "Completed" -> statusText.setTextColor(Color.parseColor("#4CAF50"))
+                    "Cancelled" -> statusText.setTextColor(Color.parseColor("#F44336"))
+                }
+                Toast.makeText(this, "Failed to update status: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
 }

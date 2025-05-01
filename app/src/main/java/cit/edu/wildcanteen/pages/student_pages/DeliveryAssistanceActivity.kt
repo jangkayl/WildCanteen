@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen.pages
+package cit.edu.wildcanteen.pages.student_pages
 
 import android.os.Bundle
 import android.widget.ImageView

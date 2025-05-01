@@ -9,9 +9,10 @@ import androidx.lifecycle.MutableLiveData
 import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.FoodItem
 import cit.edu.wildcanteen.repositories.FirebaseRepository
-import cit.edu.wildcanteen.pages.HomePageActivity
+import cit.edu.wildcanteen.pages.student_pages.HomePageActivity
 import cit.edu.wildcanteen.Order
 import cit.edu.wildcanteen.User
+import cit.edu.wildcanteen.pages.admin_page.AdminTemporaryActivity
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -58,10 +59,6 @@ class MyApplication : Application() {
                 FirebaseRepository().getUser(storedUserId, { user ->
                     if (user != null) {
                         loadUserDetails(user)
-                        val intent = Intent(context, HomePageActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                        context.startActivity(intent)
                     }
                 }, {
                     clearUserSession()
@@ -98,8 +95,8 @@ class MyApplication : Application() {
         }
 
         private fun clearChatListener() {
-            chatListener?.remove()
             allChats.clear()
+            chatListener?.remove()
             chatListener = null
             Log.d("MyApplication", "Chat listener removed")
         }
@@ -137,8 +134,8 @@ class MyApplication : Application() {
             profileImageUrl = null
             password = null
             orders.clear()
-            clearChatListener()
             chatUpdatesLiveData.postValue(emptyList())
+            clearChatListener()
 
             prefs.edit().clear().apply()
             printUserDetails()
@@ -174,12 +171,10 @@ class MyApplication : Application() {
                 return
             }
 
-            // Load from Firebase first
             FirebaseRepository().getOrders(studentId!!, { ordersFromFirebase ->
                 Log.d("OrderDebug", "Loaded from Firebase: ${ordersFromFirebase.size} orders")
                 orders = ordersFromFirebase.toMutableList()
 
-                // Then check local cache
                 val json = prefs.getString("ORDERS", null)
                 if (!json.isNullOrEmpty()) {
                     try {
@@ -201,7 +196,6 @@ class MyApplication : Application() {
             }, { exception ->
                 Log.e("OrderDebug", "Failed to load orders from Firebase", exception)
 
-                // Fallback to local cache
                 val json = prefs.getString("ORDERS", null)
                 if (!json.isNullOrEmpty()) {
                     try {

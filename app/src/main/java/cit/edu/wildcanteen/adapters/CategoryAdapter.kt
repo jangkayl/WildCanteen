@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.CategoryItem
 import cit.edu.wildcanteen.R
 
-class CategoryAdapter(private val categories: List<CategoryItem>) :
-    RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(
+    private val categories: List<CategoryItem>,
+    private val onCategoryClick: (String) -> Unit
+) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val frameLayout: FrameLayout = itemView.findViewById(R.id.frameLayout)
@@ -43,9 +45,12 @@ class CategoryAdapter(private val categories: List<CategoryItem>) :
         drawable.setColor(category.backgroundColor)
 
         holder.frameLayout.background = drawable
-
         holder.imageView.setImageResource(category.imageRes)
         holder.textView.text = category.name
+
+        holder.itemView.setOnClickListener {
+            onCategoryClick(category.name)
+        }
     }
 
     override fun getItemCount() = categories.size

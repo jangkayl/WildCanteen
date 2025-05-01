@@ -1,17 +1,14 @@
 package cit.edu.wildcanteen.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import cit.edu.wildcanteen.Feedback
 import cit.edu.wildcanteen.R
-import cit.edu.wildcanteen.repositories.FirebaseRepository
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*

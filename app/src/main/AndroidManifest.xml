@@ -30,23 +30,23 @@ xmlns:tools="http://schemas.android.com/tools">
         </intent-filter>
     </activity>
     <activity
-        android:name=".pages.HomePageActivity"
+        android:name=".pages.student_pages.HomePageActivity"
         android:exported="false"
         android:windowSoftInputMode="adjustPan"
         android:launchMode="singleTask"
         android:excludeFromRecents="true"/>
-    <activity android:name=".pages.HomePageOrderActivity" />
+    <activity android:name=".pages.student_pages.HomePageOrderActivity" />
     <activity
         android:name=".pages.LogoutActivity"
         android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-    <activity android:name=".pages.DevelopersActivity" />
+    <activity android:name=".pages.student_pages.DevelopersActivity" />
     <activity android:name=".pages.FoodDetailsActivity" />
     <activity
-        android:name=".pages.EditProfileActivity"
+        android:name=".pages.student_pages.EditProfileActivity"
         android:exported="false"
         />
     <activity
-        android:name=".pages.OrderPlaced"
+        android:name=".pages.student_pages.OrderPlaced"
         android:exported="false"/>
     <activity
         android:name=".pages.admin_page.AddFoodItemActivity"
@@ -55,29 +55,32 @@ xmlns:tools="http://schemas.android.com/tools">
         android:name=".pages.admin_page.AdminTemporaryActivity"
         android:exported="false"/>
     <activity
-        android:name=".pages.admin_page.AllOrderActivity"
-        android:exported="false"/>
-    <activity
-        android:name=".pages.OrderSummaryActivity"
+        android:name=".pages.student_pages.OrderSummaryActivity"
         android:windowSoftInputMode="adjustPan"
         android:exported="false"/>
     <activity
-        android:name=".pages.OrderBatchesActivity"
+        android:name=".pages.admin_page.OrderBatchesActivity"
         android:exported="false" />
     <activity
-        android:name=".pages.OrderBatchDetailActivity"
+        android:name=".pages.student_pages.OrderBatchDetailActivity"
         android:exported="false" />
     <activity
-        android:name=".pages.DeliveryAssistanceActivity"
+        android:name=".pages.student_pages.DeliveryAssistanceActivity"
         android:exported="false" />
     <activity
-        android:name=".pages.ChatConversationActivity"
+        android:name=".pages.student_pages.ChatConversationActivity"
         android:exported="false" />
     <activity
-        android:name=".pages.UserSearchActivity"
+        android:name=".pages.student_pages.UserSearchActivity"
         android:exported="false" />
     <activity
-        android:name=".pages.SendFeedbackActivity"
+        android:name=".pages.student_pages.NewUserActivity"
+        android:exported="false" />
+    <activity
+        android:name=".pages.admin_page.AllMenuActivity"
+        android:exported="false" />
+    <activity
+        android:name=".pages.student_pages.SendFeedbackActivity"
         android:windowSoftInputMode="adjustResize"
         android:exported="false" />
 </application>

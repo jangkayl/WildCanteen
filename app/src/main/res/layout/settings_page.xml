@@ -112,65 +112,7 @@
                         android:src="@drawable/arrow_facing_right"
                         />
                 </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_drawable"
-                    android:backgroundTint="#555"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="16dp"
-                    android:layout_marginBottom="36dp">
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/small_lock_icon"
-                        />
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:paddingHorizontal="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_height="wrap_content"
-                        android:text="CHANGE PASSWORD"
-                        android:textColor="@color/white" />
-                    <ImageView
-                        android:layout_gravity="center"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/arrow_facing_right"
-                        />
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_drawable"
-                    android:backgroundTint="#555"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="16dp"
-                    android:layout_marginBottom="12dp"
-                    >
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/small_clipboard_icon"
-                        />
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:paddingHorizontal="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_height="wrap_content"
-                        android:text="ORDER HISTORY"
-                        android:textColor="@color/white" />
-                    <ImageView
-                        android:layout_gravity="center"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/arrow_facing_right"
-                        />
-                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/developers_button"
                     android:orientation="horizontal"

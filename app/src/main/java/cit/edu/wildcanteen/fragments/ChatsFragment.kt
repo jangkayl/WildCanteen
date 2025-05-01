@@ -20,8 +20,8 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.LinearLayout
 import cit.edu.wildcanteen.application.MyApplication
-import cit.edu.wildcanteen.pages.ChatConversationActivity
-import cit.edu.wildcanteen.pages.UserSearchActivity
+import cit.edu.wildcanteen.pages.student_pages.ChatConversationActivity
+import cit.edu.wildcanteen.pages.student_pages.UserSearchActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 
 class ChatsFragment : Fragment() {
@@ -120,7 +120,7 @@ class ChatsFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                filterChats(s?.toString() ?: "")
+                filterChats(s.toString())
             }
         })
     }

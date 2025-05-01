@@ -17,9 +17,8 @@ import cit.edu.wildcanteen.ChatMessage
 import cit.edu.wildcanteen.OrderBatch
 import cit.edu.wildcanteen.R
 import cit.edu.wildcanteen.application.MyApplication
-import cit.edu.wildcanteen.pages.ChatConversationActivity
-import cit.edu.wildcanteen.pages.OrderBatchDetailActivity
-import cit.edu.wildcanteen.pages.SendFeedbackActivity
+import cit.edu.wildcanteen.pages.student_pages.ChatConversationActivity
+import cit.edu.wildcanteen.pages.student_pages.SendFeedbackActivity
 import cit.edu.wildcanteen.repositories.FirebaseRepository
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,7 +84,6 @@ class OrderedBatchesAdapter(
 
     private fun setStatusColor(holder: ViewHolder, status: String) {
         val color = when (status.lowercase()) {
-            "pending" -> "#FFA500" // Orange
             "preparing" -> "#2196F3" // Blue
             "delivering" -> "#4CAF50" // Green
             "ready" -> "#4CAF50" // Green

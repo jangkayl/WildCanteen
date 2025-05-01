@@ -1,4 +1,4 @@
-package cit.edu.wildcanteen.pages
+package cit.edu.wildcanteen.pages.student_pages
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -208,7 +208,7 @@ class OrderSummaryActivity : AppCompatActivity() {
             userName = userName,
             orders = cartOrders,
             totalAmount = totalAmount,
-            status = "Ready",
+            status = "Preparing",
             paymentMethod = paymentMethod,
             referenceNumber = referenceNumber,
             deliveryType = deliveryMethod,

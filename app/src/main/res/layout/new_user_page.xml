@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:padding="24dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome! 🎉"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please fill out the details below"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:textSize="16dp"
+        android:textStyle="italic"
+        android:layout_marginBottom="16dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:gravity="center_horizontal">
+
+        <!-- Main Profile Image (Circular) -->
+        <ImageView
+            android:id="@+id/edit_profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/hd_user"
+            android:clipToOutline="true"
+            android:background="@drawable/rounded_avatar"
+            android:scaleType="centerCrop"
+            android:contentDescription="Profile image" />
+
+        <ImageButton
+            android:id="@+id/btnEdit_new_profile"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignRight="@id/edit_profile_image"
+            android:layout_alignBottom="@id/edit_profile_image"
+            android:layout_marginRight="-8dp"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/rounded_drawable"
+            android:backgroundTint="@color/selectedColor"
+            android:contentDescription="Edit profile"
+            android:elevation="4dp"
+            android:padding="4dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/edit_icon" />
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/editText_name"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your name"
+        android:paddingVertical="16dp"
+        android:background="@drawable/rounded_drawable"
+        android:padding="12dp"/>
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/btnConfirm_new_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="20dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="Confirm"
+        android:backgroundTint="@color/selectedColor"
+        android:background="@drawable/rounded_drawable"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1"/>
+
+</LinearLayout>
